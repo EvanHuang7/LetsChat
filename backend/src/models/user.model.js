@@ -21,12 +21,11 @@ const userSchema =  new mongoose.Schema(
             default: "",
         },
     },
-    // It will create all timestamps fields, such as createdAt,
-    // UpdatedAt, DeletedAt
+    // It will create all timestamps fields, such as createdAt, UpdatedAt
     { timestamps: true }
 );
 
-// Mongo wants the model name to be singular and starting with upper case
+// Mongo will use "users" as table name
 const User = mongoose.model("User", userSchema);
 
 export default User;
