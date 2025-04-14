@@ -14,6 +14,9 @@ const PORT = process.env.PORT ;
 
 const app = express();
 
+// Allow us to extrat the json data form api request body 
+app.use(express.json());
+
 app.use("/api/auth", authRoutes);
 
 app.listen(PORT, () => {
