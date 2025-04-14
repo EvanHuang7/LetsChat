@@ -1,4 +1,4 @@
-import bcript from "bcryptjs";
+import bcrypt from "bcryptjs";
 
 import User from "../models/user.model.js";
 import { generateToken } from "../lib/utils.js";
@@ -7,9 +7,13 @@ import { generateToken } from "../lib/utils.js";
 export const signup = async (req, res) => {
     const {fullName, email, password} = req.body;
     try {
-        // TODO: check if fullName and email are empty or not
+        if (!fullName || !email || !password ){
+            return res.status(400).json({
+                message: "All fields are required"
+            })
+        }
 
-        // check if the length of password
+        // check the length of password
         if (password.length < 6 ) {
             return res.status(400).json({
                 message: "Password must be at least 6 characters"
@@ -27,15 +31,15 @@ export const signup = async (req, res) => {
         }
 
         // Use bcryptjs package to hash password
-        const salt = await bcript.getSalt(10)
-        const hashedPassword = await bcript.hash(password, salt)
+        const salt = await bcrypt.genSalt(10)
+        const hashedPassword = await bcrypt.hash(password, salt)
 
         // Create this new user 
         const newUser = new User({
             fullName: fullName,
             // We can shorten "email: email" to email
             email,
-            passsword: hashedPassword
+            password: hashedPassword,
         })
 
         if (newUser) {

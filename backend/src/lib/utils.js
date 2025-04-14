@@ -6,9 +6,10 @@ export const generateToken = (userId, res) => {
         expiresIn: "7d"
     })
 
-    // Send the generated JWT token to user's cookie via response cookie
+    // Send the generated JWT token to user via response cookie
     res.cookie("jwt", token, {
-        // This JWT token will stay in user's cookie for 7 days.
+        // This JWT token will be stored as cookie in user's browser session for 7 days.
+        // User's browser will send this cookie when making request to same server.
         // After 7 days, user needs to login again to get a new JWT.
         maxAge: 7 * 24 * 60 * 60 * 1000, // MS
         // Make sure this token is not accessable via JavaScript
