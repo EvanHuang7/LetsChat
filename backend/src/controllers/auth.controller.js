@@ -134,7 +134,7 @@ export const updateProfile = async (req, res) => {
             })             
         }
 
-        // Upload profile pic to cloudinary
+        // Upload base64 profile pic to cloudinary
         const uploadResult = await cloudinary.uploader.upload(profilePic)
 
         // Update the user profile pic in database
