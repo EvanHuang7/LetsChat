@@ -1,6 +1,8 @@
 import { create } from "zustand"
 import { axiosInstance } from "../lib/axios.js"
 
+// Zustand is a handy state management tool for 
+// managing state in React apps
 export const useAuthStore = create((set) =>({
     authUser: null,
     isSigningUp: false,
