@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
@@ -21,6 +22,13 @@ const app = express();
 app.use(express.json());
 // Allow us to parse the cookies from the api request
 app.use(cookieParser());
+// Allow front end client to call the backend endpoints from different port and 
+// allow the authentication cookie (JWT token) to be included in api call reqeust
+// front-end port is 5173, back-end port is 5001.
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+}));
 
 // Set up API routes
 app.use("/api/auth", authRoutes);
