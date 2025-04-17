@@ -30,6 +30,7 @@ export const useAuthStore = create((set) =>({
         }
     },
 
+    // Function to make HTTP call to "api/auth/signup" endpoint
     signup: async(data) => {
         try {
             set({isSigningUp: true})
@@ -37,13 +38,28 @@ export const useAuthStore = create((set) =>({
             const res = await axiosInstance.post("/auth/signup", data)
             set({authUser: res.data})
 
-            toast.success("Account created sucessfully")
+            toast.success("Signed up sucessfully")
         } catch (error) {
             console.log("Error in signup: ", error)
             toast.error(error.response.data.message)
         } finally {
             set({isSigningUp: false})
         }
+    },
+
+    // Function to make HTTP call to "api/auth/logout" endpoint
+    logout: async() => {
+        try {
+            // Call the logout endpoint
+            await axiosInstance.post("/auth/logout")
+            set({authUser: null})
+
+            toast.success("Logged out sucessfully")
+        } catch (error) {
+            console.log("Error in logout: ", error)
+            toast.error(error.response.data.message)
+        } 
     }
+
 
 }))
