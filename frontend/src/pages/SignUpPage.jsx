@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
+import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
 import { MessageSquare, Eye, EyeOff, Loader2 } from 'lucide-react'
 import { useAuthStore } from '../store/useAuthStore'
+import  AuthImagePattern  from '../components/AuthImagePattern'
 
 const SignUpPage = () => {
   // Intialize needed variables and corresponding update value functions
@@ -15,13 +17,38 @@ const SignUpPage = () => {
   // Get the needed variables and function from useAuthStore
   const {signup, isSigningUp} = useAuthStore()
 
-  const validateForm = () => {}
+  const validateForm = () => {
+    if (!formData.fullName.trim()) {
+      return toast.error("Full name is required")
+    }
+    if (!formData.email.trim()) {
+      return toast.error("Email is required")
+    }
+    if (!formData.password) {
+      return toast.error("Password is required")
+    }
+    // Check email format is valid or not using regular expression
+    if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      return toast.error("Invalid email format")
+    }
+    // Check passowrd length
+    if (formData.password.length < 6) {
+      return toast.error("Password must be at least 6 characters")
+    }
+    
+    return true
+  }
+
   const handleSubmit = (event) => {
     // Prevent refreshing the page
     event.preventDefault()
+
+    // Call signup endpoint with form data if form data is valid
+    const sucess = validateForm()
+    if (sucess === true) {
+      signup(formData)
+    }
   }
-
-
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
@@ -126,10 +153,14 @@ const SignUpPage = () => {
           </div>
         
         </div>
-
       </div>
 
       {/* Right part */}
+      <AuthImagePattern
+        title="Join our community"
+        subtitle="Connect with friends, share moments, and stay in touch with your loved ones."
+      />
+
 
     </div>
   )
