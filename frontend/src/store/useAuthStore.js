@@ -1,5 +1,6 @@
 import { create } from "zustand"
 import { axiosInstance } from "../lib/axios.js"
+import toast from "react-hot-toast"
 
 // Zustand is a handy state management tool for 
 // managing state in React apps
@@ -31,9 +32,17 @@ export const useAuthStore = create((set) =>({
 
     signup: async(data) => {
         try {
-            
+            set({isSigningUp: true})
+            // Call the signup endpoint
+            const res = await axiosInstance.post("/auth/signup", data)
+            set({authUser: res.data})
+
+            toast.success("Account created sucessfully")
         } catch (error) {
-            
+            console.log("Error in signup: ", error)
+            toast.error(error.response.data.message)
+        } finally {
+            set({isSigningUp: false})
         }
     }
 
