@@ -49,39 +49,35 @@ const SignUpPage = () => {
 
             {/* Full name field */}
             <div className="form-control">
-              <label className="label">
+              <label className="label pb-1">
                 <span className="label-text font-medium">Full Name</span>
               </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  className="input input-bordered w-full"
-                  placeholder="Evan Huang"
-                  value={formData.fullName}
-                  onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                />
-              </div>
+              <input
+                type="text"
+                className="input input-bordered w-full"
+                placeholder="Evan Huang"
+                value={formData.fullName}
+                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+              />
             </div>  
 
             {/* Email field */}
             <div className="form-control">
-              <label className="label">
+              <label className="label pb-1">
                 <span className="label-text font-medium">Email</span>
               </label>
-              <div className="relative">
-                <input
-                  type="email"
-                  className="input input-bordered w-full"
-                  placeholder="you@example.com"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                />
-              </div>
+              <input
+                type="email"
+                className="input input-bordered w-full"
+                placeholder="you@example.com"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              />
             </div>
 
             {/* Password field */}
             <div className="form-control">
-              <label className="label">
+              <label className="label pb-1">
                 <span className="label-text font-medium">Password</span>
               </label>
               <div className="relative">
