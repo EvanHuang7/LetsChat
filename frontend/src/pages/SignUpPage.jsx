@@ -142,7 +142,7 @@ const SignUpPage = () => {
             </button>
           </form>
           
-          {/* Already have account */}
+          {/* Already have account section */}
           <div className="text-center">
             <p className="text-base-content/60">
               Already have an account?{" "}
