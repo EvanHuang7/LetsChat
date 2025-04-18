@@ -8,10 +8,10 @@ export const useAuthStore = create((set) =>({
     // Intialize needed variables
     authUser: null,
     // Flags variables to control different spinners
+    isCheckingAuth: true,
     isSigningUp: false,
     isLoggingIn: false,
     isUpdatingProfile: false,
-    isCheckingAuth: true,
 
     // Function to make HTTP call to "api/auth/check" endpoint
     checkAuth: async() => {
@@ -76,6 +76,23 @@ export const useAuthStore = create((set) =>({
             console.log("Error in logout: ", error)
             toast.error(error.response.data.message)
         } 
+    },
+
+    // Function to make HTTP call to "api/auth/update-profile" endpoint
+    updateProfile: async(data) => {
+        try {
+            set({isUpdatingProfile: true})
+            // Call the update-profile endpoint
+            const res = await axiosInstance.put("/auth/update-profile", data)
+            set({authUser: res.data})
+
+            toast.success("Updated profile sucessfully")
+        } catch (error) {
+            console.log("Error in updateProfile: ", error)
+            toast.error(error.response.data.message)
+        } finally {
+            set({isUpdatingProfile: false})
+        }
     },
 
 }))
