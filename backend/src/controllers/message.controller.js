@@ -1,6 +1,6 @@
 import User from "../models/user.model.js";
 import Message from "../models/message.model.js";
-
+import cloudinary from "../lib/cloudinary.js"
 
 // Get all users except for logged in user for side bar contact list
 export const getUsersForSidebar = async (req, res) => {
