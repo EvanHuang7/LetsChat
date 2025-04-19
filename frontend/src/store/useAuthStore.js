@@ -1,6 +1,7 @@
 import { create } from "zustand"
-import { axiosInstance } from "../lib/axios.js"
 import toast from "react-hot-toast"
+
+import { axiosInstance } from "../lib/axios.js"
 
 // Zustand is a handy state management tool for 
 // managing state in React apps

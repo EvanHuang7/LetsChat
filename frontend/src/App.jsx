@@ -20,10 +20,12 @@ const App = () => {
   const {authUser, checkAuth, isCheckingAuth} = useAuthStore()
   const {theme} = useThemeStore()
 
-  // Call checkAuth() function and set the page theme in
-  // index.html file when application starts
+  // Do something when application starts
   useEffect(() => {
+    // Call checkAuth() function
     checkAuth(),
+    // Set the page theme by setting a "data-theme" attribute 
+    // with a theme value for <html> tag
     document.documentElement.setAttribute("data-theme", theme)
   }, [checkAuth, theme])
 
