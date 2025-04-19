@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react'
 
 import { useChatStore } from '../store/useChatStore'
-import MessageHeader from './messagesWindow/MessageHeader'
-import MessageInput from './messagesWindow/MessageInput'
+import ChatWindowHeader from './chatWindow/ChatWindowHeader'
+import MessageInput from './chatWindow/MessageInput'
 import MessageSkeleton from './skeletons/MessageSkeleton'
 
 const ChatContainer = () => {
@@ -20,7 +20,7 @@ const ChatContainer = () => {
   if (isMessagesLoading) {
     return (
       <div className="flex-1 flex flex-col overflow-auto">
-        <MessageHeader />
+        <ChatWindowHeader />
         <MessageSkeleton />
         <MessageInput />
       </div>
@@ -29,7 +29,7 @@ const ChatContainer = () => {
 
   return (
     <div className="flex-1 flex flex-col overflow-auto">
-      <MessageHeader />
+      <ChatWindowHeader />
 
 
       <div>messages...</div>
