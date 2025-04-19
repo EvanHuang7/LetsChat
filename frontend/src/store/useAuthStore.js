@@ -8,6 +8,7 @@ import { axiosInstance } from "../lib/axios.js"
 export const useAuthStore = create((set) =>({
     // Intialize needed variables
     authUser: null,
+    onlineUsers: [],
     // Flags variables to control different spinners
     isCheckingAuth: true,
     isSigningUp: false,
