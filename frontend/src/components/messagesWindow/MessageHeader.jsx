@@ -1,10 +1,10 @@
 import React from 'react'
 import { X } from "lucide-react";
 
-import { useAuthStore } from "../store/useAuthStore";
-import { useChatStore } from "../store/useChatStore";
+import { useAuthStore } from "../../store/useAuthStore";
+import { useChatStore } from "../../store/useChatStore";
 
-const ChatHeader = () => {
+const MessageHeader = () => {
   const { selectedUser, setSelectedUser } = useChatStore();
   const { onlineUsers } = useAuthStore();
 
@@ -36,4 +36,4 @@ const ChatHeader = () => {
     </div>
   );
 };
-export default ChatHeader;
+export default MessageHeader;
