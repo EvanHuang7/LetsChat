@@ -19,7 +19,7 @@ const PORT = process.env.PORT ;
 const app = express();
 
 // Allow us to extrat the json data form api request body 
-app.use(express.json());
+app.use(express.json({ limit: '2mb' }));
 // Allow us to parse the cookies from the api request
 app.use(cookieParser());
 // Allow front end client to call the backend endpoints from different port and 

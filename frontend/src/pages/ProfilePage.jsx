@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import toast from 'react-hot-toast'
 import { Camera, Mail, User } from "lucide-react"
 
 import { useAuthStore } from '../store/useAuthStore'
@@ -14,6 +15,11 @@ const ProfilePage = () => {
     const file = event.target.files[0]
     if (!file) return;
 
+    const maxSize = 2 * 1024 * 1024; // 2MB
+    if (file.size > maxSize) {
+      return toast.error("Please try to uplpad a file less than max file size 2MB")
+    }
+    
     // Convert the image to base64 format
     const reader = new FileReader()
     reader.readAsDataURL(file)
