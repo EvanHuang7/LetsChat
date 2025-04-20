@@ -1,14 +1,19 @@
 import { create } from "zustand"
 import toast from "react-hot-toast"
+import { io } from 'socket.io-client'
 
 import { axiosInstance } from "../lib/axios.js"
 
+// Backend server base url
+const BACK_END_BASE_URL = "http://localhost:5001"
+
 // Zustand is a handy state management tool for 
 // managing state in React apps
-export const useAuthStore = create((set) =>({
+export const useAuthStore = create((set, get) =>({
     // Intialize needed variables
     authUser: null,
     onlineUsers: [],
+    socket: null,
     // Flags variables to control different spinners
     isCheckingAuth: true,
     isSigningUp: false,
@@ -22,6 +27,10 @@ export const useAuthStore = create((set) =>({
             const res = await axiosInstance.get("/auth/check")
 
             set({authUser: res.data})
+
+            // Connect to socket io whenever refreshing the 
+            // page (application starts) and auth granted
+            get().connectSocket()
         } catch (error) {
             console.log("Error in checkAuth: ", error)
             // When api call returns errors, that means 
@@ -41,6 +50,9 @@ export const useAuthStore = create((set) =>({
             set({authUser: res.data})
 
             toast.success("Signed up sucessfully")
+
+            // Connect to socket io when signed up sucessfully
+            get().connectSocket()
         } catch (error) {
             console.log("Error in signup: ", error)
             toast.error(error.response.data.message)
@@ -58,6 +70,9 @@ export const useAuthStore = create((set) =>({
             set({authUser: res.data})
 
             toast.success("Logged in sucessfully")
+
+            // Connect to socket io whenever logged in sucessfully
+            get().connectSocket()
         } catch (error) {
             console.log("Error in login: ", error)
             toast.error(error.response.data.message)
@@ -74,6 +89,9 @@ export const useAuthStore = create((set) =>({
             set({authUser: null})
 
             toast.success("Logged out sucessfully")
+
+            // Disconnect to socket io whenever logged out sucessfully
+            get().disconnectSocket()
         } catch (error) {
             console.log("Error in logout: ", error)
             toast.error(error.response.data.message)
@@ -97,4 +115,23 @@ export const useAuthStore = create((set) =>({
         }
     },
 
+    // Function to connect to socket io
+    connectSocket: () => {
+        const {authUser} = get()
+        // If user is not auth granted or already connected to socket,
+        // do not connect to socket or connect again
+        if (!authUser || get().socket?.connected) return;
+        
+        // Create socket object and connect to socket io 
+        const socket = io(BACK_END_BASE_URL)
+        socket.connect()
+
+        // set the const socket object to socket state
+        set({socket: socket})
+    },
+
+    // Function to disconnect to socket io
+    disconnectSocket: () => {
+        if (get().socket?.connected) get().socket?.disconnect();
+    },
 }))
