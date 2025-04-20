@@ -18,6 +18,10 @@ const io = new Server(server, {
 // Stored the online users, {userId: socketId}
 const userSocketMap = {}
 
+export function getSocketIdByUserId (userId) {
+    return userSocketMap[userId]
+}
+
 // Set socket io server to listen to the connection or
 // disconnection events form socket io clients
 io.on("connection", (socket) => {

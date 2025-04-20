@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import Message from "../models/message.model.js";
-import cloudinary from "../lib/cloudinary.js"
+import cloudinary from "../lib/cloudinary.js";
+import { io, getSocketIdByUserId} from "../lib/socket.js";
 
 // Get all users except for logged in user for side bar contact list
 export const getUsersForSidebar = async (req, res) => {
@@ -87,7 +88,13 @@ export const sendMessage = async (req, res) => {
         // Save this new message to database
         await newMessage.save()
 
-        //TODO: add real time functionality in latter front-end part
+        // Get the message receiver socketId from oneline userSocketMap
+        const messageReceiverSocketId = getSocketIdByUserId(receiverId)
+        // Only send this new message to the message receiver socket io client 
+        // if user is oneline
+        if (receiverId) {
+            io.to(messageReceiverSocketId).emit("newMessage", newMessage)
+        }
 
         res.status(201).json(newMessage)
     } catch (error) {
