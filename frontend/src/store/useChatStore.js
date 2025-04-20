@@ -2,6 +2,7 @@ import { create } from "zustand"
 import toast from "react-hot-toast"
 
 import { axiosInstance } from "../lib/axios.js"
+import { useAuthStore } from "./useAuthStore"
 
 // Zustand is a handy state management tool for 
 // managing state in React apps
@@ -56,6 +57,32 @@ export const useChatStore = create((set, get) =>({
             toast.error(error.response.data.message)
         } 
     },
+
+    //TODO: optimize this one latter
+    // Function to subscribe any new incoming messages from selected user
+    // for auth user
+    subscribeToMessages: () => {
+        const {selectedUser} = get()
+        if (!selectedUser) return
+
+        // Get a state from another store file in a store file 
+        const socket = useAuthStore.getState().socket
+
+        // Listen to "newMessage" event and update messages list
+        // whenever receicing newMessage from socket io server
+        socket.on("newMessage", (newMessage) => {
+            set({
+                messages: [...get().messages, newMessage]
+            })
+        })
+    },
+
+    // Function to unsubscribe any new incoming messages for auth user
+    unsubscribeFromMessages: () => {
+        const socket = useAuthStore.getState().socket
+        socket.off("newMessage")
+    },
+
 
     //TODO: optimize this one latter
     setSelectedUser: (selectedUser) => {
