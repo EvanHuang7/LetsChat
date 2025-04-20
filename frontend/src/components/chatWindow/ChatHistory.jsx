@@ -2,6 +2,7 @@ import React, { useRef } from 'react'
 
 import { useChatStore } from "../../store/useChatStore";
 import { useAuthStore } from "../../store/useAuthStore";
+import { formatMessageTime } from "../../lib/utils"
 
 const ChatHistory = () => {
   const { messages, selectedUser } = useChatStore()
@@ -32,8 +33,7 @@ const ChatHistory = () => {
         {/* Message sent time */}
         <div className="chat-header mb-1">
           <time className="text-xs opacity-50 ml-1">
-            {/* TODO: add formatMessageTime() function */}
-            {/* {formatMessageTime(message.createdAt)} */}
+            {formatMessageTime(message.createdAt)}
           </time>
         </div>
         {/* Message text and image in chat bubble */}
