@@ -115,22 +115,33 @@ export const useAuthStore = create((set, get) =>({
         }
     },
 
-    // Function to connect to socket io
+    // Function to connect to socket io server
     connectSocket: () => {
         const {authUser} = get()
         // If user is not auth granted or already connected to socket,
         // do not connect to socket or connect again
         if (!authUser || get().socket?.connected) return;
         
-        // Create socket object and connect to socket io 
-        const socket = io(BACK_END_BASE_URL)
+        // Create socket io client and start connection to socket io server 
+        // with passing a query including userId 
+        const socket = io(BACK_END_BASE_URL, {
+            query: {
+                userId: authUser._id,
+            },
+        })
         socket.connect()
 
-        // set the const socket object to socket state
+        // Set the const socket io client object to socket state
         set({socket: socket})
+
+        // Set the socket io client to listen to the event
+        // (any oneline users update) from socket io server
+        socket.on("getOnlineUsers", (userIds) => {
+            set({onlineUsers: userIds})
+        })
     },
 
-    // Function to disconnect to socket io
+    // Function to disconnect to socket io server
     disconnectSocket: () => {
         if (get().socket?.connected) get().socket?.disconnect();
     },
