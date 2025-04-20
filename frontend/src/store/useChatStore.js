@@ -58,7 +58,6 @@ export const useChatStore = create((set, get) =>({
         } 
     },
 
-    //TODO: optimize this one latter
     // Function to subscribe any new incoming messages from selected user
     // for auth user
     subscribeToMessages: () => {
@@ -71,6 +70,10 @@ export const useChatStore = create((set, get) =>({
         // Listen to "newMessage" event and update messages list
         // whenever receicing newMessage from socket io server
         socket.on("newMessage", (newMessage) => {
+            // If the incoming new message is not sent from current selected 
+            // user, we will not append this new incoming message to current 
+            // messages list to display in current chat history window
+            if (newMessage.senderId !== selectedUser._id) return
             set({
                 messages: [...get().messages, newMessage]
             })
