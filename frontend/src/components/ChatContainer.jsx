@@ -2,11 +2,12 @@ import React, { useEffect } from 'react'
 
 import { useChatStore } from '../store/useChatStore'
 import ChatWindowHeader from './chatWindow/ChatWindowHeader'
+import ChatHistory from './chatWindow/ChatHistory'
 import MessageInput from './chatWindow/MessageInput'
 import MessageSkeleton from './skeletons/MessageSkeleton'
 
 const ChatContainer = () => {
-  const {selectedUser, messages, getMessages, isMessagesLoading} = useChatStore()
+  const {selectedUser, getMessages, isMessagesLoading} = useChatStore()
 
   // Do something when chat container component starts
   // We should call useEffect() before any logic conditions
@@ -30,11 +31,7 @@ const ChatContainer = () => {
   return (
     <div className="flex-1 flex flex-col overflow-auto">
       <ChatWindowHeader />
-
-
-      <div>messages...</div>
-
-
+      <ChatHistory />
       <MessageInput />
     </div>
   )
