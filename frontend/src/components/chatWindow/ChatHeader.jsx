@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useChatStore } from "../../store/useChatStore";
 
-const ChatWindowHeader = () => {
+const ChatHeader = () => {
   const { selectedUser, setSelectedUser } = useChatStore();
   const { onlineUsers } = useAuthStore();
 
@@ -36,4 +36,4 @@ const ChatWindowHeader = () => {
     </div>
   );
 };
-export default ChatWindowHeader;
+export default ChatHeader;
