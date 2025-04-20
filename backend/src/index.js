@@ -6,6 +6,7 @@ import cors from "cors";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import { connectDB } from "./lib/db.js";
+import { app, server } from "./lib/socket.js";
 
 // In order to access the variable in .env file, 
 // we need to call dotenv.config() function first
@@ -14,9 +15,6 @@ dotenv.config();
 // We need to use process.env.varible_name to 
 // access the variable in .env file
 const PORT = process.env.PORT ;
-
-// Create an Express application
-const app = express();
 
 // Allow us to extrat the json data form api request body 
 app.use(express.json({ limit: '2mb' }));
@@ -34,7 +32,7 @@ app.use(cors({
 app.use("/api/auth", authRoutes);
 app.use("/api/message", messageRoutes);
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log("Server is starting on port: " + PORT)
     // connect MongoDB
     connectDB();
