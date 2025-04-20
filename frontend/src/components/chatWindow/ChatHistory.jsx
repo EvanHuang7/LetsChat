@@ -10,8 +10,7 @@ const ChatHistory = () => {
   const messageEndRef = useRef(null);
 
   useEffect(() => {
-    // when there is a new incoming message, the chat history window view 
-    // will automatically scroll to the latest message
+    // Automatically scroll chat history window view to the buttom
     if (messageEndRef.current && messages) {
       messageEndRef.current.scrollIntoView({
         behavior: "smooth"
