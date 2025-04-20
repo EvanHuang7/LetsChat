@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useEffect } from 'react'
 
 import { useChatStore } from "../../store/useChatStore";
 import { useAuthStore } from "../../store/useAuthStore";
@@ -8,6 +8,17 @@ const ChatHistory = () => {
   const { messages, selectedUser } = useChatStore()
   const { authUser } = useAuthStore()
   const messageEndRef = useRef(null);
+
+  useEffect(() => {
+    // when there is a new incoming message, the chat history window view 
+    // will automatically scroll to the latest message
+    if (messageEndRef.current && messages) {
+      messageEndRef.current.scrollIntoView({
+        behavior: "smooth"
+      })
+    }
+    // Effect will only activate if the values in the list change.
+  }, [messages])
 
   return (
   <div className="flex-1 overflow-y-auto p-4 space-y-4">

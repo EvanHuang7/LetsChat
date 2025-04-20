@@ -18,6 +18,9 @@ const Sidebar = () => {
   // Display a loading state if user is loading
   if (isUsersLoading) return <SidebarSkeleton />;
   
+  // TODO: fix the issue of new messages from not selected user 
+  // does not display a red note OR the messages subscriber only subscribe
+  // to the 1 selected user (not selected user incoming messages is not real time)
   return (
     <aside className="h-full w-20 lg:w-72 border-r border-base-300 flex flex-col transition-all duration-200">
       <div className="border-b border-base-300 w-full p-5">
