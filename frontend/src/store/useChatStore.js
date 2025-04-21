@@ -103,6 +103,8 @@ export const useChatStore = create((set, get) =>({
             // If the incoming new message is not sent from current selected
             // or no user selected yet, update unreadMessagesNumberMap
             if (newMessage.senderId !== selectedUser?._id) {
+                // TODO: if it's not empty, but having less users, we can 
+                // do unreadMessagesNumberMap.get(newMessage.senderId) + 1 || 0+1
                 setUnreadMessagesNumberMap(newMessage.senderId, unreadMessagesNumberMap.get(newMessage.senderId) + 1)
                 return;
             }
