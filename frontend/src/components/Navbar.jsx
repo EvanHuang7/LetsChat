@@ -1,12 +1,12 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { LogOut, MessagesSquare, Settings, User } from 'lucide-react'
+import React from "react";
+import { Link } from "react-router-dom";
+import { LogOut, MessagesSquare, Settings, User, Notebook } from "lucide-react";
 
-import {useAuthStore} from '../store/useAuthStore'
+import { useAuthStore } from "../store/useAuthStore";
 
 const Navbar = () => {
   // Get the needed variables and function from useAuthStore
-  const {authUser, logout} = useAuthStore()
+  const { authUser, logout } = useAuthStore();
 
   return (
     <header
@@ -17,7 +17,10 @@ const Navbar = () => {
         <div className="flex items-center justify-between h-full">
           {/* Left part, logo */}
           <div className="flex items-center gap-8">
-            <Link to="/" className="flex items-center gap-2.5 hover:opacity-80 transition-all">
+            <Link
+              to="/"
+              className="flex items-center gap-2.5 hover:opacity-80 transition-all"
+            >
               <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
                 <MessagesSquare className="w-5 h-5 text-primary" />
               </div>
@@ -31,7 +34,7 @@ const Navbar = () => {
             {authUser && (
               <div className="flex items-center justify-center gap-2">
                 <Link to={"/moments"} className={`btn btn-sm gap-2`}>
-                  <User className="size-5" />
+                  <Notebook className="size-5" />
                   <span className="hidden sm:inline">Moments</span>
                 </Link>
                 <Link to={"/profile"} className={`btn btn-sm gap-2`}>
@@ -59,11 +62,10 @@ const Navbar = () => {
               </button>
             )}
           </div>
-
-        </div> 
+        </div>
       </div>
     </header>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;
