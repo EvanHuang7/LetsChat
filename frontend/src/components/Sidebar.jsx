@@ -6,15 +6,22 @@ import { useAuthStore } from '../store/useAuthStore'
 import SidebarSkeleton from './skeletons/SidebarSkeleton'
 
 const Sidebar = () => {
-  const {users, getUsers, selectedUser, setSelectedUser, isUsersLoading} = useChatStore()
+  const {users, getUsers, selectedUser, setSelectedUser, isUsersLoading, unreadMessagesNumberMap, subscribeToMessages, unsubscribeFromMessages} = useChatStore()
   const {onlineUsers} = useAuthStore()
   const [showOnlineOnly, setShowOnlineOnly] = useState(false)
 
   // Do something when sidebar component starts
   useEffect(() => {
-    // Call getUsers() function
+    // Call getUsers() function to get users list for sidebar
     getUsers()
-  }, [getUsers])
+    // Call subscribeToMessages() to start listening to newMessage event
+    // for displaying unread message number
+    subscribeToMessages()
+
+    // Define a cleanup function. It will be run before the component is 
+    // removed (unmounted) or before the effect re-runs (if dependencies change)
+    return () => unsubscribeFromMessages()
+  }, [getUsers, subscribeToMessages, unsubscribeFromMessages])
 
 
   // Set filteredUsers according to showOnlineOnly bool field
@@ -66,7 +73,18 @@ const Sidebar = () => {
                 alt={user.name}
                 className="size-12 object-cover rounded-full"
               />
-              {/* User Online green dot icon */}
+
+              {/* 🔴 User unread message badge */}
+              { unreadMessagesNumberMap.get(user._id) > 0 && (
+                <span
+                  className="absolute -top-2 -right-2 min-w-[1.25rem] h-5 px-1 text-xs font-semibold 
+                  text-white bg-red-500 rounded-full flex items-center justify-center shadow-md"
+                >
+                  { unreadMessagesNumberMap.get(user._id) }
+                </span>
+              )}
+
+              {/* 🟢 User Online green dot icon */}
               {onlineUsers.includes(user._id) && (
                 <span
                   className="absolute bottom-0 right-0 size-3 bg-green-500 

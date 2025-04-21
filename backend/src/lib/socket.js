@@ -7,7 +7,7 @@ const app = express()
 // Create an http server 
 const server = http.createServer(app)
 
-// Create socket io server
+// Create socket io server on top of http server 
 const io = new Server(server, {
     cors: {
         // specify the front-end client base url
@@ -23,7 +23,7 @@ export function getSocketIdByUserId (userId) {
 }
 
 // Set socket io server to listen to the connection or
-// disconnection events form socket io clients
+// disconnection events from socket io clients
 io.on("connection", (socket) => {
     console.log("A user connected: " + socket.id)
 
