@@ -2,9 +2,9 @@ import React, { useState, useRef } from "react";
 import { Image, Send, X } from "lucide-react";
 import toast from "react-hot-toast";
 
-import { useMomentStore } from "../../store/useChatStore";
+import { useMomentStore } from "../../store/useMomentStore";
 
-const PostMoment = () => {
+const MomentWriter = () => {
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
@@ -137,4 +137,4 @@ const PostMoment = () => {
   );
 };
 
-export default PostMoment;
+export default MomentWriter;
