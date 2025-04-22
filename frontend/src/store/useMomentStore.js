@@ -7,6 +7,10 @@ import { axiosInstance } from "../lib/axios.js";
 // managing state in React apps
 export const useMomentStore = create((set, get) => ({
   moments: [],
+  // The Id of moment opening the comment writer box
+  activeCommentMomentId: null,
+  // Current comment text in comment writer box
+  commentText: "",
 
   isMomentsLoading: false,
 
@@ -40,4 +44,29 @@ export const useMomentStore = create((set, get) => ({
       toast.error(error.response.data.message);
     }
   },
+
+  setActiveCommentMomentId: (id) => set({ activeCommentMomentId: id }),
+  setCommentText: (text) => set({ commentText: text }),
+
+  // Function to open or close commdent writer box
+  toggleCommentBox: (momentId) => {
+    const { activeCommentMomentId } = get();
+    const isClosing = activeCommentMomentId === momentId;
+    set({
+      activeCommentMomentId: isClosing ? null : momentId,
+      // Clear the comment text if closing the box
+      commentText: isClosing ? "" : get().commentText,
+    });
+  },
+
+  // Function to post a comment
+  handlePostComment: () => {
+    const { commentText } = get();
+    console.log("Posting comment:", commentText);
+    // Reset comment text after posting
+    set({ commentText: "" });
+  },
+
+  clearCommentState: () =>
+    set({ activeCommentMomentId: null, commentText: "" }),
 }));
