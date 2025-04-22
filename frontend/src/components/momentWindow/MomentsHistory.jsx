@@ -1,5 +1,6 @@
 import React from "react";
 import { useEffect } from "react";
+import { ThumbsUp, MessageSquare } from "lucide-react";
 
 import { useMomentStore } from "../../store/useMomentStore";
 import MomentSkeleton from "../skeletons/MomentSkeleton";
@@ -29,7 +30,7 @@ const MomentsHistory = () => {
               key={moment._id}
               className="bg-base-200 rounded-lg p-5 shadow-md"
             >
-              <div className="flex items-start gap-4 mb-4">
+              <div className="flex items-start gap-4">
                 {/* User profile image */}
                 <div className="flex-shrink-0">
                   <img
@@ -39,11 +40,16 @@ const MomentsHistory = () => {
                   />
                 </div>
 
-                {/* User name, moment text and moment image */}
-                <div className="max-w-xl">
-                  <h3 className="font-semibold text-base-content mb-2">
+                {/* User name */}
+                <div className="w-full">
+                  <h3 className="font-semibold text-base-content">
                     {moment.posterId.fullName}
                   </h3>
+                  {/* Moment create date */}
+                  <div className="text-xs text-zinc-400 mb-2">
+                    {new Date(moment.createdAt).toLocaleString()}
+                  </div>
+                  {/* Moment text and image */}
                   <div className="text-sm leading-relaxed break-words mb-5">
                     {moment.text.split("\n").map((line, i) => (
                       <React.Fragment key={i}>
@@ -56,25 +62,35 @@ const MomentsHistory = () => {
                     <img
                       src={moment.image}
                       alt={moment._id}
-                      className="rounded-lg max-h-64 object-contain mb-3"
+                      className="rounded-lg max-h-64 object-contain mb-5"
                     />
                   )}
+
+                  <div
+                    className={`flex items-center gap-2 justify-between text-zinc-400`}
+                  >
+                    {/* Like and numbers */}
+                    <div className={`flex items-center gap-2`}>
+                      <p>1 likes </p>
+                      <button type="button" className="">
+                        <ThumbsUp size={20} />
+                      </button>
+                    </div>
+
+                    {/* Comment and numbers */}
+                    <div className={`flex items-center gap-2 mb-0.5`}>
+                      <p>2 comments</p>
+                      <button type="button" className="mt-1">
+                        <MessageSquare size={20} />
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* TODO: Moment create date */}
-              {/* <div className="text-right text-xs text-zinc-400 mt-2">
-                {new Date(moment.createdAt).toLocaleString()}
-              </div> */}
-
-              {/* Moment footer: timestamp + comments */}
-              <div className="mt-4 border-t pt-4">
-                <div className="text-right text-xs text-zinc-400 mb-3">
-                  {new Date(moment.createdAt).toLocaleString()}
-                </div>
-
+              <div className="mt-2 pt-4 border-t border-t-zinc-400">
                 {/* Comments section */}
-                <div className="space-y-4">
+                <div className="space-y-4 pl-10">
                   {/* Hardcoded comments for demo */}
                   {[
                     {
