@@ -2,12 +2,21 @@ import React from "react";
 import { useEffect } from "react";
 
 import { useMomentStore } from "../../store/useMomentStore";
+import MomentSkeleton from "../skeletons/MomentSkeleton";
 
 const MomentsHistory = () => {
-  const { moments, getMoments } = useMomentStore();
+  const { isMomentsLoading, moments, getMoments } = useMomentStore();
   useEffect(() => {
     getMoments("All");
   }, [getMoments]);
+
+  if (isMomentsLoading) {
+    return (
+      <div>
+        <MomentSkeleton />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -29,6 +38,7 @@ const MomentsHistory = () => {
                     className="size-10 rounded-full object-cover border"
                   />
                 </div>
+
                 {/* User name, moment text and moment image */}
                 <div className="max-w-xl">
                   <h3 className="font-semibold text-base-content mb-2">
