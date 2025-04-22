@@ -13,6 +13,12 @@ const momentSchema = new mongoose.Schema(
     image: {
       type: String,
     },
+    userIdsOfLike: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   // It will create all timestamps fields, such as createdAt, UpdatedAt
   { timestamps: true }
