@@ -16,7 +16,7 @@ const CommentWriter = () => {
       {/* Close button */}
       <button
         onClick={() => setActiveCommentMomentId(null)}
-        className="absolute top-2 right-2 mr-2 text-zinc-400 hover:text-zinc-600"
+        className="absolute top-2 right-2 mr-2 mt-2 text-zinc-400 hover:text-zinc-600"
       >
         <X size={18} />
       </button>
@@ -24,7 +24,7 @@ const CommentWriter = () => {
       {/* Input textarea */}
       <textarea
         rows="3"
-        className="w-full p-2 border border-zinc-300 rounded text-sm resize-none"
+        className="w-full p-2 mt-2 border border-zinc-300 rounded text-sm resize-none"
         placeholder="Write a comment..."
         value={commentText}
         onChange={(e) => setCommentText(e.target.value)}
@@ -33,7 +33,7 @@ const CommentWriter = () => {
       {/* Post comment button */}
       <div className="text-right mt-2">
         <button className="btn btn-circle" onClick={handlePostComment}>
-          <Send size={20} />
+          <Send size={18} />
         </button>
       </div>
     </div>

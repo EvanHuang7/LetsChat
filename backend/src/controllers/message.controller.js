@@ -23,7 +23,7 @@ export const getUsersForSidebar = async (req, res) => {
   }
 };
 
-// Get all messages between the userId in url and logged in user
+// Get all messages between the passed in userId in url and logged in user
 export const getMessages = async (req, res) => {
   try {
     // Get the userID from the url and rename this variable
@@ -56,7 +56,8 @@ export const getMessages = async (req, res) => {
   }
 };
 
-// Send a message (text or img) from logged in user to the userId in url
+// Send a message (text or img) from logged in user to
+// the passed in userId in url
 export const sendMessage = async (req, res) => {
   try {
     // Get text or image from reqest body
