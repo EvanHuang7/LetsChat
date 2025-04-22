@@ -43,6 +43,8 @@ const MomentWriter = () => {
     // Check text and image are empty or not
     if (!text.trim() && !imagePreview) return;
 
+    console.log("text", text);
+
     // Post moment
     postMoment({
       text: text.trim(),

@@ -1,36 +1,13 @@
-import { useEffect, useState } from "react";
+import React from "react";
+import { useEffect } from "react";
 
 import { useMomentStore } from "../../store/useMomentStore";
 
 const MomentsHistory = () => {
-  const { getMoments } = useMomentStore();
+  const { moments, getMoments } = useMomentStore();
   useEffect(() => {
-    getMoments();
+    getMoments("All");
   }, [getMoments]);
-
-  const [moments, setMoments] = useState([
-    {
-      id: "user-123",
-      content: `In the heart of a bustling digital city, where lines of code shape towering skyscrapers of thought and innovation, there lived a developer who believed that every keystroke carried the power of creation. Mornings began with a gentle hum of the coffee machine, a ritual as sacred as the first git pull, and the screen flickered to life with an ocean of possibilities. Projects danced in Trello boards, issues whispered for attention in GitHub repositories, and yet amidst the noise, the developer found poetry in the logic, clarity in the syntax. JavaScript bugs were but puzzles to be unraveled, and CSS quirks, a subtle challenge to one’s artistry. Outside, the world moved fast—but inside that glowing terminal, time bent to the will of focus. Ideas once scribbled on napkins became deployed features, and mistakes transformed into lessons buried deep in commit histories. And as the moonlight spilled across the keyboard late into the night, the city of code never slept—only evolved, ever in pursuit of something elegant, something meaningful.`,
-      image:
-        "https://res.cloudinary.com/dapo3wc6o/image/upload/v1745190773/fgty4qvjd3t01pxvzga9.gif",
-      author: {
-        profilePic: "",
-        fullName: "Test Evan",
-      },
-    },
-    {
-      id: "user-456",
-      content:
-        "testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest testtesttesttesttesttesttesttesttesttesttesttest testtesttesttesttesttesttesttesttesttesttesttest testtesttesttesttesttesttesttesttesttesttesttest testtesttesttesttesttesttesttesttesttesttesttest testtesttesttesttesttesttesttesttesttesttesttest testtesttesttesttesttesttesttesttesttesttest",
-      image:
-        "https://res.cloudinary.com/dapo3wc6o/image/upload/v1745105771/bpfdsnva3jmwksysgb68.png",
-      author: {
-        profilePic: "",
-        fullName: "Test EV",
-      },
-    },
-  ]);
 
   return (
     <div>
@@ -40,30 +17,35 @@ const MomentsHistory = () => {
         <div className="space-y-6">
           {moments.map((moment) => (
             <div
-              key={moment.id}
+              key={moment._id}
               className="bg-base-200 rounded-lg p-5 shadow-md"
             >
               <div className="flex items-start gap-4 mb-4">
                 {/* User profile image */}
                 <div className="flex-shrink-0">
                   <img
-                    src={moment.author.profilePic || "/avatar.png"}
-                    alt={moment.author.fullName}
+                    src={moment.posterId.profilePic || "/avatar.png"}
+                    alt={moment.posterId.fullName}
                     className="size-10 rounded-full object-cover border"
                   />
                 </div>
                 {/* User name, moment text and moment image */}
                 <div className="max-w-xl">
                   <h3 className="font-semibold text-base-content mb-2">
-                    {moment.author.fullName}
+                    {moment.posterId.fullName}
                   </h3>
-                  <p className="text-sm leading-relaxed break-words mb-3">
-                    {moment.content}
-                  </p>
+                  <div className="text-sm leading-relaxed break-words mb-5">
+                    {moment.text.split("\n").map((line, i) => (
+                      <React.Fragment key={i}>
+                        {line}
+                        <br />
+                      </React.Fragment>
+                    ))}
+                  </div>
                   {moment.image && (
                     <img
                       src={moment.image}
-                      alt={moment.id}
+                      alt={moment._id}
                       className="rounded-lg max-h-64 object-contain mb-3"
                     />
                   )}
@@ -71,7 +53,7 @@ const MomentsHistory = () => {
               </div>
               {/* Moment create date */}
               <div className="text-right text-xs text-zinc-400 mt-2">
-                {new Date(moment.createdAt).toLocaleDateString()}
+                {new Date(moment.createdAt).toLocaleString()}
               </div>
             </div>
           ))}

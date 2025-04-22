@@ -32,7 +32,7 @@ export const useMomentStore = create((set, get) => ({
       // Call the post moment endpoint
       const res = await axiosInstance.post(`/moment/post`, data);
       // Add new post moment to moments list
-      set({ moments: [...moments, res.data] });
+      set({ moments: [res.data, ...moments] });
 
       toast.success("Posted a moment sucessfully");
     } catch (error) {
