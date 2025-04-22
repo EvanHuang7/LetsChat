@@ -1,12 +1,20 @@
-import React from "react";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { ThumbsUp, MessageSquare } from "lucide-react";
 
 import { useMomentStore } from "../../store/useMomentStore";
 import MomentSkeleton from "../skeletons/MomentSkeleton";
+import CommentsHistory from "./commentWindow/CommentsHistory";
+import CommentWriter from "./commentWindow/CommentWriter";
 
 const MomentsHistory = () => {
-  const { isMomentsLoading, moments, getMoments } = useMomentStore();
+  const {
+    isMomentsLoading,
+    moments,
+    getMoments,
+    activeCommentMomentId,
+    toggleCommentBox,
+  } = useMomentStore();
+
   useEffect(() => {
     getMoments("All");
   }, [getMoments]);
@@ -80,7 +88,11 @@ const MomentsHistory = () => {
                     {/* Comment and comment numbers */}
                     <div className={`flex items-center gap-2 mb-0.5`}>
                       <p>2 comments</p>
-                      <button type="button" className="mt-1">
+                      <button
+                        type="button"
+                        className="mt-1"
+                        onClick={() => toggleCommentBox(moment._id)}
+                      >
                         <MessageSquare size={20} />
                       </button>
                     </div>
@@ -88,51 +100,11 @@ const MomentsHistory = () => {
                 </div>
               </div>
 
-              <div className="mt-2 pt-2 pl-2 ml-10 bg-base-300">
-                {/* Comments section */}
-                <div className="space-y-4">
-                  {/* Hardcoded comments for demo */}
-                  {[
-                    {
-                      id: 1,
-                      user: {
-                        name: "Alice Johnson",
-                        avatar: "/avatar1.png",
-                      },
-                      text: "This is so inspiring!",
-                      createdAt: "2025-04-20T09:30:00Z",
-                    },
-                    {
-                      id: 2,
-                      user: {
-                        name: "Ben Carter",
-                        avatar: "/avatar2.png",
-                      },
-                      text: "Love the photo 🙌",
-                      createdAt: "2025-04-20T10:15:00Z",
-                    },
-                  ].map((comment) => (
-                    <div key={comment.id} className="flex items-start gap-3">
-                      <img
-                        src={comment.user.avatar}
-                        alt={comment.user.name}
-                        className="w-8 h-8 rounded-full object-cover border"
-                      />
-                      <div className="flex-1">
-                        <div className="text-sm font-medium text-base-content">
-                          {comment.user.name}
-                        </div>
-                        <div className="text-sm text-base-content">
-                          {comment.text}
-                        </div>
-                        <div className="text-xs text-zinc-400">
-                          {new Date(comment.createdAt).toLocaleString()}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              {/* Comment Writer */}
+              {activeCommentMomentId === moment._id && <CommentWriter />}
+
+              {/* Existing comments */}
+              <CommentsHistory />
             </div>
           ))}
         </div>
