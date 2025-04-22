@@ -6,7 +6,7 @@ import cloudinary from "../lib/cloudinary.js";
 export const getMoments = async (req, res) => {
   try {
     const { id: userId } = req.params;
-    const moments = [];
+    let moments = [];
 
     if (userId === "All") {
       moments = await Moment.find()
