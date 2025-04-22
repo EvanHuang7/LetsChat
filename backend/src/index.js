@@ -6,6 +6,7 @@ import cors from "cors";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import momentRoutes from "./routes/moment.route.js";
+import commentRoutes from "./routes/comment.route.js";
 import { connectDB } from "./lib/db.js";
 import { app, server } from "./lib/socket.js";
 
@@ -35,6 +36,7 @@ app.use(
 app.use("/api/auth", authRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/moment", momentRoutes);
+app.use("/api/comment", commentRoutes);
 
 server.listen(PORT, () => {
   console.log("Server is starting on port: " + PORT);
