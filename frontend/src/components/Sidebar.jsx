@@ -1,36 +1,37 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 import { Users } from "lucide-react";
 
-import { useChatStore } from '../store/useChatStore'
-import { useAuthStore } from '../store/useAuthStore'
-import SidebarSkeleton from './skeletons/SidebarSkeleton'
+import { useChatStore } from "../store/useChatStore";
+import { useAuthStore } from "../store/useAuthStore";
+import SidebarSkeleton from "./skeletons/SidebarSkeleton";
 
 const Sidebar = () => {
-  const {users, getUsers, selectedUser, setSelectedUser, isUsersLoading, unreadMessagesNumberMap, subscribeToMessages, unsubscribeFromMessages} = useChatStore()
-  const {onlineUsers} = useAuthStore()
-  const [showOnlineOnly, setShowOnlineOnly] = useState(false)
+  const {
+    users,
+    getUsers,
+    selectedUser,
+    setSelectedUser,
+    isUsersLoading,
+    unreadMessagesNumberMap,
+  } = useChatStore();
+  const { onlineUsers } = useAuthStore();
+  const [showOnlineOnly, setShowOnlineOnly] = useState(false);
 
   // Do something when sidebar component starts
   useEffect(() => {
     // Call getUsers() function to get users list for sidebar
-    getUsers()
-    // Call subscribeToMessages() to start listening to newMessage event
-    // for displaying unread message number
-    subscribeToMessages()
-
-    // Define a cleanup function. It will be run before the component is 
-    // removed (unmounted) or before the effect re-runs (if dependencies change)
-    return () => unsubscribeFromMessages()
-  }, [getUsers, subscribeToMessages, unsubscribeFromMessages])
-
+    getUsers();
+  }, [getUsers]);
 
   // Set filteredUsers according to showOnlineOnly bool field
-  const filteredUsers = showOnlineOnly ? users.filter(user => onlineUsers.includes(user._id)) : users
+  const filteredUsers = showOnlineOnly
+    ? users.filter((user) => onlineUsers.includes(user._id))
+    : users;
 
   // Display a loading state if user is loading
   if (isUsersLoading) return <SidebarSkeleton />;
-  
-  // TODO: fix the issue of new messages from not selected user 
+
+  // TODO: fix the issue of new messages from not selected user
   // does not display a red note OR the messages subscriber only subscribe
   // to the 1 selected user (not selected user incoming messages is not real time)
   return (
@@ -51,7 +52,9 @@ const Sidebar = () => {
             />
             <span className="text-sm">Show online only</span>
           </label>
-          <span className="text-xs text-zinc-500">({onlineUsers.length - 1} online)</span>
+          <span className="text-xs text-zinc-500">
+            ({onlineUsers.length - 1} online)
+          </span>
         </div>
       </div>
       {/* Display each user */}
@@ -63,7 +66,11 @@ const Sidebar = () => {
             className={`
               w-full p-3 flex items-center gap-3
               hover:bg-base-300 transition-colors
-              ${selectedUser?._id === user._id ? "bg-base-300 ring-1 ring-base-300" : ""}
+              ${
+                selectedUser?._id === user._id
+                  ? "bg-base-300 ring-1 ring-base-300"
+                  : ""
+              }
             `}
           >
             <div className="relative mx-auto lg:mx-0">
@@ -75,12 +82,12 @@ const Sidebar = () => {
               />
 
               {/* 🔴 User unread message badge */}
-              { unreadMessagesNumberMap.get(user._id) > 0 && (
+              {unreadMessagesNumberMap.get(user._id) > 0 && (
                 <span
                   className="absolute -top-2 -right-2 min-w-[1.25rem] h-5 px-1 text-xs font-semibold 
                   text-white bg-red-500 rounded-full flex items-center justify-center shadow-md"
                 >
-                  { unreadMessagesNumberMap.get(user._id) }
+                  {unreadMessagesNumberMap.get(user._id)}
                 </span>
               )}
 
@@ -107,9 +114,8 @@ const Sidebar = () => {
           <div className="text-center text-zinc-500 py-4">No online users</div>
         )}
       </div>
-    </aside>    
+    </aside>
+  );
+};
 
-  )
-}
-
-export default Sidebar
+export default Sidebar;
