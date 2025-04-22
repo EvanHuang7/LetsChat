@@ -2,7 +2,7 @@ import User from "../models/user.model.js";
 import Moment from "../models/moment.model.js";
 import cloudinary from "../lib/cloudinary.js";
 
-// Get all moments for one user or all users
+// Get all moments for one passed in userId or all users
 export const getMoments = async (req, res) => {
   try {
     const { id: userId } = req.params;
@@ -29,7 +29,7 @@ export const getMoments = async (req, res) => {
   }
 };
 
-// Post a moment
+// Post a moment for logged in user
 export const postMoment = async (req, res) => {
   try {
     // Get text or image from reqest body
@@ -68,6 +68,49 @@ export const postMoment = async (req, res) => {
     res.status(201).json(newMoment);
   } catch (error) {
     console.log("Error in postMoment controller", error.message);
+    res.status(500).json({
+      message: "Interal server error",
+    });
+  }
+};
+
+// Update like field of specific moment for logged in user
+export const updateLikeForMoment = async (req, res) => {
+  try {
+    const { momentId, like } = req.body;
+
+    // Get current logged in userId as userId
+    const userId = req.user._id;
+
+    if (!momentId) {
+      res.status(400).json({
+        message: "Moment is required",
+      });
+    }
+
+    let updatedMoment;
+    // Add logged in user to like list of the moment
+    if (like) {
+      updatedMoment = await Moment.findByIdAndUpdate(
+        momentId,
+        {
+          $addToSet: { userIdsOfLike: userId }, // prevents duplicates
+        },
+        { new: true }
+      );
+    } else {
+      updatedMoment = await Moment.findByIdAndUpdate(
+        momentId,
+        {
+          $pull: { userIdsOfLike: userId },
+        },
+        { new: true }
+      );
+    }
+
+    res.status(200).json(updatedMoment);
+  } catch (error) {
+    console.log("Error in updateLikeForMoment controller", error.message);
     res.status(500).json({
       message: "Interal server error",
     });
