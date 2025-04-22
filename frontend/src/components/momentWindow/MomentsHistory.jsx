@@ -65,11 +65,11 @@ const MomentsHistory = () => {
                       className="rounded-lg max-h-64 object-contain mb-5"
                     />
                   )}
-
+                  {/* Like and comments */}
                   <div
-                    className={`flex items-center gap-2 justify-between text-zinc-400`}
+                    className={`mb-1 flex items-center gap-2 justify-between text-zinc-400`}
                   >
-                    {/* Like and numbers */}
+                    {/* Like and like numbers */}
                     <div className={`flex items-center gap-2`}>
                       <p>1 likes </p>
                       <button type="button" className="">
@@ -77,7 +77,7 @@ const MomentsHistory = () => {
                       </button>
                     </div>
 
-                    {/* Comment and numbers */}
+                    {/* Comment and comment numbers */}
                     <div className={`flex items-center gap-2 mb-0.5`}>
                       <p>2 comments</p>
                       <button type="button" className="mt-1">
@@ -88,9 +88,9 @@ const MomentsHistory = () => {
                 </div>
               </div>
 
-              <div className="mt-2 pt-4 border-t border-t-zinc-400">
+              <div className="mt-2 pt-2 pl-2 ml-10 bg-base-300">
                 {/* Comments section */}
-                <div className="space-y-4 pl-10">
+                <div className="space-y-4">
                   {/* Hardcoded comments for demo */}
                   {[
                     {
