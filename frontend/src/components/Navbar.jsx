@@ -44,9 +44,9 @@ const Navbar = () => {
                   <Notebook className="size-5" />
                   <span className="hidden sm:inline">Moments</span>
                 </Link>
-                <Link to={"/newrequests"} className={`btn btn-sm gap-2`}>
+                <Link to={"/newconnections"} className={`btn btn-sm gap-2`}>
                   <UserPlus className="size-5" />
-                  <span className="hidden sm:inline">New Requests</span>
+                  <span className="hidden sm:inline">New Connections</span>
                 </Link>
                 <Link to={"/profile"} className={`btn btn-sm gap-2`}>
                   <UserPen className="size-5" />
