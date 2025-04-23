@@ -45,7 +45,7 @@ const MomentsHistory = () => {
   return (
     <div>
       {moments.length === 0 ? (
-        <p className="text-center">No moments found.</p>
+        <p className="text-center text-base-content/60">No moments found.</p>
       ) : (
         <div className="space-y-6">
           {moments.map((moment) => (
