@@ -45,9 +45,21 @@ export const useMomentStore = create((set, get) => ({
   postComment: async (data) => {
     try {
       // Call the post comment endpoint
-      await axiosInstance.post(`/comment/post`, data);
+      const res = await axiosInstance.post(`/comment/post`, data);
+      const newComment = res.data; // the newly created comment with populated fields
 
-      // TODO: Add api res comment to exisiting comments list of moment
+      // Update the comments list of the correct moment
+      set((state) => ({
+        moments: state.moments.map((moment) => {
+          if (moment._id === newComment.momentId) {
+            return {
+              ...moment,
+              comments: [...(moment.comments || []), newComment],
+            };
+          }
+          return moment;
+        }),
+      }));
 
       toast.success("Posted a comment sucessfully");
     } catch (error) {
