@@ -1,24 +1,37 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ThumbsUp, MessageSquare } from "lucide-react";
 
 import { useMomentStore } from "../../store/useMomentStore";
+import { useAuthStore } from "../../store/useAuthStore";
 import MomentSkeleton from "../skeletons/MomentSkeleton";
 import CommentsHistory from "./commentWindow/CommentsHistory";
 import CommentWriter from "./commentWindow/CommentWriter";
 
 const MomentsHistory = () => {
-  const {
-    isMomentsLoading,
-    moments,
-    getMoments,
-    activeCommentMomentId,
-    toggleCommentBox,
-    updateLikeStatus,
-  } = useMomentStore();
+  const { isMomentsLoading, moments, getMoments, updateLikeStatus } =
+    useMomentStore();
+  const { authUser } = useAuthStore();
+
+  const [commentText, setCommentText] = useState("");
+  const [activeCommentMomentId, setActiveCommentMomentId] = useState(null);
 
   useEffect(() => {
     getMoments("All");
   }, [getMoments]);
+
+  // Update like status
+  const handleUpdateLikeStatus = (moment) => {
+    // Check the moment and authUser
+    if (!moment || !authUser) return;
+
+    // Update like stauts
+    updateLikeStatus({
+      momentId: moment._id,
+      like: !moment.userIdsOfLike.includes(authUser._id),
+    });
+
+    // TODO: like number and color
+  };
 
   if (isMomentsLoading) {
     return (
@@ -84,7 +97,7 @@ const MomentsHistory = () => {
                       <button
                         type="button"
                         className=""
-                        onClick={() => updateLikeStatus(moment)}
+                        onClick={() => handleUpdateLikeStatus(moment)}
                       >
                         <ThumbsUp size={20} />
                       </button>
@@ -96,7 +109,7 @@ const MomentsHistory = () => {
                       <button
                         type="button"
                         className="mt-1"
-                        onClick={() => toggleCommentBox(moment._id)}
+                        onClick={() => setActiveCommentMomentId(moment._id)}
                       >
                         <MessageSquare size={20} />
                       </button>
@@ -106,7 +119,14 @@ const MomentsHistory = () => {
               </div>
 
               {/* Comment Writer */}
-              {activeCommentMomentId === moment._id && <CommentWriter />}
+              {activeCommentMomentId === moment._id && (
+                <CommentWriter
+                  commentText={commentText}
+                  setCommentText={setCommentText}
+                  activeCommentMomentId={activeCommentMomentId}
+                  setActiveCommentMomentId={setActiveCommentMomentId}
+                />
+              )}
 
               {/* Existing comments */}
               {moment.comments.length > 0 && (
