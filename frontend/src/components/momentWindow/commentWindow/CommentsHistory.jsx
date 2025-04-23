@@ -5,10 +5,14 @@ const CommentsHistory = ({ comments }) => {
     <div className="mt-2 pt-2 pl-2 ml-10 bg-base-300">
       {/* Comments section */}
       <div className="space-y-4">
-        {comments.map((comment) => (
+        {comments.map((comment, index) => (
           <div
             key={comment._id}
-            className="flex items-start gap-3 pb-3 border-b border-base-content/10"
+            className={`flex items-start gap-3 pb-3 ${
+              index !== comments.length - 1
+                ? "border-b border-base-content/10"
+                : ""
+            }`}
           >
             <img
               src={comment.posterId.profilePic}

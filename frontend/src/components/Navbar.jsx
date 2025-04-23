@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { LogOut, MessagesSquare, Settings, User, Notebook } from "lucide-react";
+import { LogOut, House, Settings, UserPen, Notebook } from "lucide-react";
 
 import { useAuthStore } from "../store/useAuthStore";
 
@@ -22,7 +22,7 @@ const Navbar = () => {
               className="flex items-center gap-2.5 hover:opacity-80 transition-all"
             >
               <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                <MessagesSquare className="w-5 h-5 text-primary" />
+                <House className="w-5 h-5 text-primary" />
               </div>
               <h1 className="text-lg font-bold">LetsChat</h1>
             </Link>
@@ -38,7 +38,7 @@ const Navbar = () => {
                   <span className="hidden sm:inline">Moments</span>
                 </Link>
                 <Link to={"/profile"} className={`btn btn-sm gap-2`}>
-                  <User className="size-5" />
+                  <UserPen className="size-5" />
                   <span className="hidden sm:inline">Profile</span>
                 </Link>
               </div>
