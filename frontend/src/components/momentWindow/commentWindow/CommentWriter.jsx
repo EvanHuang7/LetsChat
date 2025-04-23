@@ -4,12 +4,8 @@ import { Send, X } from "lucide-react";
 import { useMomentStore } from "../../../store/useMomentStore";
 
 const CommentWriter = () => {
-  const {
-    commentText,
-    setCommentText,
-    setActiveCommentMomentId,
-    handlePostComment,
-  } = useMomentStore();
+  const { commentText, setCommentText, setActiveCommentMomentId, postComment } =
+    useMomentStore();
 
   return (
     <div className="mt-4 ml-10 bg-base-300 p-3 pt-1 rounded relative">
@@ -32,7 +28,7 @@ const CommentWriter = () => {
 
       {/* Post comment button */}
       <div className="text-right mt-2">
-        <button className="btn btn-circle" onClick={handlePostComment}>
+        <button className="btn btn-circle" onClick={postComment}>
           <Send size={18} />
         </button>
       </div>

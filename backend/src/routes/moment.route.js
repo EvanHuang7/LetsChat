@@ -8,7 +8,7 @@ import {
 
 const router = express.Router();
 
-// Get all moments for one passed in userId or all users
+// Get all moments with comments for one passed in userId or all users
 router.get("/:id", protectRoute, getMoments);
 
 // Post a moment for logged in user

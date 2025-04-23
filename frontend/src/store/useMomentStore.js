@@ -60,13 +60,24 @@ export const useMomentStore = create((set, get) => ({
   },
 
   // Function to post a comment
-  handlePostComment: () => {
-    const { commentText } = get();
-    console.log("Posting comment:", commentText);
-    // Reset comment text after posting
-    set({ commentText: "" });
-  },
+  postComment: async () => {
+    try {
+      const data = {
+        momentId: get().activeCommentMomentId,
+        text: get().commentText,
+      };
 
-  clearCommentState: () =>
-    set({ activeCommentMomentId: null, commentText: "" }),
+      // Call the post comment endpoint
+      await axiosInstance.post(`/comment/post`, data);
+      // TODO: Add api res comment to exisiting comments list of moment
+
+      // clear comment text and close comment writer box after posting
+      get().toggleCommentBox(null);
+
+      toast.success("Posted a comment sucessfully");
+    } catch (error) {
+      console.log("Error in postComment: ", error);
+      toast.error(error.response.data.message);
+    }
+  },
 }));
