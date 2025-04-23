@@ -1,8 +1,8 @@
 import React, { useRef, useEffect } from "react";
 
-import { useChatStore } from "../../store/useChatStore";
-import { useAuthStore } from "../../store/useAuthStore";
-import { formatMessageTime } from "../../lib/utils";
+import { useChatStore } from "../../../store/useChatStore";
+import { useAuthStore } from "../../../store/useAuthStore";
+import { formatMessageTime } from "../../../lib/utils";
 
 const ChatHistory = () => {
   const { messages, selectedUser } = useChatStore();

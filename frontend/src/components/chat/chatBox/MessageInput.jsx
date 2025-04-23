@@ -1,58 +1,58 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef } from "react";
 import { Image, Send, X } from "lucide-react";
 import toast from "react-hot-toast";
 
-import { useChatStore } from "../../store/useChatStore";
+import { useChatStore } from "../../../store/useChatStore";
 
 const MessageInput = () => {
-  const [text, setText] = useState("")
-  const [imagePreview, setImagePreview] = useState(null)
-  const fileInputRef = useRef(null)
+  const [text, setText] = useState("");
+  const [imagePreview, setImagePreview] = useState(null);
+  const fileInputRef = useRef(null);
 
-  const { sendMessage } = useChatStore()
+  const { sendMessage } = useChatStore();
 
   const handleImageChange = (event) => {
     // Get image file of user selected and check it
-    const file = event.target.files[0]
+    const file = event.target.files[0];
     if (!file.type.startsWith("image/")) {
-        toast.error("Please select an image file")
-        return
+      toast.error("Please select an image file");
+      return;
     }
 
     // Convert the image to base64 format
-    const reader = new FileReader()
-    reader.readAsDataURL(file)
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
     reader.onloadend = () => {
-        const base64Image = reader.result
-        // Set image preview with base64 format image
-        setImagePreview(base64Image)
-    }
-  }
+      const base64Image = reader.result;
+      // Set image preview with base64 format image
+      setImagePreview(base64Image);
+    };
+  };
 
   const removeImage = () => {
     // Clear image preview
-    setImagePreview(null)
+    setImagePreview(null);
     // Clear the image value in hidden input image field
-    if (fileInputRef.current) fileInputRef.current.value = ""
-  }
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
   const handleSendMessage = (event) => {
     // Prevent refreshing the page
     event.preventDefault();
     // Check text and image are empty or not
-    if (!text.trim() && !imagePreview) return
+    if (!text.trim() && !imagePreview) return;
 
     // Send message
     sendMessage({
-        text: text.trim(),
-        image: imagePreview
-    })
+      text: text.trim(),
+      image: imagePreview,
+    });
 
     // Clear form
-    setText("")
-    setImagePreview(null)
-    if (fileInputRef.current) fileInputRef.current.value = ""
-  }
+    setText("");
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
   return (
     <div className="p-4 w-full">
@@ -115,7 +115,7 @@ const MessageInput = () => {
         </button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default MessageInput
+export default MessageInput;

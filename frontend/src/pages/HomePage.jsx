@@ -1,12 +1,12 @@
-import React from 'react'
+import React from "react";
 
-import {useChatStore} from "../store/useChatStore"
-import Sidebar from '../components/Sidebar'
-import NoChatState from '../components/NoChatState'
-import ChatContainer from '../components/ChatContainer'
+import { useChatStore } from "../store/useChatStore";
+import Sidebar from "../components/Sidebar";
+import NoChatState from "../components/chat/NoChatState";
+import ChatContainer from "../components/chat/ChatContainer";
 
 const HomePage = () => {
-  const {selectedUser} = useChatStore()
+  const { selectedUser } = useChatStore();
 
   return (
     <div className="h-screen bg-base-200">
@@ -20,7 +20,7 @@ const HomePage = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default HomePage
+export default HomePage;

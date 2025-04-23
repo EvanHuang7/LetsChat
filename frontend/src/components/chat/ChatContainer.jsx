@@ -1,22 +1,22 @@
-import React, { useEffect } from 'react'
+import React, { useEffect } from "react";
 
-import { useChatStore } from '../store/useChatStore'
-import ChatHeader from './chatWindow/ChatHeader'
-import ChatHistory from './chatWindow/ChatHistory'
-import MessageInput from './chatWindow/MessageInput'
-import MessageSkeleton from './skeletons/MessageSkeleton'
+import { useChatStore } from "../../store/useChatStore";
+import ChatHeader from "./chatBox/ChatHeader";
+import ChatHistory from "./chatBox/ChatHistory";
+import MessageInput from "./chatBox/MessageInput";
+import MessageSkeleton from "../skeletons/MessageSkeleton";
 
 const ChatContainer = () => {
-  const {selectedUser, getMessages, isMessagesLoading} = useChatStore()
+  const { selectedUser, getMessages, isMessagesLoading } = useChatStore();
 
   // Do something when chat container component starts
   // We should call useEffect() before any logic conditions
   useEffect(() => {
     // Call functions
-    getMessages(selectedUser._id)
+    getMessages(selectedUser._id);
 
     // Effect will only activate if the values in the list change.
-  }, [selectedUser._id, getMessages])
+  }, [selectedUser._id, getMessages]);
 
   // Display a loading state if messages are loading
   if (isMessagesLoading) {
@@ -26,7 +26,7 @@ const ChatContainer = () => {
         <MessageSkeleton />
         <MessageInput />
       </div>
-    );    
+    );
   }
 
   return (
@@ -35,7 +35,7 @@ const ChatContainer = () => {
       <ChatHistory />
       <MessageInput />
     </div>
-  )
-}
+  );
+};
 
-export default ChatContainer
+export default ChatContainer;
