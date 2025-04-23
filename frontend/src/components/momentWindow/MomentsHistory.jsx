@@ -94,7 +94,9 @@ const MomentsHistory = () => {
                   >
                     {/* Like button and likes number */}
                     <div className={`flex items-center gap-2`}>
-                      <p>{moment?.userIdsOfLike?.length || 0} likes </p>
+                      {moment?.userIdsOfLike?.length > 0 && (
+                        <p>{moment?.userIdsOfLike?.length} likes </p>
+                      )}
                       <button
                         type="button"
                         className=""
@@ -113,7 +115,9 @@ const MomentsHistory = () => {
 
                     {/* Comment button and comments number */}
                     <div className={`flex items-center gap-2 mb-0.5`}>
-                      <p>{moment?.comments?.length || 0} comments</p>
+                      {moment?.comments?.length > 0 && (
+                        <p>{moment?.comments?.length} comments</p>
+                      )}
                       <button
                         type="button"
                         className="mt-1"
