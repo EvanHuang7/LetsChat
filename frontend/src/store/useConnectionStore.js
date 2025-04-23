@@ -39,7 +39,7 @@ export const useConnectionStore = create((set, get) => ({
           name: "Sophie Lee",
           profilePic: "https://i.pravatar.cc/150?img=3",
           groupName: null,
-          message: "Please accepting my friend request.",
+          message: "",
           createdAt: new Date(now.getTime() - 1000 * 60 * 30).toISOString(), // 30 mins ago
         },
       ];
