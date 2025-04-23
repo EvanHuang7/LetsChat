@@ -70,7 +70,14 @@ export const sendMessage = async (req, res) => {
     // Get current logged in userId as senderId
     const senderId = req.user._id;
 
-    // Check image in request is empty or not
+    // Check the inputs from request body
+    if (!text && !image) {
+      res.status(400).json({
+        message: "At least provide text or image",
+      });
+    }
+
+    // Upload image if there is one
     let imageUrl;
     if (image) {
       // Upload base64 image to cloudinary if it's not empty
