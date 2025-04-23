@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 
 import authRoutes from "./routes/auth.route.js";
+import connectionRoutes from "./routes/connection.route.js";
 import messageRoutes from "./routes/message.route.js";
 import momentRoutes from "./routes/moment.route.js";
 import commentRoutes from "./routes/comment.route.js";
@@ -34,6 +35,7 @@ app.use(
 
 // Set up API routes
 app.use("/api/auth", authRoutes);
+app.use("/api/connection", connectionRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/moment", momentRoutes);
 app.use("/api/comment", commentRoutes);

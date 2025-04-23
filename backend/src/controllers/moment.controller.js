@@ -59,6 +59,13 @@ export const postMoment = async (req, res) => {
     // Get current logged in userId as posterId
     const posterId = req.user._id;
 
+    // Check the inputs from request body
+    if (!text && !image) {
+      res.status(400).json({
+        message: "At least provide text or image",
+      });
+    }
+
     // Check image in request is empty or not
     let imageUrl;
     if (image) {
@@ -74,7 +81,7 @@ export const postMoment = async (req, res) => {
       text,
       image: imageUrl,
     });
-    // Save this new message to database
+    // Save this new moment to database
     await newMoment.save();
 
     // Hydrate newMoment with user information beofre return it
@@ -105,7 +112,7 @@ export const updateLikeForMoment = async (req, res) => {
 
     if (!momentId) {
       res.status(400).json({
-        message: "Moment is required",
+        message: "MomentId is required",
       });
     }
 

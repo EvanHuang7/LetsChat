@@ -16,7 +16,7 @@ router.post("/logout", logout);
 
 // Update profile for logged in user
 router.put("/update-profile", protectRoute, updateProfile);
-
+// Check if user is authenticated
 router.get("/check", protectRoute, checkAuth);
 
 export default router;

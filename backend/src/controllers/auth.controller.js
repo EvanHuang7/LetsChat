@@ -130,7 +130,7 @@ export const updateProfile = async (req, res) => {
 
     if (!profilePic) {
       res.status(400).json({
-        message: "Profile pic is required",
+        message: "ProfilePic is required",
       });
     }
 
@@ -153,6 +153,7 @@ export const updateProfile = async (req, res) => {
   }
 };
 
+// Check if user is authenticated
 export const checkAuth = (req, res) => {
   try {
     res.status(200).json(req.user);
