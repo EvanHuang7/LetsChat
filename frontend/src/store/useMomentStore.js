@@ -60,9 +60,14 @@ export const useMomentStore = create((set, get) => ({
   updateLikeStatus: async (data) => {
     try {
       // Call the update-like endpoint
-      await axiosInstance.post(`/moment/update-like`, data);
+      const res = await axiosInstance.post(`/moment/update-like`, data);
+      const updatedMoment = res.data;
 
-      // TODO: Optional: Change api res updated momemnt to exisiting moment
+      set((state) => ({
+        moments: state.moments.map((moment) => {
+          return moment._id === updatedMoment._id ? updatedMoment : moment;
+        }),
+      }));
     } catch (error) {
       console.log("Error in updateLikeStatus: ", error);
       toast.error(error.response.data.message);

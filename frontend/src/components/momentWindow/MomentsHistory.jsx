@@ -12,6 +12,9 @@ const MomentsHistory = () => {
     useMomentStore();
   const { authUser } = useAuthStore();
 
+  // Intialize this state in this component instead of CommentWriter
+  // component because it will remember the commentText even if
+  // user close and reopen the CommentWriter component
   const [commentText, setCommentText] = useState("");
   const [activeCommentMomentId, setActiveCommentMomentId] = useState(null);
 
@@ -29,8 +32,6 @@ const MomentsHistory = () => {
       momentId: moment._id,
       like: !moment.userIdsOfLike.includes(authUser._id),
     });
-
-    // TODO: like number and color
   };
 
   if (isMomentsLoading) {
@@ -87,25 +88,32 @@ const MomentsHistory = () => {
                       className="rounded-lg max-h-64 object-contain mb-5"
                     />
                   )}
-                  {/* Like and comments */}
+                  {/* Like and comments section */}
                   <div
                     className={`mb-1 flex items-center gap-2 justify-between text-zinc-400`}
                   >
                     {/* Like button and likes number */}
                     <div className={`flex items-center gap-2`}>
-                      <p>{moment.userIdsOfLike.length} likes </p>
+                      <p>{moment?.userIdsOfLike?.length || 0} likes </p>
                       <button
                         type="button"
                         className=""
                         onClick={() => handleUpdateLikeStatus(moment)}
                       >
-                        <ThumbsUp size={20} />
+                        <ThumbsUp
+                          className={
+                            moment.userIdsOfLike.includes(authUser._id)
+                              ? "text-blue-500"
+                              : "text-zinc-400"
+                          }
+                          size={20}
+                        />
                       </button>
                     </div>
 
                     {/* Comment button and comments number */}
                     <div className={`flex items-center gap-2 mb-0.5`}>
-                      <p>{moment.comments.length} comments</p>
+                      <p>{moment?.comments?.length || 0} comments</p>
                       <button
                         type="button"
                         className="mt-1"
@@ -129,7 +137,7 @@ const MomentsHistory = () => {
               )}
 
               {/* Existing comments */}
-              {moment.comments.length > 0 && (
+              {moment?.comments?.length > 0 && (
                 <CommentsHistory comments={moment.comments} />
               )}
             </div>
