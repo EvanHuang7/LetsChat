@@ -18,6 +18,7 @@ export const useConnectionStore = create((set, get) => ({
           name: "Alice Johnson",
           profilePic: "https://i.pravatar.cc/150?img=1",
           groupName: null,
+          message: "Hey, What's up?",
           createdAt: new Date(now.getTime() - 1000 * 60 * 60).toISOString(), // 1 hour ago
         },
         {
@@ -27,6 +28,8 @@ export const useConnectionStore = create((set, get) => ({
           name: "John Doe",
           profilePic: "https://i.pravatar.cc/150?img=2",
           groupName: "React Devs Group",
+          message:
+            "Hi, I just invited you to our devs group. You can learn React in this group.",
           createdAt: new Date(now.getTime() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
         },
         {
@@ -36,6 +39,7 @@ export const useConnectionStore = create((set, get) => ({
           name: "Sophie Lee",
           profilePic: "https://i.pravatar.cc/150?img=3",
           groupName: null,
+          message: "Please accepting my friend request.",
           createdAt: new Date(now.getTime() - 1000 * 60 * 30).toISOString(), // 30 mins ago
         },
       ];

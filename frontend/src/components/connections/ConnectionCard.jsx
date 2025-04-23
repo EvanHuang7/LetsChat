@@ -23,13 +23,18 @@ const ConnectionCard = ({ data }) => {
           <div>
             {/* connection sender name */}
             <p className="font-semibold text-base-content">{data.name}</p>
+
             {/* connection type */}
             <p className="text-sm text-zinc-400">
               {data.type === "friend"
                 ? "Friend Request"
                 : `Group Invite: ${data.groupName}`}
             </p>
-            {/* TODO: Add the greeting message of data */}
+
+            {/* connection greeting message */}
+            {data.message && (
+              <p className="text-sm text-base-content mt-1">{data.message}</p>
+            )}
           </div>
         </div>
 
