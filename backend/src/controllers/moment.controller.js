@@ -129,7 +129,32 @@ export const updateLikeForMoment = async (req, res) => {
       );
     }
 
-    res.status(200).json(updatedMoment);
+    // Hydrate updatedMoment with user and comments information beofre return it
+    const user = await User.findById(updatedMoment.posterId).select(
+      "fullName profilePic"
+    );
+    if (!user) {
+      res.status(404).json({
+        message: "User not found",
+      });
+    }
+    const comments = await Comment.find({ momentId: updatedMoment._id })
+      .populate("posterId", "fullName profilePic") //show commenter info
+      .sort({ createdAt: 1 }); // oldest to newest
+
+    // Can not use "updatedMoment.comments = comments" to assign value because
+    // updatedMoment is a Mongoose document, and directly assigning comments
+    // (a field not in its schema) doesn’t include it in the response JSON by default
+
+    // Convert updatedMoment to a plain object first, so we can attach
+    // custom fields like comments and have them included in the final response
+
+    let hydratedMoment = updatedMoment.toObject(); // 👈 make it a plain JS object
+
+    hydratedMoment.posterId = user;
+    hydratedMoment.comments = comments; // will always be an array, even if empty
+
+    res.status(200).json(hydratedMoment);
   } catch (error) {
     console.log("Error in updateLikeForMoment controller", error.message);
     res.status(500).json({
