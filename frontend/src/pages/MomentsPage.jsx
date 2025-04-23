@@ -1,5 +1,5 @@
-import MomentWriter from "../components/momentWindow/MomentWriter";
-import MomentsHistory from "../components/momentWindow/MomentsHistory";
+import MomentWriter from "../components/moments/MomentWriter";
+import MomentsHistory from "../components/moments/MomentsHistory";
 
 const MomentsPage = () => {
   return (

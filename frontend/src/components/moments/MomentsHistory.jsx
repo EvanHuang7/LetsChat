@@ -4,8 +4,8 @@ import { ThumbsUp, MessageSquare } from "lucide-react";
 import { useMomentStore } from "../../store/useMomentStore";
 import { useAuthStore } from "../../store/useAuthStore";
 import MomentSkeleton from "../skeletons/MomentSkeleton";
-import CommentsHistory from "./commentWindow/CommentsHistory";
-import CommentWriter from "./commentWindow/CommentWriter";
+import CommentsHistory from "./comments/CommentsHistory";
+import CommentWriter from "./comments/CommentWriter";
 
 const MomentsHistory = () => {
   const { isMomentsLoading, moments, getMoments, updateLikeStatus } =
