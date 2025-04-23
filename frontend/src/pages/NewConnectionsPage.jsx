@@ -24,12 +24,14 @@ const NewConnectionsPage = () => {
           {/* Pending Section */}
           <section>
             <h2 className="text-xl font-semibold mb-4 text-base-content">
-              New Requests & Invites
+              New Connections & Invites
             </h2>
             {isConnectionsLoading ? (
               <p>Loading...</p>
             ) : pending.length === 0 ? (
-              <p className="text-sm text-base-content/60">No new requests.</p>
+              <p className="text-sm text-base-content/60">
+                No new connections.
+              </p>
             ) : (
               <div className="space-y-4">
                 {pending.map((item) => (

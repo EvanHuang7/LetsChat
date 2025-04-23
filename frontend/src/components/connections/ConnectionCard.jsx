@@ -27,7 +27,7 @@ const ConnectionCard = ({ data }) => {
             {/* connection type */}
             <p className="text-sm text-zinc-400">
               {data.type === "friend"
-                ? "Friend Request"
+                ? "Friend Connection"
                 : `Group Invite: ${data.groupName}`}
             </p>
 
