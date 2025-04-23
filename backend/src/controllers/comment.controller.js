@@ -38,6 +38,18 @@ export const postComment = async (req, res) => {
     // Get current logged in userId as posterId
     const posterId = req.user._id;
 
+    // Check the inputs from request body
+    if (!momentId) {
+      res.status(400).json({
+        message: "MomentId is required",
+      });
+    }
+    if (!text) {
+      res.status(400).json({
+        message: "Text is required",
+      });
+    }
+
     // Create this new comment
     const newComment = new Comment({
       // We shorten "posterId: posterId" to posterId
