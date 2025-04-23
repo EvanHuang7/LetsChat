@@ -28,7 +28,7 @@ const CommentWriter = () => {
 
       {/* Post comment button */}
       <div className="text-right mt-2">
-        <button className="btn btn-circle" onClick={postComment}>
+        <button className="btn btn-circle" onClick={() => postComment()}>
           <Send size={18} />
         </button>
       </div>

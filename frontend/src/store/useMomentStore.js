@@ -2,6 +2,7 @@ import { create } from "zustand";
 import toast from "react-hot-toast";
 
 import { axiosInstance } from "../lib/axios.js";
+import { useAuthStore } from "./useAuthStore";
 
 // Zustand is a handy state management tool for
 // managing state in React apps
@@ -59,7 +60,7 @@ export const useMomentStore = create((set, get) => ({
     });
   },
 
-  // Function to post a comment
+  // Call API function to post a comment for logged in user
   postComment: async () => {
     try {
       const data = {
@@ -77,6 +78,25 @@ export const useMomentStore = create((set, get) => ({
       toast.success("Posted a comment sucessfully");
     } catch (error) {
       console.log("Error in postComment: ", error);
+      toast.error(error.response.data.message);
+    }
+  },
+
+  // Call API function to update like status for logged in user
+  updateLikeStatus: async (moment) => {
+    try {
+      const authUser = useAuthStore.getState().authUser;
+
+      const data = {
+        momentId: moment._id,
+        like: !moment.userIdsOfLike.includes(authUser._id),
+      };
+
+      // Call the update-like endpoint
+      await axiosInstance.post(`/moment/update-like`, data);
+      // TODO: Change api res updated momemnt to exisiting moment
+    } catch (error) {
+      console.log("Error in updateLikeStatus: ", error);
       toast.error(error.response.data.message);
     }
   },

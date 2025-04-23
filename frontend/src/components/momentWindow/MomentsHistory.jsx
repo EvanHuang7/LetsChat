@@ -13,6 +13,7 @@ const MomentsHistory = () => {
     getMoments,
     activeCommentMomentId,
     toggleCommentBox,
+    updateLikeStatus,
   } = useMomentStore();
 
   useEffect(() => {
@@ -77,17 +78,21 @@ const MomentsHistory = () => {
                   <div
                     className={`mb-1 flex items-center gap-2 justify-between text-zinc-400`}
                   >
-                    {/* Like and like numbers */}
+                    {/* Like button and likes number */}
                     <div className={`flex items-center gap-2`}>
-                      <p>1 likes </p>
-                      <button type="button" className="">
+                      <p>{moment.userIdsOfLike.length} likes </p>
+                      <button
+                        type="button"
+                        className=""
+                        onClick={() => updateLikeStatus(moment)}
+                      >
                         <ThumbsUp size={20} />
                       </button>
                     </div>
 
-                    {/* Comment and comment numbers */}
+                    {/* Comment button and comments number */}
                     <div className={`flex items-center gap-2 mb-0.5`}>
-                      <p>2 comments</p>
+                      <p>{moment.comments.length} comments</p>
                       <button
                         type="button"
                         className="mt-1"
@@ -104,7 +109,9 @@ const MomentsHistory = () => {
               {activeCommentMomentId === moment._id && <CommentWriter />}
 
               {/* Existing comments */}
-              <CommentsHistory />
+              {moment.comments.length > 0 && (
+                <CommentsHistory comments={moment.comments} />
+              )}
             </div>
           ))}
         </div>
