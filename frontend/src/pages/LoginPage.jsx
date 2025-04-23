@@ -1,28 +1,28 @@
-import React, { useState } from 'react'
-import { Link } from "react-router-dom"
-import { Eye, EyeOff, Loader2, MessagesSquare } from "lucide-react"
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import { Eye, EyeOff, Loader2, MessagesSquare } from "lucide-react";
 
-import { useAuthStore } from '../store/useAuthStore'
-import AuthImagePattern from "../components/AuthImagePattern";
+import { useAuthStore } from "../store/useAuthStore";
+import LoginSignupImage from "../components/LoginSignupImage";
 
 const LoginPage = () => {
   // Intialize needed variables and corresponding update value functions
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
-    "email": "",
-    "password": "",
-  })
+    email: "",
+    password: "",
+  });
 
   // Get the needed variables and function from useAuthStore
-  const {isLoggingIn, login} = useAuthStore()
+  const { isLoggingIn, login } = useAuthStore();
 
   const handleSubmit = (event) => {
     // Prevent refreshing the page
-    event.preventDefault()
+    event.preventDefault();
 
     // Call login endpoint with form data
-    login(formData)
-  }
+    login(formData);
+  };
 
   return (
     <div className="h-screen grid lg:grid-cols-2">
@@ -55,7 +55,9 @@ const LoginPage = () => {
                 className="input input-bordered w-full"
                 placeholder="you@example.com"
                 value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
               />
             </div>
 
@@ -70,7 +72,9 @@ const LoginPage = () => {
                   className="input input-bordered w-full"
                   placeholder="••••••••"
                   value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                 />
                 <button
                   type="button"
@@ -85,9 +89,13 @@ const LoginPage = () => {
                 </button>
               </div>
             </div>
-            
+
             {/* Submit button */}
-            <button type="submit" className="btn btn-primary w-full" disabled={isLoggingIn}>
+            <button
+              type="submit"
+              className="btn btn-primary w-full"
+              disabled={isLoggingIn}
+            >
               {isLoggingIn ? (
                 <div className="flex items-center justify-center gap-2">
                   <Loader2 className="h-5 w-5 animate-spin" />
@@ -98,7 +106,7 @@ const LoginPage = () => {
               )}
             </button>
           </form>
-          
+
           {/* Don't have an account section */}
           <div className="text-center">
             <p className="text-base-content/60">
@@ -112,14 +120,14 @@ const LoginPage = () => {
       </div>
 
       {/* Right Part */}
-      <AuthImagePattern
+      <LoginSignupImage
         title={"Welcome back!"}
-        subtitle={"Sign in to continue your conversations and catch up with your messages."}
+        subtitle={
+          "Sign in to continue your conversations and catch up with your messages."
+        }
       />
     </div>
+  );
+};
 
-
-  )
-}
-
-export default LoginPage
+export default LoginPage;
