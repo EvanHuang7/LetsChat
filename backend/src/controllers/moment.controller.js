@@ -1,13 +1,15 @@
 import User from "../models/user.model.js";
 import Moment from "../models/moment.model.js";
+import Comment from "../models/comment.model.js";
 import cloudinary from "../lib/cloudinary.js";
 
-// Get all moments for one passed in userId or all users
+// Get all moments with comments for one passed in userId or all users
 export const getMoments = async (req, res) => {
   try {
     const { id: userId } = req.params;
     let moments = [];
 
+    // Get moments with moment poster info first
     if (userId === "All") {
       moments = await Moment.find()
         // populate poster field with selected fields
@@ -20,7 +22,26 @@ export const getMoments = async (req, res) => {
         .sort({ createdAt: -1 });
     }
 
-    res.status(200).json(moments);
+    // Then, get all comments with comment poster info
+    // belonging to these moments
+    const momentIds = moments.map((m) => m._id);
+    const comments = await Comment.find({ momentId: { $in: momentIds } })
+      .populate("posterId", "fullName profilePic") //show commenter info
+      .sort({ createdAt: 1 }); // oldest to newest
+
+    // Lastly, attach comments to corresponding moment
+    const momentsWithComments = moments.map((moment) => {
+      const momentComments = comments.filter(
+        (comment) => comment.momentId.toString() === moment._id.toString()
+      );
+
+      return {
+        ...moment.toObject(),
+        comments: momentComments,
+      };
+    });
+
+    res.status(200).json(momentsWithComments);
   } catch (error) {
     console.log("Error in getMoments controller", error.message);
     res.status(500).json({
