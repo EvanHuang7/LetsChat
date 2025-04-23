@@ -1,6 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { LogOut, House, Settings, UserPen, Notebook } from "lucide-react";
+import {
+  LogOut,
+  House,
+  Settings,
+  UserPen,
+  Notebook,
+  UserPlus,
+} from "lucide-react";
 
 import { useAuthStore } from "../store/useAuthStore";
 
@@ -36,6 +43,10 @@ const Navbar = () => {
                 <Link to={"/moments"} className={`btn btn-sm gap-2`}>
                   <Notebook className="size-5" />
                   <span className="hidden sm:inline">Moments</span>
+                </Link>
+                <Link to={"/newrequests"} className={`btn btn-sm gap-2`}>
+                  <UserPlus className="size-5" />
+                  <span className="hidden sm:inline">New Requests</span>
                 </Link>
                 <Link to={"/profile"} className={`btn btn-sm gap-2`}>
                   <UserPen className="size-5" />

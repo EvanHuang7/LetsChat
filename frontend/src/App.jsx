@@ -11,6 +11,7 @@ import LoginPage from "./pages/LoginPage";
 import SettingsPage from "./pages/SettingsPage";
 import ProfilePage from "./pages/ProfilePage";
 import MomentsPage from "./pages/MomentsPage";
+import NewRequestsPage from "./pages/NewRequestsPage";
 
 import { useAuthStore } from "./store/useAuthStore";
 import { useThemeStore } from "./store/useThemeStore";
@@ -73,6 +74,10 @@ const App = () => {
         <Route
           path="/moments"
           element={authUser ? <MomentsPage /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/newrequests"
+          element={authUser ? <NewRequestsPage /> : <Navigate to="/login" />}
         />
         <Route
           path="/profile"
