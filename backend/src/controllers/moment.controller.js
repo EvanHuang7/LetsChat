@@ -3,24 +3,37 @@ import Moment from "../models/moment.model.js";
 import Comment from "../models/comment.model.js";
 import cloudinary from "../lib/cloudinary.js";
 
-// Get all moments with comments for one passed in userId or all users
+// Get 10 moments with comments for one passed in userId or all users
+// USAGE: Display 10 moments in moments page
 export const getMoments = async (req, res) => {
   try {
+    // Get userId from url param
     const { id: userId } = req.params;
-    let moments = [];
+    // Get lastMomentCreatedAt from reqest body
+    let lastMomentCreatedAt;
+    if (req.body) {
+      lastMomentCreatedAt = req.body;
+    }
+
+    // Parse the timestamp if it's provided
+    const createdBefore = lastMomentCreatedAt
+      ? new Date(lastMomentCreatedAt)
+      : null;
+
+    // Build query object
+    const query = {};
+    if (userId !== "all") {
+      query.posterId = userId;
+    }
+    if (createdBefore) {
+      query.createdAt = { $lt: createdBefore };
+    }
 
     // Get moments with moment poster info first
-    if (userId === "all") {
-      moments = await Moment.find()
-        // populate poster field with selected fields
-        // it's kind of joining with User table
-        .populate("posterId", "fullName profilePic")
-        .sort({ createdAt: -1 });
-    } else {
-      moments = await Moment.find({ posterId: userId })
-        .populate("posterId", "fullName profilePic")
-        .sort({ createdAt: -1 });
-    }
+    const moments = await Moment.find(query)
+      .populate("posterId", "fullName profilePic")
+      .sort({ createdAt: -1 }) // from newest to oldest
+      .limit(3); // return 10 moments only
 
     // Then, get all comments with comment poster info
     // belonging to these moments
@@ -51,6 +64,7 @@ export const getMoments = async (req, res) => {
 };
 
 // Post a moment for logged in user
+// USAGE: Post a moment from moment writer
 export const postMoment = async (req, res) => {
   try {
     // Get text or image from reqest body
@@ -103,6 +117,7 @@ export const postMoment = async (req, res) => {
 };
 
 // Update like field of specific moment for logged in user
+// USAGE: Click like button in each moment
 export const updateLikeForMoment = async (req, res) => {
   try {
     const { momentId, like } = req.body;

@@ -22,7 +22,7 @@ const MomentsHistory = () => {
   const [activeCommentMomentId, setActiveCommentMomentId] = useState(null);
 
   useEffect(() => {
-    getMoments(id);
+    getMoments(id, null);
   }, [id, getMoments]);
 
   // Update like status
@@ -157,6 +157,8 @@ const MomentsHistory = () => {
           ))}
         </div>
       )}
+
+      {/* TODO: add a show more comment button to call a loadMoreMoment(last moment created time in the moments list)  triggered by user scroll to the bottom of page */}
     </div>
   );
 };

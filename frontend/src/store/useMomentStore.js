@@ -10,12 +10,12 @@ export const useMomentStore = create((set, get) => ({
 
   isMomentsLoading: false,
 
-  // Call API function to get moments of all users or specific user
-  getMoments: async (userId) => {
+  // Call API function to get 10 moments of all users or specific user
+  getMoments: async (userId, data) => {
     try {
       set({ isMomentsLoading: true });
       // Call the get moment endpoint
-      const res = await axiosInstance.get(`/moment/${userId}`);
+      const res = await axiosInstance.post(`/moment/${userId}`, data);
       set({ moments: res.data });
     } catch (error) {
       console.log("Error in getMoments: ", error);
