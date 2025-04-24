@@ -1,5 +1,6 @@
 import React from "react";
-import { X } from "lucide-react";
+import { X, UserPlus, NotebookText } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import { useAuthStore } from "../../../store/useAuthStore";
 import { useChatStore } from "../../../store/useChatStore";
@@ -7,6 +8,13 @@ import { useChatStore } from "../../../store/useChatStore";
 const ChatHeader = () => {
   const { selectedUser, setSelectedUser } = useChatStore();
   const { onlineUsers } = useAuthStore();
+
+  const handleConnectFriend = (userId) => {
+    // TODO: call update function
+    // Your logic here
+    console.log("Sending friend request to:", userId);
+    // Maybe call an API or update store state
+  };
 
   return (
     <div className="p-2.5 border-b border-base-300">
@@ -24,10 +32,31 @@ const ChatHeader = () => {
 
           {/* User info */}
           <div>
+            {/* User name */}
             <h3 className="font-medium">{selectedUser.fullName}</h3>
-            <p className="text-sm text-base-content/70">
-              {onlineUsers.includes(selectedUser._id) ? "Online" : "Offline"}
-            </p>
+            <div className="flex items-center gap-2 flex-wrap">
+              {/* User oneline status */}
+              <p className="text-sm text-base-content/70">
+                {onlineUsers.includes(selectedUser._id) ? "Online" : "Offline"}
+              </p>
+              {/* Connect friend button */}
+              <button
+                onClick={() => handleConnectFriend(selectedUser._id)}
+                className="btn btn-xs btn-outline gap-2 ml-1"
+              >
+                <UserPlus className="size-4" />
+                <span className="hidden xl:inline">Connect</span>
+              </button>
+
+              {/* View moments button */}
+              <Link
+                to={`/moments/${selectedUser._id}`}
+                className="btn btn-xs btn-outline gap-2"
+              >
+                <NotebookText className="size-4" />
+                <span className="hidden xl:inline">moments</span>
+              </Link>
+            </div>
           </div>
         </div>
 
@@ -39,4 +68,5 @@ const ChatHeader = () => {
     </div>
   );
 };
+
 export default ChatHeader;

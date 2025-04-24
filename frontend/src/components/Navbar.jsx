@@ -42,15 +42,15 @@ const Navbar = () => {
               <div className="flex items-center justify-center gap-2">
                 <Link to={"/moments"} className={`btn btn-sm gap-2`}>
                   <Notebook className="size-5" />
-                  <span className="hidden sm:inline">Moments</span>
+                  <span className="hidden md:inline">Moments</span>
                 </Link>
                 <Link to={"/newconnections"} className={`btn btn-sm gap-2`}>
                   <UserPlus className="size-5" />
-                  <span className="hidden sm:inline">New Connections</span>
+                  <span className="hidden md:inline">New Connections</span>
                 </Link>
                 <Link to={"/profile"} className={`btn btn-sm gap-2`}>
                   <UserPen className="size-5" />
-                  <span className="hidden sm:inline">Profile</span>
+                  <span className="hidden md:inline">Profile</span>
                 </Link>
               </div>
             )}
@@ -64,12 +64,12 @@ const Navbar = () => {
               `}
             >
               <Settings className="w-4 h-4" />
-              <span className="hidden sm:inline">Settings</span>
+              <span className="hidden md:inline">Settings</span>
             </Link>
             {authUser && (
               <button className="flex gap-2 items-center" onClick={logout}>
                 <LogOut className="size-5" />
-                <span className="hidden sm:inline">Logout</span>
+                <span className="hidden md:inline">Logout</span>
               </button>
             )}
           </div>

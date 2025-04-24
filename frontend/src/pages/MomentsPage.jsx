@@ -7,6 +7,7 @@ const MomentsPage = () => {
       <div className="max-w-3xl mx-auto p-4 py-8">
         <div className="bg-base-100 rounded-xl p-6 space-y-8">
           {/* Post a moment */}
+          {/* TODO: hide the writer when getting 1 user's momment */}
           <MomentWriter />
           {/* Moment List */}
           <MomentsHistory />
