@@ -1,5 +1,5 @@
 import React from "react";
-import { UserPlus, Check, X } from "lucide-react";
+import { UserPlus, Users, Check, X } from "lucide-react";
 import { useConnectionStore } from "../../store/useConnectionStore";
 
 const ConnectionCard = ({ connection }) => {
@@ -31,19 +31,26 @@ const ConnectionCard = ({ connection }) => {
             className="size-10 rounded-full object-cover border"
           />
         </div>
+
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-4">
             <div>
               {/* connection sender name */}
-              <p className="font-semibold text-base-content">
+              <p className="font-semibold text-base-content mb-1">
                 {connection.senderId.fullName}
               </p>
 
-              {/* connection type */}
-              <p className="text-sm text-zinc-400">
-                {connection.type === "friend"
-                  ? "Friend Connection"
-                  : `Group Invite: ${connection.groupName}`}
+              {/* connection type with icon */}
+              <p className="text-sm text-zinc-400 flex items-center gap-1 mb-2">
+                {connection.type === "friend" ? (
+                  <>
+                    <UserPlus size={15} /> Friend Connection
+                  </>
+                ) : (
+                  <>
+                    <Users size={15} /> Group Invite: {connection.groupName}
+                  </>
+                )}
               </p>
 
               {/* connection greeting message */}
@@ -63,13 +70,13 @@ const ConnectionCard = ({ connection }) => {
                   onClick={(e) => handleUpdateConnectionStatus(e, "rejected")}
                   className="btn btn-sm btn-outline btn-error"
                 >
-                  <X size={16} />
+                  <X size={15} />
                 </button>
                 <button
                   onClick={(e) => handleUpdateConnectionStatus(e, "accepted")}
-                  className="btn btn-sm btn-outline  btn-info"
+                  className="btn btn-sm btn-outline btn-info"
                 >
-                  <Check size={16} />
+                  <Check size={15} />
                 </button>
               </>
             ) : (
