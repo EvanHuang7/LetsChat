@@ -15,6 +15,9 @@ const ChatContainer = () => {
     // Call functions
     getMessages(selectedUser._id);
 
+    // TODO: call get connection function to get connection
+    // status for selectedUser
+
     // Effect will only activate if the values in the list change.
   }, [selectedUser._id, getMessages]);
 

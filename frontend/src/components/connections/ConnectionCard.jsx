@@ -1,4 +1,5 @@
 import React from "react";
+import toast from "react-hot-toast";
 import { UserPlus, Users, Check, X } from "lucide-react";
 import { useConnectionStore } from "../../store/useConnectionStore";
 
@@ -11,7 +12,13 @@ const ConnectionCard = ({ connection }) => {
     event.preventDefault();
 
     // Check connectionId and status
-    if (!connection._id || !status) return;
+    if (!connection._id || !status) {
+      console.log(
+        "Function errored because either connectionId or status is empty"
+      );
+      toast.error("Sorry, an error occurs");
+      return;
+    }
 
     // Update Connection status
     updateConnectionStatus({

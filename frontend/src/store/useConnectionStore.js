@@ -52,6 +52,22 @@ export const useConnectionStore = create((set, get) => ({
     }
   },
 
+  // Call API function to send a connection status
+  // from logged in user to selected user
+  sendConnection: async (data) => {
+    try {
+      // Call the send connection endpoint
+      await axiosInstance.post(`/connection/send`, data);
+
+      // TODO: update connection status for selectedUser
+
+      toast.success("Send a friend connection request sucessfully");
+    } catch (error) {
+      console.log("Error in updateConnectionStatus: ", error);
+      toast.error(error.response.data.message);
+    }
+  },
+
   // Get all pending connections by filtering all connections
   getPendingConnections: () => {
     return get().connections.filter((c) => c.status === "pending");

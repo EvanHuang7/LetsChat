@@ -41,7 +41,11 @@ const MomentWriter = () => {
     // Prevent refreshing the page
     event.preventDefault();
     // Check text and image are empty or not
-    if (!text.trim() && !imagePreview) return;
+    if (!text.trim() && !imagePreview) {
+      console.log("Function errored because both text and image are empty");
+      toast.error("Sorry, an error occurs");
+      return;
+    }
 
     // Post moment
     postMoment({

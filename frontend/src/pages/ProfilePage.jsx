@@ -1,36 +1,42 @@
-import React, { useState } from 'react'
-import toast from 'react-hot-toast'
-import { Camera, Mail, User } from "lucide-react"
+import React, { useState } from "react";
+import toast from "react-hot-toast";
+import { Camera, Mail, User } from "lucide-react";
 
-import { useAuthStore } from '../store/useAuthStore'
+import { useAuthStore } from "../store/useAuthStore";
 
 const ProfilePage = () => {
   // Intialize needed variables and corresponding update value functions
   const [selectedImg, setSelectedImg] = useState(null);
   // Get the needed variables and function from useAuthStore
-  const {authUser, isUpdatingProfile, updateProfile} = useAuthStore()
+  const { authUser, isUpdatingProfile, updateProfile } = useAuthStore();
 
-  const handleImageUpload = async(event) => {
+  const handleImageUpload = async (event) => {
     // Get image file of user selected and check it
-    const file = event.target.files[0]
-    if (!file) return;
+    const file = event.target.files[0];
+    if (!file) {
+      console.log("Function errored because of no file uploaded");
+      toast.error("Sorry, no file uploaded");
+      return;
+    }
 
     const maxSize = 2 * 1024 * 1024; // 2MB
     if (file.size > maxSize) {
-      return toast.error("Please try to uplpad a file less than max file size 2MB")
+      return toast.error(
+        "Please try to upload a file less than max file size 2MB"
+      );
     }
-    
+
     // Convert the image to base64 format
-    const reader = new FileReader()
-    reader.readAsDataURL(file)
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
     reader.onload = async () => {
-      const base64Image = reader.result
+      const base64Image = reader.result;
       // Set the user selected image to the avator UI
-      setSelectedImg(base64Image)
+      setSelectedImg(base64Image);
       // Call update profile endpoint with base64 image data
-      await updateProfile({profilePic: base64Image})
-    }
-  }
+      await updateProfile({ profilePic: base64Image });
+    };
+  };
 
   return (
     <div className="h-screen pt-20">
@@ -57,7 +63,9 @@ const ProfilePage = () => {
                   bg-base-content hover:scale-105
                   p-2 rounded-full cursor-pointer 
                   transition-all duration-200
-                  ${isUpdatingProfile ? "animate-pulse pointer-events-none" : ""}
+                  ${
+                    isUpdatingProfile ? "animate-pulse pointer-events-none" : ""
+                  }
                 `}
               >
                 <Camera className="w-5 h-5 text-base-200" />
@@ -72,10 +80,12 @@ const ProfilePage = () => {
               </label>
             </div>
             <p className="text-sm text-zinc-400">
-              {isUpdatingProfile ? "Uploading..." : "Click the camera icon to update your photo"}
+              {isUpdatingProfile
+                ? "Uploading..."
+                : "Click the camera icon to update your photo"}
             </p>
           </div>
-          
+
           {/* User information */}
           <div className="space-y-6">
             {/* User full name */}
@@ -84,19 +94,23 @@ const ProfilePage = () => {
                 <User className="w-4 h-4" />
                 Full Name
               </div>
-              <p className="px-4 py-2.5 bg-base-200 rounded-lg border">{authUser?.fullName}</p>
+              <p className="px-4 py-2.5 bg-base-200 rounded-lg border">
+                {authUser?.fullName}
+              </p>
             </div>
-            
+
             {/* User email */}
             <div className="space-y-1.5">
               <div className="text-sm text-zinc-400 flex items-center gap-2">
                 <Mail className="w-4 h-4" />
                 Email Address
               </div>
-              <p className="px-4 py-2.5 bg-base-200 rounded-lg border">{authUser?.email}</p>
+              <p className="px-4 py-2.5 bg-base-200 rounded-lg border">
+                {authUser?.email}
+              </p>
             </div>
           </div>
-          
+
           {/* Account information */}
           <div className="mt-6 bg-base-300 rounded-xl p-6">
             <h2 className="text-lg font-medium  mb-4">Account Information</h2>
@@ -114,7 +128,7 @@ const ProfilePage = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProfilePage
+export default ProfilePage;

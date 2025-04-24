@@ -1,5 +1,6 @@
 import React from "react";
 import { Send, X } from "lucide-react";
+import toast from "react-hot-toast";
 
 import { useMomentStore } from "../../../store/useMomentStore";
 
@@ -16,7 +17,13 @@ const CommentWriter = ({
     event.preventDefault();
 
     // Check the momentId of open comment writer and comment text
-    if (!activeCommentMomentId || !commentText.trim()) return;
+    if (!activeCommentMomentId || !commentText.trim()) {
+      console.log(
+        "Function errored because either activeCommentMomentId or text is empty"
+      );
+      toast.error("Sorry, an error occurs");
+      return;
+    }
 
     // Post a comment
     postComment({

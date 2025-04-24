@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ThumbsUp, MessageSquare } from "lucide-react";
+import toast from "react-hot-toast";
 
 import { useMomentStore } from "../../store/useMomentStore";
 import { useAuthStore } from "../../store/useAuthStore";
@@ -25,7 +26,13 @@ const MomentsHistory = () => {
   // Update like status
   const handleUpdateLikeStatus = (moment) => {
     // Check the moment and authUser
-    if (!moment || !authUser) return;
+    if (!moment || !authUser) {
+      console.log(
+        "Function errored because of either moment or authUser is empty"
+      );
+      toast.error("Sorry, an error occurs");
+      return;
+    }
 
     // Update like stauts
     updateLikeStatus({
