@@ -21,7 +21,7 @@ const connectionSchema = new mongoose.Schema(
       required: true,
     },
     // TODO: change to groupId and refer to new
-    // group table and required
+    // group table and not required because friend does not group
     groupName: {
       type: String,
     },

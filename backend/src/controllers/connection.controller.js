@@ -48,6 +48,13 @@ export const sendConnection = async (req, res) => {
       });
     }
 
+    // TODO: if a old rejected connection exisit, change its
+    // status to pending instead of create a new one OR we change
+    // checkConnection api function for front-end to display
+    // "add user friend" button to only return the newest connection
+
+    // TODO: stop creating a new connecton, if a pending connection exisit
+
     // Create this new connection
     const newConnection = new Connection({
       // We shorten "type: type" to type
