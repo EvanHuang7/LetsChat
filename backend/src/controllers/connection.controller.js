@@ -1,7 +1,8 @@
 import User from "../models/user.model.js";
 import Connection from "../models/connection.model.js";
 
-// Get all connection records (friends and groups) for logged in user
+// Get all connection records (friends and groups)
+// for logged in user as receiver
 export const getConnections = async (req, res) => {
   try {
     // Get current logged in userId as receiverId
@@ -26,7 +27,6 @@ export const sendConnection = async (req, res) => {
   try {
     // Get type, receiverId, groupName, message from reqest body
     const { type, receiverId, groupName, message } = req.body;
-
     // Get current logged in userId as senderId
     const senderId = req.user._id;
 
@@ -41,7 +41,6 @@ export const sendConnection = async (req, res) => {
         message: "ReceiverId is required",
       });
     }
-
     if (type === "group" && !groupName) {
       return res.status(400).json({
         message: "groupName is required when sending a group invite",
@@ -145,5 +144,46 @@ export const updateConnectionStatus = async (req, res) => {
   }
 };
 
-// checkConnection api function for front-end to display
+// USAGE: checkConnection api function for front-end to display
 // "add user friend" button
+// Get specified connections between two users
+// for logged in user as connection sender
+export const getConnection = async (req, res) => {
+  try {
+    // Get type, receiverId, groupName from reqest body
+    const { type, receiverId, groupName } = req.body;
+    // Get current logged in userId as senderId
+    const senderId = req.user._id;
+
+    // Check the inputs from request body
+    if (!type) {
+      return res.status(400).json({
+        message: "Type is required",
+      });
+    }
+    if (!receiverId) {
+      return res.status(400).json({
+        message: "ReceiverId is required",
+      });
+    }
+    if (type === "group" && !groupName) {
+      return res.status(400).json({
+        message: "groupName is required when sending a group invite",
+      });
+    }
+
+    const connections = await Connection.find({
+      type: type,
+      senderId: senderId,
+      receiverId: receiverId,
+      groupName: groupName,
+    });
+
+    res.status(200).json(connections);
+  } catch (error) {
+    console.log("Error in getConnection controller", error.message);
+    res.status(500).json({
+      message: "Interal server error",
+    });
+  }
+};
