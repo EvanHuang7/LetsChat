@@ -22,6 +22,48 @@ export const getConnections = async (req, res) => {
   }
 };
 
+// Get specified connections between two users
+// for logged in user as connection sender
+export const getSpecifiedConnection = async (req, res) => {
+  try {
+    // Get type, receiverId, groupName from reqest body
+    const { type, receiverId, groupName } = req.body;
+    // Get current logged in userId as senderId
+    const senderId = req.user._id;
+
+    // Check the inputs from request body
+    if (!type) {
+      return res.status(400).json({
+        message: "Type is required",
+      });
+    }
+    if (!receiverId) {
+      return res.status(400).json({
+        message: "ReceiverId is required",
+      });
+    }
+    if (type === "group" && !groupName) {
+      return res.status(400).json({
+        message: "groupName is required when sending a group invite",
+      });
+    }
+
+    const connections = await Connection.find({
+      type: type,
+      senderId: senderId,
+      receiverId: receiverId,
+      groupName: groupName,
+    });
+
+    res.status(200).json(connections);
+  } catch (error) {
+    console.log("Error in getConnection controller", error.message);
+    res.status(500).json({
+      message: "Interal server error",
+    });
+  }
+};
+
 // Send a new friend connection or group invite from logged in user
 export const sendConnection = async (req, res) => {
   try {
@@ -138,50 +180,6 @@ export const updateConnectionStatus = async (req, res) => {
     res.status(200).json(hydratedConnection);
   } catch (error) {
     console.log("Error in updateConnectionStatus controller", error.message);
-    res.status(500).json({
-      message: "Interal server error",
-    });
-  }
-};
-
-// USAGE: checkConnection api function for front-end to display
-// "add user friend" button
-// Get specified connections between two users
-// for logged in user as connection sender
-export const getConnection = async (req, res) => {
-  try {
-    // Get type, receiverId, groupName from reqest body
-    const { type, receiverId, groupName } = req.body;
-    // Get current logged in userId as senderId
-    const senderId = req.user._id;
-
-    // Check the inputs from request body
-    if (!type) {
-      return res.status(400).json({
-        message: "Type is required",
-      });
-    }
-    if (!receiverId) {
-      return res.status(400).json({
-        message: "ReceiverId is required",
-      });
-    }
-    if (type === "group" && !groupName) {
-      return res.status(400).json({
-        message: "groupName is required when sending a group invite",
-      });
-    }
-
-    const connections = await Connection.find({
-      type: type,
-      senderId: senderId,
-      receiverId: receiverId,
-      groupName: groupName,
-    });
-
-    res.status(200).json(connections);
-  } catch (error) {
-    console.log("Error in getConnection controller", error.message);
     res.status(500).json({
       message: "Interal server error",
     });
