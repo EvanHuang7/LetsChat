@@ -14,7 +14,7 @@ const ChatHeader = () => {
 
   const handleConnectFriend = (receiverId) => {
     // Check receiverId is empty or not
-    if (receiverId) {
+    if (!receiverId) {
       console.log("Function errored because of receving empty receiverId");
       toast.error("Sorry, an error occurs");
       return;
@@ -53,6 +53,7 @@ const ChatHeader = () => {
                 {onlineUsers.includes(selectedUser._id) ? "Online" : "Offline"}
               </p>
               {/* Connect friend button */}
+              {/* TODO: change the button according to connection status */}
               <button
                 onClick={() => handleConnectFriend(selectedUser._id)}
                 className="btn btn-xs btn-outline gap-2 ml-1"

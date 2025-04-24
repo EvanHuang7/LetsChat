@@ -80,6 +80,12 @@ export const useMomentStore = create((set, get) => ({
           return moment._id === updatedMoment._id ? updatedMoment : moment;
         }),
       }));
+
+      if (data.like) {
+        toast("Thanks your like!", {
+          icon: "👍",
+        });
+      }
     } catch (error) {
       console.log("Error in updateLikeStatus: ", error);
       toast.error(error.response.data.message);

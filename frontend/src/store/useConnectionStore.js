@@ -46,6 +46,16 @@ export const useConnectionStore = create((set, get) => ({
       // Set pendingConnections, and respondedConnections
       set({ pendingConnections: get().getPendingConnections() });
       set({ respondedConnections: get().getRespondedConnections() });
+
+      if (data.status === "accepted") {
+        toast("Connection or invite accepted", {
+          icon: "👏",
+        });
+      } else {
+        toast("Connection or invite declined", {
+          icon: "👋",
+        });
+      }
     } catch (error) {
       console.log("Error in updateConnectionStatus: ", error);
       toast.error(error.response.data.message);
@@ -61,7 +71,9 @@ export const useConnectionStore = create((set, get) => ({
 
       // TODO: update connection status for selectedUser
 
-      toast.success("Send a friend connection request sucessfully");
+      toast("Friend connection sent sucessfully!", {
+        icon: "🥳",
+      });
     } catch (error) {
       console.log("Error in updateConnectionStatus: ", error);
       toast.error(error.response.data.message);
