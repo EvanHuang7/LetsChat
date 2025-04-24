@@ -2,7 +2,9 @@ import User from "../models/user.model.js";
 import Connection from "../models/connection.model.js";
 
 // Get all connection records (friends and groups)
-// for logged in user as receiver
+// for logged in user as receiver.
+// USAGE: display the connections data for logged in user
+// in New connection page.
 export const getConnections = async (req, res) => {
   try {
     // Get current logged in userId as receiverId
@@ -22,14 +24,16 @@ export const getConnections = async (req, res) => {
   }
 };
 
-// Get specified connections between two users
-// for logged in user as connection sender
+// Get specified connections between logged in user
+// and selected user.
+// USAGE: display connection status between two users in Chat
+// box header when selecting a user from sidebar.
 export const getSpecifiedConnection = async (req, res) => {
   try {
-    // Get type, receiverId, groupName from reqest body
-    const { type, receiverId, groupName } = req.body;
-    // Get current logged in userId as senderId
-    const senderId = req.user._id;
+    // Get type, selectedUserId, groupName from reqest body
+    const { type, selectedUserId, groupName } = req.body;
+    // Get current logged in userId as loggedInUserId
+    const loggedInUserId = req.user._id;
 
     // Check the inputs from request body
     if (!type) {
@@ -37,9 +41,9 @@ export const getSpecifiedConnection = async (req, res) => {
         message: "Type is required",
       });
     }
-    if (!receiverId) {
+    if (!selectedUserId) {
       return res.status(400).json({
-        message: "ReceiverId is required",
+        message: "SelectedUserId is required",
       });
     }
     if (type === "group" && !groupName) {
@@ -50,9 +54,11 @@ export const getSpecifiedConnection = async (req, res) => {
 
     const connections = await Connection.find({
       type: type,
-      senderId: senderId,
-      receiverId: receiverId,
       groupName: groupName,
+      $or: [
+        { senderId: loggedInUserId, receiverId: selectedUserId },
+        { senderId: selectedUserId, receiverId: loggedInUserId },
+      ],
     });
 
     res.status(200).json(connections);
@@ -65,6 +71,7 @@ export const getSpecifiedConnection = async (req, res) => {
 };
 
 // Send a new friend connection or group invite from logged in user
+// USAGE: send out a friend connection request in Chat box header.
 export const sendConnection = async (req, res) => {
   try {
     // Get type, receiverId, groupName, message from reqest body
@@ -137,7 +144,8 @@ export const sendConnection = async (req, res) => {
   }
 };
 
-// Update (accept or reject) a connection status for logged in user
+// Update (accept or reject) a connection status for logged in user.
+// USAGE: Accept or reject a connection in new connection page.
 export const updateConnectionStatus = async (req, res) => {
   try {
     const { connectionId, status } = req.body;

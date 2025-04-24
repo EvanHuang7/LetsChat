@@ -145,7 +145,7 @@ export const useChatStore = create((set, get) => ({
         .getState()
         .getSpecifiedConnections({
           type: "friend",
-          receiverId: selectedUser._id,
+          selectedUserId: selectedUser._id,
           groupName: null,
         });
 
