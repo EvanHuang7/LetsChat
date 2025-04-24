@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useConnectionStore } from "../store/useConnectionStore";
 import ConnectionCard from "../components/connections/ConnectionCard";
+import MomentSkeleton from "../components/skeletons/MomentSkeleton";
 
 const NewConnectionsPage = () => {
   const {
@@ -23,8 +24,11 @@ const NewConnectionsPage = () => {
             <h2 className="text-xl font-semibold mb-4 text-base-content">
               New Connections & Invites
             </h2>
+            {/* I'm lazy to use existing MomentSkeleton */}
             {isConnectionsLoading ? (
-              <p>Loading...</p>
+              <div>
+                <MomentSkeleton />
+              </div>
             ) : pendingConnections.length === 0 ? (
               <p className="text-sm text-base-content/60">
                 No new connections.
@@ -46,7 +50,12 @@ const NewConnectionsPage = () => {
             <h2 className="text-xl font-semibold mb-4 text-base-content">
               Responded
             </h2>
-            {respondedConnections.length === 0 ? (
+            {/* I'm lazy to use existing MomentSkeleton */}
+            {isConnectionsLoading ? (
+              <div>
+                <MomentSkeleton />
+              </div>
+            ) : respondedConnections.length === 0 ? (
               <p className="text-sm text-base-content/60">
                 No responses recorded yet.
               </p>
