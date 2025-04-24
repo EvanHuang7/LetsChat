@@ -74,10 +74,10 @@ export const getSpecifiedConnection = async (req, res) => {
 // USAGE: send out a friend connection request in Chat box header.
 export const sendConnection = async (req, res) => {
   try {
-    // Get type, receiverId, groupName, message from reqest body
-    const { type, receiverId, groupName, message } = req.body;
-    // Get current logged in userId as senderId
-    const senderId = req.user._id;
+    // Get type, selectedUserId, groupName, message from reqest body
+    const { type, selectedUserId, groupName, message } = req.body;
+    // Get current logged in userId as loggedInUserId
+    const loggedInUserId = req.user._id;
 
     // Check the inputs from request body
     if (!type) {
@@ -85,9 +85,9 @@ export const sendConnection = async (req, res) => {
         message: "Type is required",
       });
     }
-    if (!receiverId) {
+    if (!selectedUserId) {
       return res.status(400).json({
-        message: "ReceiverId is required",
+        message: "SelectedUserId is required",
       });
     }
     if (type === "group" && !groupName) {
@@ -97,15 +97,17 @@ export const sendConnection = async (req, res) => {
     }
 
     // Try to fetch any exsiting friend connection or same groupId
-    // inviation between this sender and receive
+    // inviation between 2 users
     const existingConnections = await Connection.find({
       type: type,
-      senderId: senderId,
-      receiverId: receiverId,
       groupName: groupName,
+      $or: [
+        { senderId: loggedInUserId, receiverId: selectedUserId },
+        { senderId: selectedUserId, receiverId: loggedInUserId },
+      ],
     });
 
-    // If there are exsiting connection
+    // If there are exsiting connection between 2 users
     if (existingConnections.length > 0) {
       const existingConnection = existingConnections[0];
 
@@ -116,6 +118,17 @@ export const sendConnection = async (req, res) => {
       // OR return it directly if it's status is pending or accepted
       if (existingConnection.status === "rejected") {
         existingConnection.status = "pending";
+
+        // Swape the sender and reciever if sendId is selectedUserId
+        // instead of loggedInUserId
+        if (
+          existingConnection.senderId === selectedUserId &&
+          existingConnection.receiverId === loggedInUserId
+        ) {
+          (existingConnection.senderId = loggedInUserId),
+            (existingConnection.receiverId = selectedUserId);
+        }
+
         // Save this updated connection to database
         await existingConnection.save();
       }
@@ -127,8 +140,8 @@ export const sendConnection = async (req, res) => {
       // We shorten "type: type" to type
       type,
       status: "pending",
-      senderId,
-      receiverId,
+      senderId: loggedInUserId,
+      receiverId: selectedUserId,
       groupName,
       message,
     });

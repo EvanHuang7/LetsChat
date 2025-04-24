@@ -12,10 +12,10 @@ const ChatHeader = () => {
   const { onlineUsers } = useAuthStore();
   const { sendConnection } = useConnectionStore();
 
-  const handleSendConnection = (receiverId) => {
-    // Check receiverId is empty or not
-    if (!receiverId) {
-      console.log("Function errored because of receving empty receiverId");
+  const handleSendConnection = (selectedUserId) => {
+    // Check selectedUserId is empty or not
+    if (!selectedUserId) {
+      console.log("Function errored because of receving empty selectedUserId");
       toast.error("Sorry, an error occurs");
       return;
     }
@@ -23,7 +23,7 @@ const ChatHeader = () => {
     // Send a connection
     sendConnection({
       type: "friend",
-      receiverId: receiverId,
+      selectedUserId: selectedUserId,
       // Keep groupName field to always to NULL instead of empty string
       // for friend type connection. If using empty string, the back-end
       // query can not find exisitng connections with filter properly
