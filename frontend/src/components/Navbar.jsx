@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   LogOut,
@@ -16,8 +16,14 @@ import { useChatStore } from "../store/useChatStore";
 const Navbar = () => {
   // Get the needed variables and function from useAuthStore
   const { authUser, logout } = useAuthStore();
-  const { subscribeToMessages, unsubscribeFromMessages } = useChatStore();
+  const {
+    subscribeToMessages,
+    unsubscribeFromMessages,
+    unreadMessagesNumberMap,
+  } = useChatStore();
   const { getConnections, pendingConnections } = useConnectionStore();
+
+  const [totalUnreadMessages, setTotalUnreadMessages] = useState(0);
 
   useEffect(() => {
     // If user auth granted or a user logged in,
@@ -35,6 +41,14 @@ const Navbar = () => {
     }
   }, [authUser, subscribeToMessages, getConnections, unsubscribeFromMessages]);
 
+  useEffect(() => {
+    const total = Array.from(unreadMessagesNumberMap.values()).reduce(
+      (sum, num) => sum + num,
+      0
+    );
+    setTotalUnreadMessages(total);
+  }, [unreadMessagesNumberMap]);
+
   return (
     <header
       className="bg-base-100 border-b border-base-300 fixed w-full top-0 z-40 
@@ -48,8 +62,18 @@ const Navbar = () => {
               to="/"
               className="flex items-center gap-2.5 hover:opacity-80 transition-all"
             >
-              <div className="size-9 rounded-lg bg-primary/10 flex items-center justify-center">
+              <div className="relative size-9 rounded-lg bg-primary/10 flex items-center justify-center">
                 <House className="w-5 h-5 text-primary" />
+
+                {/* 🔴 unread message badge */}
+                {totalUnreadMessages > 0 && (
+                  <span
+                    className="absolute -top-1 -right-1 min-w-[1rem] h-4 px-1 text-[10px] sm:text-xs font-semibold 
+                text-white bg-red-500 rounded-full flex items-center justify-center shadow-md"
+                  >
+                    {totalUnreadMessages}
+                  </span>
+                )}
               </div>
               <h1 className="text-lg font-bold">LetsChat</h1>
             </Link>
@@ -65,7 +89,7 @@ const Navbar = () => {
                   <span className="hidden md:inline">Moments</span>
                 </Link>
 
-                {/* New Connections Button with badge */}
+                {/* New Connections Button with 🔴 pending connection number badge */}
                 <div className="relative">
                   <Link to={"/newconnections"} className="btn btn-sm gap-2">
                     <UserPlus className="size-5" />
