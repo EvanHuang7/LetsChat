@@ -40,12 +40,12 @@ export const postComment = async (req, res) => {
 
     // Check the inputs from request body
     if (!momentId) {
-      res.status(400).json({
+      return res.status(400).json({
         message: "MomentId is required",
       });
     }
     if (!text) {
-      res.status(400).json({
+      return res.status(400).json({
         message: "Text is required",
       });
     }
@@ -64,8 +64,8 @@ export const postComment = async (req, res) => {
     // Hydrate newComment with user information beofre return it
     const user = await User.findById(posterId).select("fullName profilePic");
     if (!user) {
-      res.status(404).json({
-        message: "User not found",
+      return res.status(404).json({
+        message: "Commented created, but comment poster not found",
       });
     }
     newComment.posterId = user;

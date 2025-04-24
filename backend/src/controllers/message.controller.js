@@ -72,7 +72,7 @@ export const sendMessage = async (req, res) => {
 
     // Check the inputs from request body
     if (!text && !image) {
-      res.status(400).json({
+      return res.status(400).json({
         message: "At least provide text or image",
       });
     }

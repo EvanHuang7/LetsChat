@@ -32,18 +32,19 @@ export const sendConnection = async (req, res) => {
 
     // Check the inputs from request body
     if (!type) {
-      res.status(400).json({
+      return res.status(400).json({
         message: "Type is required",
       });
     }
     if (!receiverId) {
-      res.status(400).json({
+      return res.status(400).json({
         message: "ReceiverId is required",
       });
     }
-    if (!groupName) {
-      res.status(400).json({
-        message: "groupName is required",
+
+    if (type === "group" && !groupName) {
+      return res.status(400).json({
+        message: "groupName is required when sending a group invite",
       });
     }
 
@@ -76,12 +77,12 @@ export const updateConnectionStatus = async (req, res) => {
 
     // Check the inputs from request body
     if (!connectionId) {
-      res.status(400).json({
+      return res.status(400).json({
         message: "ConnectionId is required",
       });
     }
     if (!status) {
-      res.status(400).json({
+      return res.status(400).json({
         message: "Status is required",
       });
     }
@@ -101,8 +102,8 @@ export const updateConnectionStatus = async (req, res) => {
       "fullName profilePic"
     );
     if (!user) {
-      res.status(404).json({
-        message: "User not found",
+      return res.status(404).json({
+        message: "Connection updated, but sender not found",
       });
     }
 

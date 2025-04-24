@@ -61,7 +61,7 @@ export const postMoment = async (req, res) => {
 
     // Check the inputs from request body
     if (!text && !image) {
-      res.status(400).json({
+      return res.status(400).json({
         message: "At least provide text or image",
       });
     }
@@ -110,8 +110,9 @@ export const updateLikeForMoment = async (req, res) => {
     // Get current logged in userId as userId
     const userId = req.user._id;
 
+    // Check the inputs from request body
     if (!momentId) {
-      res.status(400).json({
+      return res.status(400).json({
         message: "MomentId is required",
       });
     }
@@ -141,8 +142,8 @@ export const updateLikeForMoment = async (req, res) => {
       "fullName profilePic"
     );
     if (!user) {
-      res.status(404).json({
-        message: "User not found",
+      return res.status(404).json({
+        message: "Moment updated, but poster not found",
       });
     }
     const comments = await Comment.find({ momentId: updatedMoment._id })
