@@ -80,6 +80,19 @@ export const useConnectionStore = create((set, get) => ({
     }
   },
 
+  // Call API function to get specified connections between two users
+  // for logged in user as connection sender
+  getSpecifiedConnections: async (data) => {
+    try {
+      // Call the get-specified endpoint
+      const res = await axiosInstance.post(`/connection/get-specified`, data);
+      return res.data;
+    } catch (error) {
+      console.log("Error in getSpecifiedConnection: ", error);
+      toast.error(error.response.data.message);
+    }
+  },
+
   // Get all pending connections by filtering all connections
   getPendingConnections: () => {
     return get().connections.filter((c) => c.status === "pending");

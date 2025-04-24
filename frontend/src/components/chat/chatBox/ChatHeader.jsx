@@ -1,5 +1,5 @@
 import React from "react";
-import { X, UserPlus, NotebookText } from "lucide-react";
+import { X, UserPlus, NotebookText, UserCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 
@@ -24,9 +24,46 @@ const ChatHeader = () => {
     sendConnection({
       type: "friend",
       receiverId: receiverId,
+      // Keep groupName field to always to NULL instead of empty string
+      // for friend type connection. If using empty string, the back-end
+      // query can not find exisitng connections with filter properly
+      groupName: null,
       // TODO: update it after adding a send greeting message composer
       message: "",
     });
+  };
+
+  const renderConnectButton = () => {
+    const status = selectedUser.connectionStatus;
+
+    if (status === "accepted") {
+      return (
+        <button className="btn btn-xs btn-outline gap-2 ml-1" disabled>
+          <UserCheck className="size-4" />
+          <span className="hidden xl:inline">Connected</span>
+        </button>
+      );
+    }
+
+    if (status === "pending") {
+      return (
+        <button className="btn btn-xs btn-outline gap-2 ml-1" disabled>
+          <UserPlus className="size-4" />
+          <span className="hidden xl:inline">Connection sent</span>
+        </button>
+      );
+    }
+
+    // default for "" and "rejected"
+    return (
+      <button
+        onClick={() => handleConnectFriend(selectedUser._id)}
+        className="btn btn-xs btn-outline gap-2 ml-1"
+      >
+        <UserPlus className="size-4" />
+        <span className="hidden xl:inline">Connect</span>
+      </button>
+    );
   };
 
   return (
@@ -52,15 +89,9 @@ const ChatHeader = () => {
               <p className="text-sm text-base-content/70">
                 {onlineUsers.includes(selectedUser._id) ? "Online" : "Offline"}
               </p>
-              {/* Connect friend button */}
-              {/* TODO: change the button according to connection status */}
-              <button
-                onClick={() => handleConnectFriend(selectedUser._id)}
-                className="btn btn-xs btn-outline gap-2 ml-1"
-              >
-                <UserPlus className="size-4" />
-                <span className="hidden xl:inline">Connect</span>
-              </button>
+
+              {/* Conditionally rendered connect button */}
+              {renderConnectButton()}
 
               {/* View moments button */}
               <Link

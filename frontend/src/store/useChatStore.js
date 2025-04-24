@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 
 import { axiosInstance } from "../lib/axios.js";
 import { useAuthStore } from "./useAuthStore";
+import { useConnectionStore } from "./useConnectionStore";
 
 // Zustand is a handy state management tool for
 // managing state in React apps
@@ -135,7 +136,27 @@ export const useChatStore = create((set, get) => ({
     socket.off("newMessage");
   },
 
-  setSelectedUser: (selectedUser) => {
+  setSelectedUser: async (selectedUser) => {
+    // If select a user, get connection status between
+    // logged in user and this selected user
+    if (selectedUser) {
+      const connections = await useConnectionStore
+        .getState()
+        .getSpecifiedConnections({
+          type: "friend",
+          receiverId: selectedUser._id,
+          groupName: null,
+        });
+
+      // Add connectionStatus field to selectedUser
+      if (connections.length > 0) {
+        selectedUser.connectionStatus = connections[0].status;
+        // If no connection record
+      } else {
+        selectedUser.connectionStatus = "";
+      }
+    }
+
     set({ selectedUser });
 
     // If select a user, clear unread messages number for this user.
