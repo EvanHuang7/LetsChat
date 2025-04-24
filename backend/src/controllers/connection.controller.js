@@ -48,11 +48,33 @@ export const sendConnection = async (req, res) => {
       });
     }
 
-    // TODO: if a old rejected connection exisit, change its
-    // status to pending instead of create a new one.
-    // Stop creating a new connecton, if a pending connection exisit
+    // Try to fetch any exsiting friend connection or same groupId
+    // inviation between this sender and receive
+    const existingConnections = await Connection.find({
+      type: type,
+      senderId: senderId,
+      receiverId: receiverId,
+      groupName: groupName,
+    });
 
-    // Create this new connection
+    // If there are exsiting connection
+    if (existingConnections.length > 0) {
+      const existingConnection = existingConnections[0];
+
+      // TODO: return error if there are more than 1 existingConnections
+      // Theoretically it should have more than 1existingConnections
+
+      // Change its staus to pending if it's status is rejected
+      // OR return it directly if it's status is pending or accepted
+      if (existingConnection.status === "rejected") {
+        existingConnection.status = "pending";
+        // Save this updated connection to database
+        await existingConnection.save();
+      }
+      return res.status(200).json(existingConnection);
+    }
+
+    // If not existing connection, create this new connection
     const newConnection = new Connection({
       // We shorten "type: type" to type
       type,
