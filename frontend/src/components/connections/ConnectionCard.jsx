@@ -3,12 +3,22 @@ import { UserPlus, Check, X } from "lucide-react";
 import { useConnectionStore } from "../../store/useConnectionStore";
 
 const ConnectionCard = ({ connection }) => {
-  const { respondToConnection } = useConnectionStore();
-
-  const handleResponse = (accepted) => {
-    respondToConnection(connection._id, accepted);
-  };
   const status = connection.status;
+  const { updateConnectionStatus } = useConnectionStore();
+
+  const handleUpdateConnectionStatus = (event, status) => {
+    // Prevent refreshing the page
+    event.preventDefault();
+
+    // Check connectionId and status
+    if (!connection._id || !status) return;
+
+    // Update Connection status
+    updateConnectionStatus({
+      connectionId: connection._id,
+      status: status,
+    });
+  };
 
   return (
     <div className="bg-base-200 p-4 rounded-xl shadow-md">
@@ -17,7 +27,7 @@ const ConnectionCard = ({ connection }) => {
         <div className="flex-shrink-0">
           <img
             src={connection.senderId.profilePic || "/avatar.png"}
-            alt={connection.senderId.name}
+            alt={connection.senderId.fullName}
             className="size-10 rounded-full object-cover border"
           />
         </div>
@@ -26,7 +36,7 @@ const ConnectionCard = ({ connection }) => {
             <div>
               {/* connection sender name */}
               <p className="font-semibold text-base-content">
-                {connection.senderId.name}
+                {connection.senderId.fullName}
               </p>
 
               {/* connection type */}
@@ -50,13 +60,13 @@ const ConnectionCard = ({ connection }) => {
             {status === "pending" ? (
               <>
                 <button
-                  onClick={() => handleResponse(false)}
+                  onClick={(e) => handleUpdateConnectionStatus(e, "rejected")}
                   className="btn btn-sm btn-outline btn-error"
                 >
                   <X size={16} />
                 </button>
                 <button
-                  onClick={() => handleResponse(true)}
+                  onClick={(e) => handleUpdateConnectionStatus(e, "accepted")}
                   className="btn btn-sm btn-outline  btn-info"
                 >
                   <Check size={16} />
