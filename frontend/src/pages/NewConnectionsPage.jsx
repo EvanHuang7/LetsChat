@@ -14,8 +14,8 @@ const NewConnectionsPage = () => {
     getConnections();
   }, [getConnections]);
 
-  const pending = pendingConnections();
-  const responded = respondedConnections();
+  const pendingConns = pendingConnections();
+  const respondedConns = respondedConnections();
 
   return (
     <div className="h-screen pt-20">
@@ -28,14 +28,17 @@ const NewConnectionsPage = () => {
             </h2>
             {isConnectionsLoading ? (
               <p>Loading...</p>
-            ) : pending.length === 0 ? (
+            ) : pendingConns.length === 0 ? (
               <p className="text-sm text-base-content/60">
                 No new connections.
               </p>
             ) : (
               <div className="space-y-4">
-                {pending.map((item) => (
-                  <ConnectionCard key={item._id} data={item} />
+                {pendingConns.map((pendingConn) => (
+                  <ConnectionCard
+                    key={pendingConn._id}
+                    connection={pendingConn}
+                  />
                 ))}
               </div>
             )}
@@ -46,14 +49,17 @@ const NewConnectionsPage = () => {
             <h2 className="text-xl font-semibold mb-4 text-base-content">
               Responded
             </h2>
-            {responded.length === 0 ? (
+            {respondedConns.length === 0 ? (
               <p className="text-sm text-base-content/60">
                 No responses recorded yet.
               </p>
             ) : (
               <div className="space-y-4">
-                {responded.map((item) => (
-                  <ConnectionCard key={item._id} data={item} />
+                {respondedConns.map((respondedConn) => (
+                  <ConnectionCard
+                    key={respondedConn._id}
+                    connection={respondedConn}
+                  />
                 ))}
               </div>
             )}

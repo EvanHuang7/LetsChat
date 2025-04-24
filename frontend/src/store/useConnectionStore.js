@@ -1,63 +1,25 @@
 import { create } from "zustand";
+import toast from "react-hot-toast";
+
+import { axiosInstance } from "../lib/axios.js";
 
 export const useConnectionStore = create((set, get) => ({
-  isConnectionsLoading: false,
   connections: [],
+  isConnectionsLoading: false,
 
+  // Call API function to get connections for logged in user
   getConnections: async () => {
-    set({ isConnectionsLoading: true });
-
-    // Simulated API delay
-    setTimeout(() => {
-      const now = new Date();
-      const fetchedConnections = [
-        {
-          _id: "1",
-          type: "friend",
-          status: "pending",
-          name: "Alice Johnson",
-          profilePic: "https://i.pravatar.cc/150?img=1",
-          groupName: null,
-          message: "Hey, What's up?",
-          createdAt: new Date(now.getTime() - 1000 * 60 * 60).toISOString(), // 1 hour ago
-        },
-        {
-          _id: "2",
-          type: "group",
-          status: "accepted",
-          name: "John Doe",
-          profilePic: "https://i.pravatar.cc/150?img=2",
-          groupName: "React Devs Group",
-          message:
-            "Hi, I just invited you to our devs group. You can learn React in this group.",
-          createdAt: new Date(now.getTime() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
-        },
-        {
-          _id: "3",
-          type: "friend",
-          status: "rejected",
-          name: "Sophie Lee",
-          profilePic: "https://i.pravatar.cc/150?img=3",
-          groupName: null,
-          message: "",
-          createdAt: new Date(now.getTime() - 1000 * 60 * 30).toISOString(), // 30 mins ago
-        },
-      ];
-
-      set({
-        connections: fetchedConnections,
-        isConnectionsLoading: false,
-      });
-    }, 1000);
-  },
-
-  // Derived state getters
-  pendingConnections: () => {
-    return get().connections.filter((c) => c.status === "pending");
-  },
-
-  respondedConnections: () => {
-    return get().connections.filter((c) => c.status !== "pending");
+    try {
+      set({ isConnectionsLoading: true });
+      // Call the get connections endpoint
+      const res = await axiosInstance.get(`/connection/get`);
+      set({ connections: res.data });
+    } catch (error) {
+      console.log("Error in getConnections: ", error);
+      toast.error(error.response.data.message);
+    } finally {
+      set({ isConnectionsLoading: false });
+    }
   },
 
   respondToConnection: (id, accepted) => {
@@ -68,5 +30,15 @@ export const useConnectionStore = create((set, get) => ({
       return c;
     });
     set({ connections: updatedConnections });
+  },
+
+  // Get all pending connections by filtering all connections
+  pendingConnections: () => {
+    return get().connections.filter((c) => c.status === "pending");
+  },
+
+  // Get all responded connections by filtering all connections
+  respondedConnections: () => {
+    return get().connections.filter((c) => c.status !== "pending");
   },
 }));
