@@ -29,10 +29,10 @@ const Navbar = () => {
     // If user auth granted or a user logged in,
     if (authUser) {
       // Call subscribeToMessages() to start listening to newMessage event
-      // for displaying unread message number
+      // for displaying unread message number in home button of navbar
       subscribeToMessages();
-      // Call getConnections() to get the pending conversation number
-      // for displaying it in the navbar
+      // Call getConnections() to get the pending connection number
+      // for displaying it in the New connection button of navbar
       getConnections();
 
       // Define a cleanup function. It will be run before the component is

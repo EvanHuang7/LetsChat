@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import User from "../models/user.model.js";
 import Connection from "../models/connection.model.js";
 
@@ -122,11 +123,15 @@ export const sendConnection = async (req, res) => {
         // Swape the sender and reciever if sendId is selectedUserId
         // instead of loggedInUserId
         if (
-          existingConnection.senderId === selectedUserId &&
-          existingConnection.receiverId === loggedInUserId
+          existingConnection.senderId.equals(selectedUserId) &&
+          existingConnection.receiverId.equals(loggedInUserId)
         ) {
-          (existingConnection.senderId = loggedInUserId),
-            (existingConnection.receiverId = selectedUserId);
+          existingConnection.senderId = new mongoose.Types.ObjectId(
+            loggedInUserId
+          );
+          existingConnection.receiverId = new mongoose.Types.ObjectId(
+            selectedUserId
+          );
         }
 
         // Save this updated connection to database
