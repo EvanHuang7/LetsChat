@@ -99,7 +99,7 @@ const MomentsHistory = () => {
                   )}
                   {/* Like and comments section */}
                   <div
-                    className={`mb-1 flex items-center gap-2 justify-between text-zinc-400`}
+                    className={`mb-1 flex items-center gap-2 justify-between`}
                   >
                     {/* Like button and likes number */}
                     <div className={`flex items-center gap-2`}>
@@ -108,7 +108,7 @@ const MomentsHistory = () => {
                       )}
                       <button
                         type="button"
-                        className=""
+                        className="btn btn-xs gap-2"
                         onClick={() => handleUpdateLikeStatus(moment)}
                       >
                         <ThumbsUp
@@ -123,16 +123,16 @@ const MomentsHistory = () => {
                     </div>
 
                     {/* Comment button and comments number */}
-                    <div className={`flex items-center gap-2 mb-0.5`}>
+                    <div className={`flex items-center gap-2`}>
                       {moment?.comments?.length > 0 && (
                         <p>{moment?.comments?.length} comments</p>
                       )}
                       <button
                         type="button"
-                        className="mt-1"
+                        className="btn btn-xs gap-2"
                         onClick={() => setActiveCommentMomentId(moment._id)}
                       >
-                        <MessageSquare size={20} />
+                        <MessageSquare className="text-zinc-400" size={20} />
                       </button>
                     </div>
                   </div>
