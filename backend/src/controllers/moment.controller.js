@@ -10,7 +10,7 @@ export const getMoments = async (req, res) => {
     let moments = [];
 
     // Get moments with moment poster info first
-    if (userId === "All") {
+    if (userId === "all") {
       moments = await Moment.find()
         // populate poster field with selected fields
         // it's kind of joining with User table

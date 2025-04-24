@@ -49,7 +49,7 @@ const ChatHeader = () => {
       return (
         <button className="btn btn-xs btn-outline gap-2 ml-1" disabled>
           <UserPlus className="size-4" />
-          <span className="hidden xl:inline">Connection sent</span>
+          <span className="hidden xl:inline">Pending</span>
         </button>
       );
     }
@@ -91,7 +91,6 @@ const ChatHeader = () => {
               </p>
 
               {/* Conditionally rendered connect button */}
-              {/* TODO: fix button size */}
               {renderConnectButton()}
 
               {/* View moments button */}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ThumbsUp, MessageSquare } from "lucide-react";
 import toast from "react-hot-toast";
+import { useParams } from "react-router-dom";
 
 import { useMomentStore } from "../../store/useMomentStore";
 import { useAuthStore } from "../../store/useAuthStore";
@@ -12,6 +13,7 @@ const MomentsHistory = () => {
   const { isMomentsLoading, moments, getMoments, updateLikeStatus } =
     useMomentStore();
   const { authUser } = useAuthStore();
+  const { id } = useParams();
 
   // Intialize this state in this component instead of CommentWriter
   // component because it will remember the commentText even if
@@ -20,8 +22,8 @@ const MomentsHistory = () => {
   const [activeCommentMomentId, setActiveCommentMomentId] = useState(null);
 
   useEffect(() => {
-    getMoments("All");
-  }, [getMoments]);
+    getMoments(id);
+  }, [id, getMoments]);
 
   // Update like status
   const handleUpdateLikeStatus = (moment) => {

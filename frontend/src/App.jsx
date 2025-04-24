@@ -58,7 +58,7 @@ const App = () => {
         />
 
         <Route
-          path="/moments"
+          path="/moments/:id"
           element={authUser ? <MomentsPage /> : <Navigate to="/login" />}
         />
         <Route

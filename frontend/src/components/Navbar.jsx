@@ -84,7 +84,7 @@ const Navbar = () => {
             {/* Moments, connection and profile button links */}
             {authUser && (
               <div className="flex items-center justify-center gap-2">
-                <Link to={"/moments"} className={`btn btn-sm gap-2`}>
+                <Link to={"/moments/all"} className={`btn btn-sm gap-2`}>
                   <Notebook className="size-5" />
                   <span className="hidden md:inline">Moments</span>
                 </Link>
