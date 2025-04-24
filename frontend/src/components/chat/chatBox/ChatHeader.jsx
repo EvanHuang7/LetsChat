@@ -1,19 +1,32 @@
 import React from "react";
 import { X, UserPlus, NotebookText } from "lucide-react";
 import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 
 import { useAuthStore } from "../../../store/useAuthStore";
 import { useChatStore } from "../../../store/useChatStore";
+import { useConnectionStore } from "../../../store/useConnectionStore";
 
 const ChatHeader = () => {
   const { selectedUser, setSelectedUser } = useChatStore();
   const { onlineUsers } = useAuthStore();
+  const { sendConnection } = useConnectionStore();
 
-  const handleConnectFriend = (userId) => {
-    // TODO: call update function
-    // Your logic here
-    console.log("Sending friend request to:", userId);
-    // Maybe call an API or update store state
+  const handleConnectFriend = (receiverId) => {
+    // Check receiverId is empty or not
+    if (receiverId) {
+      console.log("Function errored because of receving empty receiverId");
+      toast.error("Sorry, an error occurs");
+      return;
+    }
+
+    // Send a connection
+    sendConnection({
+      type: "friend",
+      receiverId: receiverId,
+      // TODO: update it after adding a send greeting message composer
+      message: "",
+    });
   };
 
   return (
