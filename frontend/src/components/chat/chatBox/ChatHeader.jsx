@@ -12,7 +12,7 @@ const ChatHeader = () => {
   const { onlineUsers } = useAuthStore();
   const { sendConnection } = useConnectionStore();
 
-  const handleConnectFriend = (receiverId) => {
+  const handleSendConnection = (receiverId) => {
     // Check receiverId is empty or not
     if (!receiverId) {
       console.log("Function errored because of receving empty receiverId");
@@ -57,7 +57,7 @@ const ChatHeader = () => {
     // default for "" and "rejected"
     return (
       <button
-        onClick={() => handleConnectFriend(selectedUser._id)}
+        onClick={() => handleSendConnection(selectedUser._id)}
         className="btn btn-xs btn-outline gap-2 ml-1"
       >
         <UserPlus className="size-4" />
@@ -91,6 +91,7 @@ const ChatHeader = () => {
               </p>
 
               {/* Conditionally rendered connect button */}
+              {/* TODO: fix button size */}
               {renderConnectButton()}
 
               {/* View moments button */}

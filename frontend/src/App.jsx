@@ -20,7 +20,6 @@ import { useChatStore } from "./store/useChatStore";
 const App = () => {
   // Get the needed variables and function from useAuthStore
   const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
-  const { subscribeToMessages, unsubscribeFromMessages } = useChatStore();
   const { theme } = useThemeStore();
 
   // Do something when application starts
@@ -31,19 +30,6 @@ const App = () => {
       // with a theme value for <html> tag
       document.documentElement.setAttribute("data-theme", theme);
   }, [checkAuth, theme]);
-
-  useEffect(() => {
-    // If auth granted,
-    if (authUser) {
-      // Call subscribeToMessages() to start listening to newMessage event
-      // for displaying unread message number
-      subscribeToMessages();
-
-      // Define a cleanup function. It will be run before the component is
-      // removed (unmounted) or before the effect re-runs (if dependencies change)
-      return () => unsubscribeFromMessages();
-    }
-  }, [authUser, subscribeToMessages, unsubscribeFromMessages]);
 
   // Display a loading state if it's checking the auth status
   if (isCheckingAuth && !authUser)

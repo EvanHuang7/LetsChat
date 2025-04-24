@@ -2,6 +2,7 @@ import { create } from "zustand";
 import toast from "react-hot-toast";
 
 import { axiosInstance } from "../lib/axios.js";
+import { useChatStore } from "./useChatStore";
 
 export const useConnectionStore = create((set, get) => ({
   connections: [],
@@ -69,7 +70,10 @@ export const useConnectionStore = create((set, get) => ({
       // Call the send connection endpoint
       await axiosInstance.post(`/connection/send`, data);
 
-      // TODO: update connection status for selectedUser
+      // Update connection status for selectedUser
+      const selectedUser = useChatStore.getState().selectedUser;
+      selectedUser.connectionStatus = "pending";
+      set({ selectedUser });
 
       toast("Friend connection sent sucessfully!", {
         icon: "🥳",

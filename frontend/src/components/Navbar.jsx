@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   LogOut,
@@ -10,10 +10,30 @@ import {
 } from "lucide-react";
 
 import { useAuthStore } from "../store/useAuthStore";
+import { useConnectionStore } from "../store/useConnectionStore";
+import { useChatStore } from "../store/useChatStore";
 
 const Navbar = () => {
   // Get the needed variables and function from useAuthStore
   const { authUser, logout } = useAuthStore();
+  const { subscribeToMessages, unsubscribeFromMessages } = useChatStore();
+  const { getConnections, pendingConnections } = useConnectionStore();
+
+  useEffect(() => {
+    // If user auth granted or a user logged in,
+    if (authUser) {
+      // Call subscribeToMessages() to start listening to newMessage event
+      // for displaying unread message number
+      subscribeToMessages();
+      // Call getConnections() to get the pending conversation number
+      // for displaying it in the navbar
+      getConnections();
+
+      // Define a cleanup function. It will be run before the component is
+      // removed (unmounted) or before the effect re-runs (if dependencies change)
+      return () => unsubscribeFromMessages();
+    }
+  }, [authUser, subscribeToMessages, getConnections, unsubscribeFromMessages]);
 
   return (
     <header
@@ -37,17 +57,30 @@ const Navbar = () => {
 
           {/* Right part */}
           <div className="flex items-center gap-2">
-            {/* Moments and profile */}
+            {/* Moments, connection and profile button links */}
             {authUser && (
               <div className="flex items-center justify-center gap-2">
                 <Link to={"/moments"} className={`btn btn-sm gap-2`}>
                   <Notebook className="size-5" />
                   <span className="hidden md:inline">Moments</span>
                 </Link>
-                <Link to={"/newconnections"} className={`btn btn-sm gap-2`}>
-                  <UserPlus className="size-5" />
-                  <span className="hidden md:inline">New Connections</span>
-                </Link>
+
+                {/* New Connections Button with badge */}
+                <div className="relative">
+                  <Link to={"/newconnections"} className="btn btn-sm gap-2">
+                    <UserPlus className="size-5" />
+                    <span className="hidden md:inline">New Connections</span>
+                  </Link>
+                  {pendingConnections.length > 0 && (
+                    <span
+                      className="absolute -top-1 -right-1 min-w-[1rem] h-4 px-1 text-[10px] sm:text-xs font-semibold 
+    text-white bg-red-500 rounded-full flex items-center justify-center shadow-md"
+                    >
+                      {pendingConnections.length}
+                    </span>
+                  )}
+                </div>
+
                 <Link to={"/profile"} className={`btn btn-sm gap-2`}>
                   <UserPen className="size-5" />
                   <span className="hidden md:inline">Profile</span>

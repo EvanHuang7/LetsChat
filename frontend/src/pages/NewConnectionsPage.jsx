@@ -4,16 +4,8 @@ import ConnectionCard from "../components/connections/ConnectionCard";
 import MomentSkeleton from "../components/skeletons/MomentSkeleton";
 
 const NewConnectionsPage = () => {
-  const {
-    getConnections,
-    isConnectionsLoading,
-    pendingConnections,
-    respondedConnections,
-  } = useConnectionStore();
-
-  useEffect(() => {
-    getConnections();
-  }, [getConnections]);
+  const { isConnectionsLoading, pendingConnections, respondedConnections } =
+    useConnectionStore();
 
   return (
     <div className="h-screen pt-20">

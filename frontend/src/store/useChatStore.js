@@ -136,6 +136,7 @@ export const useChatStore = create((set, get) => ({
     socket.off("newMessage");
   },
 
+  // Function to set selecte user with hydarted connectionStatus info
   setSelectedUser: async (selectedUser) => {
     // If select a user, get connection status between
     // logged in user and this selected user
