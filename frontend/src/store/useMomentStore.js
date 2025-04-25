@@ -32,8 +32,13 @@ export const useMomentStore = create((set, get) => ({
           )
       );
 
+      // No more moments
+      if (newMoments.length === 0) return false;
+
       // Update moments state with new moments
       set({ moments: [...currentMoments, ...newMoments] });
+      // Still has more moments
+      return true;
     } catch (error) {
       console.log("Error in getMoments: ", error);
       toast.error(error.response.data.message);

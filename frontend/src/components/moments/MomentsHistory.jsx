@@ -30,6 +30,7 @@ const MomentsHistory = forwardRef((props, ref) => {
 
   const [lastMomentCreatedAt, setLastMomentCreatedAt] = useState(null); // to track the last moment timestamp
   const [loadingMore, setLoadingMore] = useState(false); // to prevent multiple loads at the same time
+  const [hasMoreMoments, setHasMoreMoments] = useState(true);
 
   useEffect(() => {
     getMoments(id, { lastMomentCreatedAt: null });
@@ -63,12 +64,15 @@ const MomentsHistory = forwardRef((props, ref) => {
 
   // Load more moments when button is clicked or user scrolls to the bottom
   const loadMoreMoments = async () => {
-    if (loadingMore || !lastMomentCreatedAt) return; // Prevent multiple loads
+    if (loadingMore || !lastMomentCreatedAt || !hasMoreMoments) return; // Prevent multiple loads
 
     setLoadingMore(true);
     try {
       // Get moments older than the last moment created time
-      await getMoments(id, { lastMomentCreatedAt });
+      const stillHasMore = await getMoments(id, { lastMomentCreatedAt });
+      if (!stillHasMore) {
+        setHasMoreMoments(false);
+      }
     } catch (error) {
       console.log("Error in loadMoreMoments: ", error);
       toast.error("Failed to load more moments.");
@@ -199,7 +203,7 @@ const MomentsHistory = forwardRef((props, ref) => {
       )}
 
       {/* Show More Button */}
-      {!loadingMore && (
+      {hasMoreMoments && !loadingMore && moments.length > 0 && (
         <div className="text-center">
           <button
             type="button"
