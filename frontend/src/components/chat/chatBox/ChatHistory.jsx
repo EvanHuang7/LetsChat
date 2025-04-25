@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
+import { SmilePlus } from "lucide-react";
 
 import { useChatStore } from "../../../store/useChatStore";
 import { useAuthStore } from "../../../store/useAuthStore";
@@ -19,6 +20,12 @@ const ChatHistory = () => {
       messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [imagesLoaded, totalImages, messages]);
+
+  // Function for handling the click event on the "Add to sticker" button
+  const saveImageToGif = () => {
+    // Your save functionality here
+    console.log("Saving image to GIF...");
+  };
 
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -60,6 +67,38 @@ const ChatHistory = () => {
             )}
             {message.text && <p>{message.text}</p>}
           </div>
+          {/* Add to sticker button with tooltip */}
+          {message.image && (
+            <div className="relative group">
+              {/* Tooltip */}
+              <div
+                className={`absolute ${
+                  message.senderId === authUser._id
+                    ? "bottom-8 right-0 -rotate-15 "
+                    : "bottom-8 left-15 rotate-15 "
+                }  right-0 mx-auto text-center hidden group-hover:block`}
+              >
+                <div
+                  className={`animate-bounce text-orange-400 text-2xl font-black`}
+                >
+                  Add sticker!
+                </div>
+              </div>
+
+              {/* Button */}
+              <button
+                type="button"
+                onClick={() => saveImageToGif(message.image)}
+                className={`absolute btn btn-sm btn-circle text-zinc-500 hover:text-primary ${
+                  message.senderId === authUser._id
+                    ? "bottom-1 right-1"
+                    : "bottom-1 -right-22"
+                }`}
+              >
+                <SmilePlus size={20} />
+              </button>
+            </div>
+          )}
         </div>
       ))}
 
