@@ -10,7 +10,7 @@ const router = express.Router();
 
 // Get 10 moments with comments for one passed in userId or all users
 // USAGE: Display 10 moments in moments page
-router.post("/:id", protectRoute, getMoments);
+router.post("/get/:id", protectRoute, getMoments);
 
 // Post a moment for logged in user
 // USAGE: Post a moment from moment writer

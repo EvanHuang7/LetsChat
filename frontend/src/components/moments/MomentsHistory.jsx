@@ -4,7 +4,7 @@ import React, {
   forwardRef,
   useImperativeHandle,
 } from "react";
-import { ThumbsUp, MessageSquare, FilePlus } from "lucide-react";
+import { ThumbsUp, MessageSquare, FilePlus, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
 
@@ -203,7 +203,7 @@ const MomentsHistory = forwardRef((props, ref) => {
         <div className="text-center">
           <button
             type="button"
-            className="btn btn-primary gap-2 mt-2"
+            className="btn gap-2 mt-2"
             onClick={loadMoreMoments}
           >
             <FilePlus size={20} />
@@ -212,7 +212,12 @@ const MomentsHistory = forwardRef((props, ref) => {
         </div>
       )}
 
-      {loadingMore && <p className="text-center">Loading more moments...</p>}
+      {loadingMore && (
+        <div className="flex items-center justify-center gap-2 mt-3">
+          <Loader2 className="h-5 w-5 animate-spin" />
+          Loading...
+        </div>
+      )}
     </div>
   );
 });

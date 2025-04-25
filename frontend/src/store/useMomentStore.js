@@ -19,7 +19,7 @@ export const useMomentStore = create((set, get) => ({
       }
 
       // Call the get moment endpoint
-      const res = await axiosInstance.post(`/moment/${userId}`, data);
+      const res = await axiosInstance.post(`/moment/get/${userId}`, data);
 
       // Get current moments from state
       const currentMoments = get().moments;
