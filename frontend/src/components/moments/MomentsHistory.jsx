@@ -17,8 +17,13 @@ import CommentWriter from "./comments/CommentWriter";
 // "forwardRef((props, ref)" is used to expose method to parent component
 // "ref" is ref object as input from parent component
 const MomentsHistory = forwardRef((props, ref) => {
-  const { isMomentsLoading, moments, getMoments, updateLikeStatus } =
-    useMomentStore();
+  const {
+    isMomentsLoading,
+    moments,
+    getMoments,
+    updateLikeStatus,
+    clearMoments,
+  } = useMomentStore();
   const { authUser } = useAuthStore();
   const { id } = useParams();
 
@@ -33,8 +38,10 @@ const MomentsHistory = forwardRef((props, ref) => {
   const [hasMoreMoments, setHasMoreMoments] = useState(true);
 
   useEffect(() => {
+    // Clear old moments if switching userId in url
+    clearMoments();
     getMoments(id, { lastMomentCreatedAt: null });
-  }, [id, getMoments]);
+  }, [id, getMoments, clearMoments]);
 
   useEffect(() => {
     // Update lastMomentCreatedAt whenever moments change

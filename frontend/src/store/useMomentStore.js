@@ -113,4 +113,8 @@ export const useMomentStore = create((set, get) => ({
       toast.error(error.response.data.message);
     }
   },
+
+  clearMoments: () => {
+    set({ moments: [] });
+  },
 }));
