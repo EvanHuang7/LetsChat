@@ -75,7 +75,12 @@ const Navbar = () => {
                   </span>
                 )}
               </div>
-              <h1 className="text-lg font-bold">LetsChat</h1>
+              <h1
+                className="text-lg font-bold hidden sm:block"
+                style={{ display: window.innerWidth < 430 ? "none" : "block" }}
+              >
+                LetsChat
+              </h1>
             </Link>
           </div>
 

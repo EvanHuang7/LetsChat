@@ -176,7 +176,14 @@ const MomentsHistory = forwardRef((props, ref) => {
                     {/* Comment button and comments number */}
                     <div className={`flex items-center gap-2`}>
                       {moment?.comments?.length > 0 && (
-                        <p>{moment?.comments?.length} comments</p>
+                        <p
+                          className="hidden sm:block"
+                          style={{
+                            display: window.innerWidth < 430 ? "none" : "block",
+                          }}
+                        >
+                          {moment?.comments?.length} comments
+                        </p>
                       )}
                       <button
                         type="button"
