@@ -1,5 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { ThumbsUp, MessageSquare } from "lucide-react";
+import React, {
+  useEffect,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
+import { ThumbsUp, MessageSquare, FilePlus } from "lucide-react";
 import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
 
@@ -9,7 +14,9 @@ import MomentSkeleton from "../skeletons/MomentSkeleton";
 import CommentsHistory from "./comments/CommentsHistory";
 import CommentWriter from "./comments/CommentWriter";
 
-const MomentsHistory = () => {
+// "forwardRef((props, ref)" is used to expose method to parent component
+// "ref" is ref object as input from parent component
+const MomentsHistory = forwardRef((props, ref) => {
   const { isMomentsLoading, moments, getMoments, updateLikeStatus } =
     useMomentStore();
   const { authUser } = useAuthStore();
@@ -21,9 +28,20 @@ const MomentsHistory = () => {
   const [commentText, setCommentText] = useState("");
   const [activeCommentMomentId, setActiveCommentMomentId] = useState(null);
 
+  const [lastMomentCreatedAt, setLastMomentCreatedAt] = useState(null); // to track the last moment timestamp
+  const [loadingMore, setLoadingMore] = useState(false); // to prevent multiple loads at the same time
+
   useEffect(() => {
-    getMoments(id, null);
+    getMoments(id, { lastMomentCreatedAt: null });
   }, [id, getMoments]);
+
+  useEffect(() => {
+    // Update lastMomentCreatedAt whenever moments change
+    if (moments.length > 0) {
+      const lastMoment = moments[moments.length - 1];
+      setLastMomentCreatedAt(lastMoment.createdAt); // Update with last moment's createdAt timestamp
+    }
+  }, [moments]);
 
   // Update like status
   const handleUpdateLikeStatus = (moment) => {
@@ -42,6 +60,28 @@ const MomentsHistory = () => {
       like: !moment.userIdsOfLike.includes(authUser._id),
     });
   };
+
+  // Load more moments when button is clicked or user scrolls to the bottom
+  const loadMoreMoments = async () => {
+    if (loadingMore || !lastMomentCreatedAt) return; // Prevent multiple loads
+
+    setLoadingMore(true);
+    try {
+      // Get moments older than the last moment created time
+      await getMoments(id, { lastMomentCreatedAt });
+    } catch (error) {
+      console.log("Error in loadMoreMoments: ", error);
+      toast.error("Failed to load more moments.");
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
+  // Built-in function useImperativeHandle is used to expose
+  // state variables and methods to parent component
+  useImperativeHandle(ref, () => ({
+    loadMoreMoments,
+  }));
 
   if (isMomentsLoading) {
     return (
@@ -158,9 +198,23 @@ const MomentsHistory = () => {
         </div>
       )}
 
-      {/* TODO: add a show more comment button to call a loadMoreMoment(last moment created time in the moments list)  triggered by user scroll to the bottom of page */}
+      {/* Show More Button */}
+      {!loadingMore && (
+        <div className="text-center">
+          <button
+            type="button"
+            className="btn btn-primary gap-2 mt-2"
+            onClick={loadMoreMoments}
+          >
+            <FilePlus size={20} />
+            Show more moments
+          </button>
+        </div>
+      )}
+
+      {loadingMore && <p className="text-center">Loading more moments...</p>}
     </div>
   );
-};
+});
 
 export default MomentsHistory;

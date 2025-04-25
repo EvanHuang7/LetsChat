@@ -13,10 +13,27 @@ export const useMomentStore = create((set, get) => ({
   // Call API function to get 10 moments of all users or specific user
   getMoments: async (userId, data) => {
     try {
-      set({ isMomentsLoading: true });
+      // Only display the moment skeletons when arrving this page
+      if (!data.lastMomentCreatedAt) {
+        set({ isMomentsLoading: true });
+      }
+
       // Call the get moment endpoint
       const res = await axiosInstance.post(`/moment/${userId}`, data);
-      set({ moments: res.data });
+
+      // Get current moments from state
+      const currentMoments = get().moments;
+
+      // Filter out moments that are already in the current moments by checking _id
+      const newMoments = res.data.filter(
+        (moment) =>
+          !currentMoments.some(
+            (existingMoment) => existingMoment._id === moment._id
+          )
+      );
+
+      // Update moments state with new moments
+      set({ moments: [...currentMoments, ...newMoments] });
     } catch (error) {
       console.log("Error in getMoments: ", error);
       toast.error(error.response.data.message);

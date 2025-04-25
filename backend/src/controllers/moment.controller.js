@@ -10,10 +10,7 @@ export const getMoments = async (req, res) => {
     // Get userId from url param
     const { id: userId } = req.params;
     // Get lastMomentCreatedAt from reqest body
-    let lastMomentCreatedAt;
-    if (req.body) {
-      lastMomentCreatedAt = req.body;
-    }
+    const { lastMomentCreatedAt } = req.body;
 
     // Parse the timestamp if it's provided
     const createdBefore = lastMomentCreatedAt
