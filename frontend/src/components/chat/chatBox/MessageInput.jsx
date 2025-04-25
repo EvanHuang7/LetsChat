@@ -1,12 +1,25 @@
 import React, { useState, useRef } from "react";
-import { Image, Send, X } from "lucide-react";
+import { Image, Send, X, Smile } from "lucide-react";
 import toast from "react-hot-toast";
 
 import { useChatStore } from "../../../store/useChatStore";
 
+// Dummy saved GIFs array — replace with real data from your store
+const savedGifs = [
+  "https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif",
+  "https://media.giphy.com/media/l0HlNQ03J5JxX6lva/giphy.gif",
+  "https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif",
+  "https://res.cloudinary.com/dapo3wc6o/image/upload/v1745183404/xpu4r8i3zqujwmxk10m5.gif",
+  "https://res.cloudinary.com/dapo3wc6o/image/upload/v1745182310/w0qmo5xpaieqp7gdmi59.gif",
+  "https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif",
+  "https://res.cloudinary.com/dapo3wc6o/image/upload/v1745183357/gncezmzkn9mzhbcyzjve.gif",
+  "https://media.giphy.com/media/l0HlNQ03J5JxX6lva/giphy.gif",
+];
+
 const MessageInput = () => {
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
+  const [showGifPicker, setShowGifPicker] = useState(false);
   const fileInputRef = useRef(null);
 
   const { sendMessage } = useChatStore();
@@ -58,8 +71,40 @@ const MessageInput = () => {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  const handleSendGifImage = (gifUrl) => {
+    sendMessage({ text: "", image: gifUrl });
+    setShowGifPicker(false);
+  };
+
   return (
-    <div className="p-4 w-full">
+    <div className="p-4 w-full relative">
+      {/* GIF picker container */}
+      {showGifPicker && (
+        <div
+          className="
+            absolute bottom-16 left-0 w-72 sm:w-[400px]
+            bg-base-200 p-3 rounded-lg shadow-md z-50
+            grid grid-cols-2 sm:grid-cols-4 gap-2
+            max-h-40 sm:max-h-none overflow-y-auto
+          "
+        >
+          {savedGifs.map((gif, idx) => (
+            <img
+              key={idx}
+              src={gif}
+              alt={`GIF ${idx}`}
+              className="
+                w-full
+                h-20 sm:h-28
+                object-cover cursor-pointer
+                rounded-md border border-zinc-300
+              "
+              onClick={() => handleSendGifImage(gif)}
+            />
+          ))}
+        </div>
+      )}
+
       {/* Image preview */}
       {imagePreview && (
         <div className="mb-3 flex items-center gap-2">
@@ -71,8 +116,7 @@ const MessageInput = () => {
             />
             <button
               onClick={removeImage}
-              className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-base-300
-              flex items-center justify-center"
+              className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-base-300 flex items-center justify-center"
               type="button"
             >
               <X className="size-3" />
@@ -82,8 +126,16 @@ const MessageInput = () => {
       )}
 
       <form onSubmit={handleSendMessage} className="flex items-center gap-2">
+        {/* Gif Button */}
+        <button
+          type="button"
+          onClick={() => setShowGifPicker(!showGifPicker)}
+          className="btn btn-sm btn-circle text-zinc-500 hover:text-primary"
+        >
+          <Smile size={20} />
+        </button>
+
         <div className="flex-1 flex gap-2">
-          {/* Input text field */}
           <input
             type="text"
             className="w-full input input-bordered rounded-lg input-sm sm:input-md"
@@ -91,7 +143,6 @@ const MessageInput = () => {
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
-          {/* Hidden input image field */}
           <input
             type="file"
             accept="image/*"
@@ -99,17 +150,17 @@ const MessageInput = () => {
             ref={fileInputRef}
             onChange={handleImageChange}
           />
-          {/* Upload image button, controls hidden input image field */}
           <button
             type="button"
-            className={`hidden sm:flex btn btn-circle
-                     ${imagePreview ? "text-emerald-500" : "text-zinc-400"}`}
+            className={`hidden sm:flex btn btn-circle ${
+              imagePreview ? "text-emerald-500" : "text-zinc-400"
+            }`}
             onClick={() => fileInputRef.current?.click()}
           >
             <Image size={20} />
           </button>
         </div>
-        {/* Send message button */}
+
         <button
           type="submit"
           className="btn btn-sm btn-circle"
