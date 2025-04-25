@@ -26,6 +26,8 @@ export const getMoments = async (req, res) => {
       query.createdAt = { $lt: createdBefore };
     }
 
+    // TODO: Update limit to 10 after finishing test
+
     // Get moments with moment poster info first
     const moments = await Moment.find(query)
       .populate("posterId", "fullName profilePic")
