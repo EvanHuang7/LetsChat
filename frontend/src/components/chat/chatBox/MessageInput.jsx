@@ -82,7 +82,7 @@ const MessageInput = () => {
       {showGifPicker && (
         <div
           className="
-            absolute bottom-16 left-0 w-72 sm:w-[400px]
+            absolute bottom-16 left-0 w-72 sm:w-[500px]
             bg-base-200 p-3 rounded-lg shadow-md z-50
             grid grid-cols-2 sm:grid-cols-4 gap-2
             max-h-40 sm:max-h-none overflow-y-auto
