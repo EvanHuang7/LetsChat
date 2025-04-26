@@ -81,10 +81,19 @@ export const postMoment = async (req, res) => {
 
     // Check image in request is empty or not
     let imageUrl;
+
     if (image) {
-      // Upload base64 image to cloudinary if it's not empty
-      const uploadResult = await cloudinary.uploader.upload(image);
-      imageUrl = uploadResult.secure_url;
+      // Check if the image is already a Cloudinary hosted URL
+      const isCloudinaryUrl = image.startsWith("https://res.cloudinary.com/");
+
+      // Use existing URL directly to avoid uploading again for saving space
+      if (isCloudinaryUrl) {
+        imageUrl = image;
+      } else {
+        // Upload base64 image to Cloudinary
+        const uploadResult = await cloudinary.uploader.upload(image);
+        imageUrl = uploadResult.secure_url;
+      }
     }
 
     // Create this new moment
