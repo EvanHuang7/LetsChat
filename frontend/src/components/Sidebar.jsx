@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Users } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
@@ -16,12 +17,25 @@ const Sidebar = () => {
   } = useChatStore();
   const { onlineUsers } = useAuthStore();
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
+  const navigate = useNavigate();
+  // Grabs the userId from "/:userId" route
+  const { userId } = useParams();
 
   // Do something when sidebar component starts
   useEffect(() => {
     // Call getUsers() function to get users list for sidebar
     getUsers();
   }, [getUsers]);
+
+  // When userId found from "/:userId" route
+  useEffect(() => {
+    if (users.length > 0 && userId) {
+      const foundUser = users.find((user) => user._id === userId);
+      if (foundUser) {
+        setSelectedUser(foundUser);
+      }
+    }
+  }, [users, userId, setSelectedUser]);
 
   // Set filteredUsers according to showOnlineOnly bool field
   const filteredUsers = showOnlineOnly
@@ -62,7 +76,10 @@ const Sidebar = () => {
         {filteredUsers.map((user) => (
           <button
             key={user._id}
-            onClick={() => setSelectedUser(user)}
+            onClick={() => {
+              setSelectedUser(user);
+              navigate(`/${user._id}`);
+            }}
             className={`
               w-full p-3 flex items-center gap-3
               hover:bg-base-300 transition-colors

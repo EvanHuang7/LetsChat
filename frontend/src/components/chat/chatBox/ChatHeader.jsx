@@ -1,6 +1,6 @@
 import React from "react";
 import { X, UserPlus, NotebookText, UserCheck } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 import { useAuthStore } from "../../../store/useAuthStore";
@@ -11,6 +11,7 @@ const ChatHeader = () => {
   const { selectedUser, setSelectedUser } = useChatStore();
   const { onlineUsers } = useAuthStore();
   const { sendConnection } = useConnectionStore();
+  const navigate = useNavigate();
 
   const handleSendConnection = (selectedUserId) => {
     // Check selectedUserId is empty or not
@@ -106,7 +107,12 @@ const ChatHeader = () => {
         </div>
 
         {/* Close button */}
-        <button onClick={() => setSelectedUser(null)}>
+        <button
+          onClick={() => {
+            setSelectedUser(null);
+            navigate(`/`);
+          }}
+        >
           <X />
         </button>
       </div>
