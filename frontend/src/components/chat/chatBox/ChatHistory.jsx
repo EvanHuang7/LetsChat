@@ -61,7 +61,11 @@ const ChatHistory = () => {
               <img
                 src={message.image}
                 alt="Attachment"
-                className="sm:max-w-[300px] rounded-md mb-2"
+                style={{
+                  maxWidth: window.innerWidth < 430 ? "80px" : "200px",
+                  minWidth: window.innerWidth < 430 ? "60px" : "120px",
+                }}
+                className="md:max-w-[250px] rounded-md mb-2 object-contain"
                 onLoad={() => setImagesLoaded((prev) => prev + 1)}
               />
             )}
