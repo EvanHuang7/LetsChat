@@ -183,9 +183,10 @@ export const updateStickers = async (req, res) => {
       });
     }
 
-    if (stickerIndex === undefined || stickerIndex === null) {
+    // Only deleting a sticker neeed to pass a stickerIndex
+    if (!add && (stickerIndex === undefined || stickerIndex === null)) {
       return res.status(400).json({
-        message: "StickerIndex is required",
+        message: "StickerIndex is required when deleting a sticker",
       });
     }
 

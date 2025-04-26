@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
 import { SmilePlus } from "lucide-react";
+import toast from "react-hot-toast";
 
 import { useChatStore } from "../../../store/useChatStore";
 import { useAuthStore } from "../../../store/useAuthStore";
@@ -7,7 +8,7 @@ import { formatMessageTime } from "../../../lib/utils";
 
 const ChatHistory = () => {
   const { messages, selectedUser } = useChatStore();
-  const { authUser } = useAuthStore();
+  const { authUser, updateStickers } = useAuthStore();
   const messageEndRef = useRef(null);
   const [imagesLoaded, setImagesLoaded] = useState(0);
 
@@ -22,9 +23,21 @@ const ChatHistory = () => {
   }, [imagesLoaded, totalImages, messages]);
 
   // Function for handling the click event on the "Add to sticker" button
-  const saveImageToGif = () => {
-    // Your save functionality here
-    console.log("Saving image to GIF...");
+  const saveImageToGif = (imageUrl) => {
+    // Check input
+    if (!imageUrl) {
+      console.log("Function errored because sticker url is required");
+      toast.error("Sorry, an error occurs");
+      return;
+    }
+
+    // Call updateStickers api function
+    updateStickers({
+      add: true,
+      stickerUrl: imageUrl,
+    });
+
+    toast.success("Sticker added!");
   };
 
   return (
