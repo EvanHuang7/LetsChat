@@ -1,6 +1,21 @@
 import Conversation from "../models/conversation.model.js";
 import cloudinary from "../lib/cloudinary.js";
 
+// The service function to get a conversation
+export const getConversationService = async ({ conversationId }) => {
+  // Validate if the conversationId exists
+  if (!conversationId) {
+    throw new Error("ConversationId is required");
+  }
+
+  const conversation = await Conversation.findById(conversationId).populate(
+    "userIds",
+    "fullName profilePic"
+  ); // Populate users info
+
+  return conversation;
+};
+
 // The service function to create a conversation
 export const createConversationService = async ({
   userIds,
@@ -29,6 +44,25 @@ export const createConversationService = async ({
   ).populate("userIds", "fullName profilePic");
 
   return hydratedConversation;
+};
+
+// The service function to increase latestSentMessageSequence field
+export const increaselatestSentMessageSequenceService = async ({
+  conversationId,
+}) => {
+  // Validate if the conversationId exists
+  if (!conversationId) {
+    throw new Error("ConversationId is required");
+  }
+
+  // Run query to increase latestSentMessageSequence
+  const updatedConversation = await Conversation.findByIdAndUpdate(
+    conversationId,
+    { $inc: { latestSentMessageSequence: 1 } },
+    { new: true }
+  ).populate("userIds", "fullName profilePic"); // Populate users info;
+
+  return updatedConversation;
 };
 
 // The service function to update a group conversation

@@ -1,6 +1,8 @@
 import Conversation from "../models/conversation.model.js";
 import {
+  getConversationService,
   createConversationService,
+  increaselatestSentMessageSequenceService,
   updateGroupConversationService,
 } from "../services/conversation.service.js";
 
@@ -11,10 +13,10 @@ export const getConversation = async (req, res) => {
     // Get conversationId from url query param
     const { id: conversationId } = req.params;
 
-    const conversation = await Conversation.findById(conversationId).populate(
-      "userIds",
-      "fullName profilePic"
-    ); // Populate users info
+    // Call the service function to get the conversation
+    const conversation = await getConversationService({
+      conversationId,
+    });
 
     res.status(200).json(conversation);
   } catch (error) {
@@ -58,19 +60,10 @@ export const increaselatestSentMessageSequence = async (req, res) => {
     // Get conversationId from reqest body
     const { conversationId } = req.body;
 
-    // Check the inputs from request body
-    if (!conversationId) {
-      return res.status(400).json({
-        message: "ConversationId is required",
-      });
-    }
-
-    // Run query to increase latestSentMessageSequence
-    const updatedConversation = await Conversation.findByIdAndUpdate(
+    // Call the service function
+    const updatedConversation = await increaselatestSentMessageSequenceService({
       conversationId,
-      { $inc: { latestSentMessageSequence: 1 } },
-      { new: true }
-    ).populate("userIds", "fullName profilePic"); // Populate users info;
+    });
 
     res.status(200).json(updatedConversation);
   } catch (error) {
