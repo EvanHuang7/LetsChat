@@ -154,9 +154,6 @@ const MomentsHistory = forwardRef((props, ref) => {
                   >
                     {/* Like button and likes number */}
                     <div className={`flex items-center gap-2`}>
-                      {moment?.userIdsOfLike?.length > 0 && (
-                        <p>{moment?.userIdsOfLike?.length} likes </p>
-                      )}
                       <button
                         type="button"
                         className="btn btn-xs gap-2"
@@ -171,6 +168,9 @@ const MomentsHistory = forwardRef((props, ref) => {
                           size={20}
                         />
                       </button>
+                      {moment?.userIdsOfLike?.length > 0 && (
+                        <p>{moment?.userIdsOfLike?.length}</p>
+                      )}
                     </div>
 
                     {/* Comment button and comments number */}

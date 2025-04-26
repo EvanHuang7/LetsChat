@@ -103,14 +103,6 @@ const MessageInput = () => {
     setShowGifPicker(false);
   };
 
-  const handleDeleteGif = (gifUrl) => {
-    setGifToDelete(gifUrl);
-  };
-
-  const cancelDeleteGif = () => {
-    setGifToDelete(null);
-  };
-
   const confirmDeleteGif = () => {
     if (gifToDelete) {
       setGifs((prevGifs) => prevGifs.filter((gif) => gif !== gifToDelete));
@@ -148,7 +140,7 @@ const MessageInput = () => {
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleDeleteGif(gif);
+                  setGifToDelete(gif);
                 }}
                 className="
                   hidden group-hover:flex absolute top-1 right-1
@@ -181,7 +173,7 @@ const MessageInput = () => {
             <form method="dialog" className="flex gap-3">
               <button
                 type="button"
-                onClick={cancelDeleteGif}
+                onClick={() => setGifToDelete(null)}
                 className="btn btn-sm bg-gray-200 hover:bg-gray-300 text-black"
               >
                 Cancel
