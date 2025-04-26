@@ -36,6 +36,7 @@ app.use(
 // Set up API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/connection", connectionRoutes);
+app.use("/api/conversation", conversationRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/moment", momentRoutes);
 app.use("/api/comment", commentRoutes);
