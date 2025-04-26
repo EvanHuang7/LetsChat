@@ -20,10 +20,15 @@ const connectionSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    // TODO: change to groupId and refer to new
-    // group table and not required because friend does not group
+    // TODO: remove it because it's depcreated
     groupName: {
       type: String,
+    },
+    // It's not required because we don't have conversationId yet when
+    // 2 users are not friend
+    groupConversationId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Conversation",
     },
     message: {
       type: String,

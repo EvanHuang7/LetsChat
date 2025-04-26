@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 import User from "../models/user.model.js";
 import Connection from "../models/connection.model.js";
+import {
+  createConversationService,
+  updateGroupConversationService,
+} from "../services/conversation.service.js";
 
 // Get all connection records (friends and groups)
 // for logged in user as receiver.
@@ -186,9 +190,32 @@ export const updateConnectionStatus = async (req, res) => {
       { new: true }
     );
 
-    // TODO: If accepted, need to create a new chat or add
-    // reciever into the group after adding Chat and Group table
-    // NOTE: Run it asynchronously
+    // If accepted, create or update conversation asynchronously
+    if (status === "accepted") {
+      // Create a private conversation
+      if (type === "friend") {
+        createConversationService({
+          userIds: [updatedConnection.senderId, updatedConnection.receiverId],
+          isGroup: false,
+        }).catch((err) => {
+          console.error(
+            "Error creating private conversation asynchronously:",
+            err.message
+          );
+        });
+        // Add receiverId to group conversation
+      } else {
+        updateGroupConversationService({
+          conversationId: updatedConnection.groupConversationId,
+          userId: updatedConnection.receiverId,
+        }).catch((err) => {
+          console.error(
+            "Error adding logged in user to group conversation asynchronously:",
+            err.message
+          );
+        });
+      }
+    }
 
     // Hydrate updatedConnection with sender info beofre return it
     const user = await User.findById(updatedConnection.senderId).select(
