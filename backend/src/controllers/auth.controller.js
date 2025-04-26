@@ -181,16 +181,17 @@ export const updateStickers = async (req, res) => {
       });
     }
 
-    if (!stickerIndex) {
+    if (stickerIndex === undefined || stickerIndex === null) {
       return res.status(400).json({
         message: "StickerIndex is required",
       });
     }
 
+    // Clone current stickers list
     let updatedUserStickers = [...req.user.stickers];
     // If add a new sticker
     if (add) {
-      if (currentUserStickers.length < 8) {
+      if (updatedUserStickers.length < 8) {
         updatedUserStickers.push(stickerUrl);
         // Return error if user already has 8 stickers
       } else {
@@ -198,17 +199,18 @@ export const updateStickers = async (req, res) => {
           message: "Sorry, a user can only has up to 8 stickers.",
         });
       }
-      // If delete a existing sticker
+      // If delete an existing sticker
     } else {
       // Only remove the sticker when stickerUrl and
       // stickerIndex are matched in the list.
       if (updatedUserStickers[stickerIndex] === stickerUrl) {
         // Remove 1 item at stickerIndex
         updatedUserStickers.splice(stickerIndex, 1);
+      } else {
+        return res.status(400).json({
+          message: "Sorry, Sticker not found at the provided position.",
+        });
       }
-      return res.status(400).json({
-        message: "Sorry, something went wrong when deleting this sticker.",
-      });
     }
 
     // Update the user stickers in database
