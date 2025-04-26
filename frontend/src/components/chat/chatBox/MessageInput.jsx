@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { Image, Send, X, Smile } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { Image, Send, X, Smile, Trash } from "lucide-react";
 import toast from "react-hot-toast";
 
 import { useChatStore } from "../../../store/useChatStore";
@@ -20,9 +20,36 @@ const MessageInput = () => {
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const [showGifPicker, setShowGifPicker] = useState(false);
+  const [gifs, setGifs] = useState(savedGifs); // useState for GIFs
+  const [gifToDelete, setGifToDelete] = useState(null);
+
   const fileInputRef = useRef(null);
+  const gifPickerRef = useRef(null);
 
   const { sendMessage } = useChatStore();
+
+  // Click outside area to close gif container if gif container is open
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Prevent closing GIF picker if the delete gif confirm modal is open
+      if (gifToDelete) return;
+
+      if (
+        gifPickerRef.current &&
+        !gifPickerRef.current.contains(event.target)
+      ) {
+        setShowGifPicker(false);
+      }
+    };
+
+    if (showGifPicker) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showGifPicker, gifToDelete]);
 
   const handleImageChange = (event) => {
     // Get image file of user selected and check it
@@ -76,11 +103,28 @@ const MessageInput = () => {
     setShowGifPicker(false);
   };
 
+  const handleDeleteGif = (gifUrl) => {
+    setGifToDelete(gifUrl);
+  };
+
+  const cancelDeleteGif = () => {
+    setGifToDelete(null);
+  };
+
+  const confirmDeleteGif = () => {
+    if (gifToDelete) {
+      setGifs((prevGifs) => prevGifs.filter((gif) => gif !== gifToDelete));
+      setGifToDelete(null);
+      toast.success("GIF deleted!");
+    }
+  };
+
   return (
     <div className="p-4 w-full relative">
-      {/* GIF picker container */}
+      {/* GIF container */}
       {showGifPicker && (
         <div
+          ref={gifPickerRef}
           className="
             absolute bottom-16 left-0 w-72 sm:w-[500px]
             bg-base-200 p-3 rounded-lg shadow-md z-50
@@ -88,22 +132,73 @@ const MessageInput = () => {
             max-h-40 sm:max-h-none overflow-y-auto
           "
         >
-          {savedGifs.map((gif, idx) => (
-            <img
-              key={idx}
-              src={gif}
-              alt={`GIF ${idx}`}
-              className="
-                w-full
-                h-20 sm:h-28
-                object-cover cursor-pointer
-                rounded-md border border-zinc-300
-              "
-              onClick={() => handleSendGifImage(gif)}
-            />
+          {gifs.map((gif, idx) => (
+            <div key={idx} className="relative group">
+              <img
+                src={gif}
+                alt={`GIF ${idx}`}
+                className="
+                  w-full h-20 sm:h-28 object-cover cursor-pointer
+                  rounded-md border border-zinc-300
+                "
+                onClick={() => handleSendGifImage(gif)}
+              />
+              {/* Delete Button */}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteGif(gif);
+                }}
+                className="
+                  hidden group-hover:flex absolute top-1 right-1
+                  w-5 h-5 bg-red-500 text-white rounded-full
+                  items-center justify-center text-xs
+                "
+              >
+                <Trash size={14} />
+              </button>
+            </div>
           ))}
         </div>
       )}
+
+      {/* Confirm Delete Modal */}
+      <dialog
+        id="delete_gif_modal"
+        className="modal"
+        open={gifToDelete !== null}
+      >
+        <div
+          className="modal-box max-w-xs sm:max-w-sm" // 👈 smaller modal size
+          onClick={(e) => e.stopPropagation()} // 👈 prevent closing on outside click
+        >
+          <h3 className="font-bold text-lg">Delete GIF?</h3>
+          <p className="py-4 text-zinc-600">
+            Are you sure you want to delete this GIF?
+          </p>
+          <div className="modal-action">
+            <form method="dialog" className="flex gap-3">
+              <button
+                type="button"
+                onClick={cancelDeleteGif}
+                className="btn btn-sm bg-gray-200 hover:bg-gray-300 text-black"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  confirmDeleteGif();
+                }}
+                className="btn btn-sm bg-red-500 hover:bg-red-600 text-white"
+              >
+                Delete
+              </button>
+            </form>
+          </div>
+        </div>
+      </dialog>
 
       {/* Image preview */}
       {imagePreview && (
