@@ -122,7 +122,20 @@ export const logout = (req, res) => {
   }
 };
 
+// Check if user is authenticated
+export const checkAuth = (req, res) => {
+  try {
+    res.status(200).json(req.user);
+  } catch (error) {
+    console.log("Error in checkAuth controller", error.message);
+    res.status(500).json({
+      message: "Interal server error",
+    });
+  }
+};
+
 // Update profile for logged in user
+// USAGE: update user profile picture in Profile page.
 export const updateProfile = async (req, res) => {
   try {
     const { profilePic } = req.body;
@@ -154,12 +167,60 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-// Check if user is authenticated
-export const checkAuth = (req, res) => {
+// Update stickers for logged in user
+// USAGE: add or delete a sticker from stickers list of user.
+export const updateStickers = async (req, res) => {
   try {
-    res.status(200).json(req.user);
+    const { add, stickerUrl, stickerIndex } = req.body;
+    const userId = req.user._id;
+
+    // Check the inputs from request body
+    if (!stickerUrl) {
+      return res.status(400).json({
+        message: "StickerUrl is required",
+      });
+    }
+
+    if (!stickerIndex) {
+      return res.status(400).json({
+        message: "StickerIndex is required",
+      });
+    }
+
+    let updatedUserStickers = [...req.user.stickers];
+    // If add a new sticker
+    if (add) {
+      if (currentUserStickers.length < 8) {
+        updatedUserStickers.push(stickerUrl);
+        // Return error if user already has 8 stickers
+      } else {
+        return res.status(400).json({
+          message: "Sorry, a user can only has up to 8 stickers.",
+        });
+      }
+      // If delete a existing sticker
+    } else {
+      // Only remove the sticker when stickerUrl and
+      // stickerIndex are matched in the list.
+      if (updatedUserStickers[stickerIndex] === stickerUrl) {
+        // Remove 1 item at stickerIndex
+        updatedUserStickers.splice(stickerIndex, 1);
+      }
+      return res.status(400).json({
+        message: "Sorry, something went wrong when deleting this sticker.",
+      });
+    }
+
+    // Update the user stickers in database
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { stickers: updatedUserStickers },
+      { new: true }
+    );
+
+    res.status(200).json(updatedUser);
   } catch (error) {
-    console.log("Error in checkAuth controller", error.message);
+    console.log("Error in updateStickers controller", error.message);
     res.status(500).json({
       message: "Interal server error",
     });
