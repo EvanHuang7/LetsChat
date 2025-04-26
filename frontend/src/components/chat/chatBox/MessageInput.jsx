@@ -143,9 +143,10 @@ const MessageInput = () => {
                   setGifToDelete(gif);
                 }}
                 className="
-                  hidden group-hover:flex absolute top-1 right-1
-                  w-5 h-5 bg-red-500 text-white rounded-full
+                  absolute top-1 right-1
+                  w-5 h-5  text-white rounded-full
                   items-center justify-center text-xs
+                  flex sm:hidden group-hover:flex
                 "
               >
                 <Trash size={14} />
