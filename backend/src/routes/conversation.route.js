@@ -11,7 +11,7 @@ const router = express.Router();
 
 // Get a conversation with conversationId in url param
 // USAGE: Display a conversation in chat container
-router.post("/get/:id", protectRoute, getConversation);
+router.get(":id", protectRoute, getConversation);
 
 // Create a conversation
 // USAGE: Create a conversation when a friend connection accepted or

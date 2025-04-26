@@ -1,15 +1,15 @@
-import User from "../models/user.model.js";
-import Moment from "../models/moment.model.js";
-import Comment from "../models/comment.model.js";
-import cloudinary from "../lib/cloudinary.js";
 import Conversation from "../models/conversation.model.js";
+import {
+  createConversationService,
+  updateGroupConversationService,
+} from "../services/conversation.service.js";
 
 // Get a conversation with conversationId in url param
 // USAGE: Display a conversation in chat container
 export const getConversation = async (req, res) => {
   try {
-    // Get conversationId from reqest body
-    const { conversationId } = req.body;
+    // Get conversationId from url query param
+    const { id: conversationId } = req.params;
 
     const conversation = await Conversation.findById(conversationId).populate(
       "userIds",
@@ -33,33 +33,16 @@ export const createConversation = async (req, res) => {
     // Get userIds, isGroup, groupName from reqest body
     const { userIds, isGroup, groupName } = req.body;
 
-    // Check the inputs from request body
-    if (!isGroup && userIds.length !== 2) {
-      return res.status(400).json({
-        message: "Private conversation should have two users",
-      });
-    }
-    if (isGroup && userIds.length >= 1) {
-      return res.status(400).json({
-        message: "Group conversation at least has 1 user",
-      });
-    }
-
-    // Create this new conversation
-    const newConversation = new Conversation({
+    const conversation = await createConversationService({
       userIds,
       isGroup,
       groupName,
     });
-    // Save this new conversation to database
-    await newConversation.save();
 
-    // Get hydrated new conversation with user information beofre return it
-    const Hydratedconversation = await Conversation.findById(
-      newConversation._id
-    ).populate("userIds", "fullName profilePic"); // Populate users info
+    // TODO: create ConversationReads entries for users after
+    // ConversationReads table created
 
-    res.status(201).json(Hydratedconversation);
+    res.status(201).json(conversation);
   } catch (error) {
     console.log("Error in createConversation controller", error.message);
     res.status(500).json({
@@ -109,55 +92,13 @@ export const updateGroupConversation = async (req, res) => {
     // Get userId, groupName, groupImage
     const { conversationId, userId, groupName, groupImage } = req.body;
 
-    // Check the inputs from request body
-    if (!conversationId) {
-      return res.status(400).json({
-        message: "ConversationId is required",
-      });
-    }
-
-    if (!userId && !groupName && !groupImage) {
-      return res.status(400).json({
-        message: "At least one group data field required",
-      });
-    }
-
-    // Find existing conversation
-    const conversation = await Conversation.findById(conversationId);
-
-    if (!conversation) {
-      return res.status(404).json({
-        message: "Conversation not found",
-      });
-    }
-
-    // Handle adding user
-    if (userId) {
-      if (conversation.userIds.length >= 100) {
-        return res.status(400).json({
-          message: "Cannot add more than 100 users to a group",
-        });
-      }
-
-      // Only add user if not already exists
-      if (!conversation.userIds.includes(userId)) {
-        conversation.userIds.addToSet(userId); // Mongoose array method
-      }
-    }
-
-    // Handle updating group name
-    if (groupName) {
-      conversation.groupName = groupName;
-    }
-
-    // Handle updating group image
-    if (groupImage) {
-      const uploadResult = await cloudinary.uploader.upload(groupImage);
-      conversation.groupPictureUrl = uploadResult.secure_url;
-    }
-
-    // Save updated conversation
-    const updatedConversation = await conversation.save();
+    // Call the service function to update the conversation
+    const updatedConversation = await updateGroupConversationService({
+      conversationId,
+      userId,
+      groupName,
+      groupImage,
+    });
 
     res.status(200).json(updatedConversation);
   } catch (error) {
