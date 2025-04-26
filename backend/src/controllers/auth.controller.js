@@ -55,6 +55,7 @@ export const signup = async (req, res) => {
         fullName: newUser.fullName,
         email: newUser.email,
         profilePic: newUser.profilePic,
+        stickers: newUser.stickers,
       });
     } else {
       res.status(400).json({
@@ -97,6 +98,7 @@ export const login = async (req, res) => {
       fullName: user.fullName,
       email: user.email,
       profilePic: user.profilePic,
+      stickers: user.stickers,
     });
   } catch (error) {
     console.log("Error in login controller", error.message);
@@ -156,7 +158,7 @@ export const updateProfile = async (req, res) => {
       userId,
       { profilePic: uploadResult.secure_url },
       { new: true }
-    );
+    ).select("-password");
 
     res.status(200).json(updatedUser);
   } catch (error) {
@@ -218,7 +220,7 @@ export const updateStickers = async (req, res) => {
       userId,
       { stickers: updatedUserStickers },
       { new: true }
-    );
+    ).select("-password");
 
     res.status(200).json(updatedUser);
   } catch (error) {
