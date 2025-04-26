@@ -3,22 +3,13 @@ import { Trash } from "lucide-react";
 import toast from "react-hot-toast";
 
 import { useChatStore } from "../../../store/useChatStore";
-
-// Dummy saved GIFs array — replace with real data from your store
-const savedGifs = [
-  "https://media.giphy.com/media/ICOgUNjpvO0PC/giphy.gif",
-  "https://media.giphy.com/media/l0HlNQ03J5JxX6lva/giphy.gif",
-  "https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif",
-  "https://res.cloudinary.com/dapo3wc6o/image/upload/v1745183404/xpu4r8i3zqujwmxk10m5.gif",
-  "https://res.cloudinary.com/dapo3wc6o/image/upload/v1745182310/w0qmo5xpaieqp7gdmi59.gif",
-  "https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif",
-  "https://res.cloudinary.com/dapo3wc6o/image/upload/v1745183357/gncezmzkn9mzhbcyzjve.gif",
-  "https://media.giphy.com/media/l0HlNQ03J5JxX6lva/giphy.gif",
-];
+import { useAuthStore } from "../../../store/useAuthStore";
 
 const GifsContainer = ({ showGifPicker, setShowGifPicker, gifButtonRef }) => {
-  const [gifs, setGifs] = useState(savedGifs); // useState for GIFs
+  const { authUser, updateStickers } = useAuthStore();
+  const [gifs, setGifs] = useState(null);
   const [gifToDelete, setGifToDelete] = useState(null);
+
   const { sendMessage } = useChatStore();
 
   const gifPickerRef = useRef(null);
@@ -45,7 +36,17 @@ const GifsContainer = ({ showGifPicker, setShowGifPicker, gifButtonRef }) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [showGifPicker, gifToDelete, setShowGifPicker]);
+  }, [
+    showGifPicker,
+    gifToDelete,
+    setShowGifPicker,
+    gifPickerRef,
+    gifButtonRef,
+  ]);
+
+  useEffect(() => {
+    setGifs(authUser.stickers);
+  }, [authUser]);
 
   const handleSendGifImage = (gifUrl) => {
     sendMessage({ text: "", image: gifUrl });
@@ -53,11 +54,28 @@ const GifsContainer = ({ showGifPicker, setShowGifPicker, gifButtonRef }) => {
   };
 
   const confirmDeleteGif = () => {
-    if (gifToDelete) {
-      setGifs((prevGifs) => prevGifs.filter((gif) => gif !== gifToDelete));
-      setGifToDelete(null);
-      toast.success("GIF deleted!");
+    // Check input
+    if (!gifToDelete?.gif) {
+      console.log("Function errored because sticker url is required");
+      toast.error("Sorry, an error occurs");
+      return;
     }
+    if (gifToDelete?.idx === undefined || gifToDelete?.idx === null) {
+      console.log("Function errored because sticker index is required");
+      toast.error("Sorry, an error occurs");
+      return;
+    }
+
+    // Call updateStickers api function
+    updateStickers({
+      add: false,
+      stickerUrl: gifToDelete.gif,
+      stickerIndex: gifToDelete.idx,
+    });
+
+    // Clear gifToDelete
+    setGifToDelete(null);
+    toast.success("Sticker deleted!");
   };
 
   return (
@@ -89,7 +107,10 @@ const GifsContainer = ({ showGifPicker, setShowGifPicker, gifButtonRef }) => {
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation();
-                  setGifToDelete(gif);
+                  setGifToDelete({
+                    gif: gif,
+                    idx: idx,
+                  });
                 }}
                 className="
                       absolute top-1 right-1
