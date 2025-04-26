@@ -121,6 +121,11 @@ export const useAuthStore = create((set, get) => ({
       // Call the update-stickers endpoint
       const res = await axiosInstance.put("/auth/update-stickers", data);
       set({ authUser: res.data });
+      if (data.add) {
+        toast.success("Sticker added!");
+      } else {
+        toast.success("Sticker deleted!");
+      }
     } catch (error) {
       console.log("Error in updateStickers: ", error);
       toast.error(error.response.data.message);

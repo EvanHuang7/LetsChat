@@ -36,8 +36,6 @@ const ChatHistory = () => {
       add: true,
       stickerUrl: imageUrl,
     });
-
-    toast.success("Sticker added!");
   };
 
   return (

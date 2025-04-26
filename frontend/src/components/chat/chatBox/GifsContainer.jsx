@@ -75,7 +75,6 @@ const GifsContainer = ({ showGifPicker, setShowGifPicker, gifButtonRef }) => {
 
     // Clear gifToDelete
     setGifToDelete(null);
-    toast.success("Sticker deleted!");
   };
 
   return (
