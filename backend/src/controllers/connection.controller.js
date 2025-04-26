@@ -95,17 +95,17 @@ export const sendConnection = async (req, res) => {
         message: "SelectedUserId is required",
       });
     }
-    if (type === "group" && !groupName) {
+    if (type === "group" && !groupConversationId) {
       return res.status(400).json({
-        message: "groupName is required when sending a group invite",
+        message: "groupConversationId is required when sending a group invite",
       });
     }
 
-    // Try to fetch any exsiting friend connection or same groupId
+    // Try to fetch any exsiting friend connection or same groupConversationId
     // inviation between 2 users
     const existingConnections = await Connection.find({
       type: type,
-      groupName: groupName,
+      groupConversationId: groupConversationId,
       $or: [
         { senderId: loggedInUserId, receiverId: selectedUserId },
         { senderId: selectedUserId, receiverId: loggedInUserId },
@@ -152,6 +152,7 @@ export const sendConnection = async (req, res) => {
       senderId: loggedInUserId,
       receiverId: selectedUserId,
       groupName,
+      groupConversationId: groupConversationId,
       message,
     });
     // Save this new connection to database
