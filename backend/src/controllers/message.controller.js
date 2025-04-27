@@ -1,18 +1,30 @@
-import User from "../models/user.model.js";
-import Message from "../models/message.model.js";
-import cloudinary from "../lib/cloudinary.js";
-import { io, getSocketIdByUserId } from "../lib/socket.js";
+import {
+  getUsersForSidebarService,
+  getMessagesService,
+  createMessageService,
+} from "../services/message.service.js";
+import {
+  increaselatestSentMessageSequenceService,
+  updateLatestSentMessageIdService,
+} from "../services/conversation.service.js";
+import { emitNewMessageEventService } from "../services/socket.service.js";
 
 // Get all users except for logged in user for side bar contact list
+// USAGE: Display all app users in sidebar
 export const getUsersForSidebar = async (req, res) => {
   try {
     // Get current logged in userId
     const loggedInUserId = req.user._id;
-    // Get the all fields info except for password field of
-    // all users that are not equal to logged in userId
-    const filteredUsers = await User.find({
-      _id: { $ne: loggedInUserId },
-    }).select("-password");
+
+    // Call service function to getall users
+    const { filteredUsers, error } = await getUsersForSidebarService({
+      loggedInUserId,
+    });
+    if (error) {
+      return res.status(400).json({
+        message: error,
+      });
+    }
 
     return res.status(200).json(filteredUsers);
   } catch (error) {
@@ -23,29 +35,23 @@ export const getUsersForSidebar = async (req, res) => {
   }
 };
 
-// Get all messages between the passed in userId in url and logged in user
+// Get all messages for a conversation with conversationId in url param
+// USAGE: Display all messages for a conversation in chat container
 export const getMessages = async (req, res) => {
   try {
-    // Get the userID from the url and rename this variable
-    // from id to userToChatId
-    const { id: userToChatId } = req.params;
+    // Get the conversationId from the url and rename this variable
+    // from id to conversationId
+    const { id: conversationId } = req.params;
 
-    // Get current logged in userId
-    const loggedInUserId = req.user._id;
-
-    // Find all messages between the userId in url and logged in user
-    const messages = await Message.find({
-      $or: [
-        {
-          senderId: loggedInUserId,
-          receiverId: userToChatId,
-        },
-        {
-          senderId: userToChatId,
-          receiverId: loggedInUserId,
-        },
-      ],
+    // Find all messages for the conversationId
+    const { messages, error } = await getMessagesService({
+      conversationId,
     });
+    if (error) {
+      return res.status(400).json({
+        message: error,
+      });
+    }
 
     return res.status(200).json(messages);
   } catch (error) {
@@ -56,60 +62,66 @@ export const getMessages = async (req, res) => {
   }
 };
 
-// Send a message (text or img) from logged in user to
-// the passed in userId in url
+// Send a message (text or img) from logged in user
+// in conversationId from url param
+// USAGE: User sends a message in a conversation
 export const sendMessage = async (req, res) => {
   try {
     // Get text or image from reqest body
     const { text, image } = req.body;
-
-    // Get the userID from the url and rename this variable
-    // from id to receiverId
-    const { id: receiverId } = req.params;
-
+    // Get the conversationId from the url and rename this variable
+    // from id to conversationId
+    const { id: conversationId } = req.params;
     // Get current logged in userId as senderId
     const senderId = req.user._id;
 
-    // Check the inputs from request body
-    if (!text && !image) {
+    // Increasee conversation latestSentMessageSequence by 1
+    const { conversation: updatedSeqConversation, error: updateSeqError } =
+      await increaselatestSentMessageSequenceService({
+        conversationId,
+      });
+    if (updateSeqError) {
       return res.status(400).json({
-        message: "At least provide text or image",
+        message: updateSeqError,
       });
     }
 
-    // Upload image if there is one
-    let imageUrl;
-    if (image) {
-      // Check if the image is already a Cloudinary hosted URL
-      const isCloudinaryUrl = image.startsWith("https://res.cloudinary.com/");
-
-      // Use existing URL directly to avoid uploading again for saving space
-      if (isCloudinaryUrl) {
-        imageUrl = image;
-      } else {
-        // Upload base64 image to Cloudinary
-        const uploadResult = await cloudinary.uploader.upload(image);
-        imageUrl = uploadResult.secure_url;
-      }
+    // Create new message with new sequence number from updatedSeqConversation
+    const { newMessage, error: createError } = await createMessageService({
+      conversationId,
+      senderId,
+      sequence: updatedSeqConversation.latestSentMessageSequence,
+      text,
+      image,
+    });
+    if (createError) {
+      return res.status(400).json({
+        message: createError,
+      });
     }
 
-    // Create this new message
-    const newMessage = new Message({
-      // We shorten "senderId: senderId" to senderId
-      senderId,
-      receiverId,
-      text,
-      image: imageUrl,
-    });
-    // Save this new message to database
-    await newMessage.save();
+    // Update conversation latestSentMessageId with new messageId
+    const { conversation: updatedConversation, error: updateMessageError } =
+      await updateLatestSentMessageIdService({
+        conversationId,
+        latestSentMessageId: newMessage._id,
+      });
+    if (updateMessageError) {
+      return res.status(400).json({
+        message: updateMessageError,
+      });
+    }
 
-    // Get the message receiver socketId from oneline userSocketMap
-    const messageReceiverSocketId = getSocketIdByUserId(receiverId);
-    // Only send this new message to the message receiver socket io client
-    // if user is oneline
-    if (receiverId) {
-      io.to(messageReceiverSocketId).emit("newMessage", newMessage);
+    // Emit newMessage to users of updatedConversation
+    const { error: emitEventError } = await emitNewMessageEventService({
+      userIds: updatedConversation.userIds,
+      senderId,
+      newMessage,
+    });
+    if (emitEventError) {
+      return res.status(400).json({
+        message: emitEventError,
+      });
     }
 
     return res.status(201).json(newMessage);
