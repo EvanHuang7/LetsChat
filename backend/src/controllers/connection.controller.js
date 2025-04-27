@@ -20,10 +20,10 @@ export const getConnections = async (req, res) => {
       .populate("senderId", "fullName profilePic")
       .sort({ createdAt: -1 });
 
-    res.status(200).json(connections);
+    return res.status(200).json(connections);
   } catch (error) {
     console.log("Error in getConnections controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Interal server error",
     });
   }
@@ -66,10 +66,10 @@ export const getSpecifiedConnection = async (req, res) => {
       ],
     });
 
-    res.status(200).json(connections);
+    return res.status(200).json(connections);
   } catch (error) {
     console.log("Error in getConnection controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Interal server error",
     });
   }
@@ -79,8 +79,9 @@ export const getSpecifiedConnection = async (req, res) => {
 // USAGE: send out a friend connection request in Chat box header.
 export const sendConnection = async (req, res) => {
   try {
-    // Get type, selectedUserId, groupName, message from reqest body
-    const { type, selectedUserId, groupName, message } = req.body;
+    // Get type, selectedUserId, groupName, groupConversationId, message from reqest body
+    const { type, selectedUserId, groupName, groupConversationId, message } =
+      req.body;
     // Get current logged in userId as loggedInUserId
     const loggedInUserId = req.user._id;
 
@@ -116,8 +117,15 @@ export const sendConnection = async (req, res) => {
     if (existingConnections.length > 0) {
       const existingConnection = existingConnections[0];
 
-      // TODO: return error if there are more than 1 existingConnections
-      // Theoretically it should have more than 1existingConnections
+      // Return error if there are more than 1 existingConnections
+      // Theoretically it should not have more than 1 existingConnections
+      if (existingConnections.length > 1) {
+        return res.status(500).json({
+          message:
+            "Sorry, error occurs beucase of more than 1 existing connections found",
+          existingConnections: existingConnections,
+        });
+      }
 
       // Change its staus to pending if it's status is rejected
       // OR return it directly if it's status is pending or accepted
@@ -158,10 +166,10 @@ export const sendConnection = async (req, res) => {
     // Save this new connection to database
     await newConnection.save();
 
-    res.status(201).json(newConnection);
+    return res.status(201).json(newConnection);
   } catch (error) {
     console.log("Error in sendConnection controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Interal server error",
     });
   }
@@ -233,10 +241,10 @@ export const updateConnectionStatus = async (req, res) => {
     let hydratedConnection = updatedConnection.toObject();
     hydratedConnection.senderId = user;
 
-    res.status(200).json(hydratedConnection);
+    return res.status(200).json(hydratedConnection);
   } catch (error) {
     console.log("Error in updateConnectionStatus controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Interal server error",
     });
   }
