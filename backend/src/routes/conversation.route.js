@@ -11,7 +11,7 @@ const router = express.Router();
 
 // Get a conversation with conversationId in url param
 // USAGE: Display a conversation in chat container
-router.get(":id", protectRoute, getConversation);
+router.get("/:id", protectRoute, getConversation);
 
 // Create a conversation
 // USAGE: Create a conversation when a friend connection accepted or
@@ -20,11 +20,15 @@ router.post("/create", protectRoute, createConversation);
 
 // Increase latestSentMessageSequence field of conversation
 // USAGE: Increase "latestSentMessageSequence" when a new message sent
-router.post("/update", protectRoute, increaselatestSentMessageSequence);
+router.post(
+  "/increase-message-seq",
+  protectRoute,
+  increaselatestSentMessageSequence
+);
 
 // Update group data of conversation
 // USAGE: Update "userIds" when adding new user to group or update "groupName"
 // or "groupImageUrl"
-router.post("/update", protectRoute, updateGroupConversation);
+router.post("/update-group", protectRoute, updateGroupConversation);
 
 export default router;

@@ -179,6 +179,15 @@ export const updateGroupConversationService = async ({
       };
     }
 
+    // Return error if existing conversation is private
+    if (!conversation.isGroup) {
+      return {
+        conversation: null,
+        error:
+          "Cannot update private conversation for group data field (userId, groupName, or groupImage)",
+      };
+    }
+
     // Handle adding user
     if (userId) {
       if (conversation.userIds.length >= 100) {

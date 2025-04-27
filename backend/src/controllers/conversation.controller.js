@@ -23,10 +23,10 @@ export const getConversation = async (req, res) => {
       });
     }
 
-    res.status(200).json(conversation);
+    return res.status(200).json(conversation);
   } catch (error) {
     console.log("Error in getConversation controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Interal server error",
     });
   }
@@ -71,10 +71,10 @@ export const createConversation = async (req, res) => {
     }
 
     // Return the created conversation
-    res.status(201).json(newConversation);
+    return res.status(201).json(newConversation);
   } catch (error) {
     console.log("Error in createConversation controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Interal server error",
     });
   }
@@ -98,13 +98,13 @@ export const increaselatestSentMessageSequence = async (req, res) => {
       });
     }
 
-    res.status(200).json(conversation);
+    return res.status(200).json(conversation);
   } catch (error) {
     console.log(
       "Error in increaselatestSentMessageSequence controller",
       error.message
     );
-    res.status(500).json({
+    return res.status(500).json({
       message: "Interal server error",
     });
   }
@@ -131,10 +131,10 @@ export const updateGroupConversation = async (req, res) => {
       });
     }
 
-    res.status(200).json(conversation);
+    return res.status(200).json(conversation);
   } catch (error) {
     console.log("Error in updateGroupConversation controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Interal server error",
     });
   }
