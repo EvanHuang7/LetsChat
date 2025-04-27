@@ -1,5 +1,6 @@
 import Conversation from "../models/conversation.model.js";
 import cloudinary from "../lib/cloudinary.js";
+import { createConvoInfoOfUserService } from "../services/convoInfoOfUser.service.js";
 
 // The service function to get a conversation
 export const getConversationService = async ({ conversationId }) => {
@@ -93,6 +94,21 @@ export const createConversationService = async ({
       groupName,
     });
     await newConversation.save();
+
+    // Create convoInfoOfUser records for all userIds asynchronously
+    userIds.forEach((userId) => {
+      createConvoInfoOfUserService({
+        userId,
+        conversationId: newConversation._id,
+      }).catch((err) => {
+        console.error(
+          "Error creating convoInfoOfUser asynchronously for userId:",
+          userId,
+          "error:",
+          err.message
+        );
+      });
+    });
 
     // Get hydrated new conversation with user information before returning it
     const hydratedConversation = await Conversation.findById(
@@ -191,7 +207,7 @@ export const updateGroupConversationService = async ({
   groupImage,
 }) => {
   try {
-    let createConversationReadsRecord = false;
+    let createConvoInfoOfUserRecord = false;
 
     // Validate if the conversationId exists
     if (!conversationId) {
@@ -240,7 +256,7 @@ export const updateGroupConversationService = async ({
       // Only add user if not already exists
       if (!conversation.userIds.includes(userId)) {
         conversation.userIds.addToSet(userId); // Mongoose array method
-        createConversationReadsRecord = true;
+        createConvoInfoOfUserRecord = true;
       }
     }
 
@@ -258,9 +274,19 @@ export const updateGroupConversationService = async ({
     // Save updated conversation
     const updatedConversation = await conversation.save();
 
-    if (createConversationReadsRecord) {
-      // TODO: create ConversationReads entry for new userId async by calling a service function
-      // after ConversationReads table created
+    if (createConvoInfoOfUserRecord) {
+      // Create convoInfoOfUser record for userId asynchronously
+      createConvoInfoOfUserService({
+        userId,
+        conversationId: updatedConversation._id,
+      }).catch((err) => {
+        console.error(
+          "Error creating convoInfoOfUser asynchronously for userId:",
+          userId,
+          "error:",
+          err.message
+        );
+      });
     }
 
     return { conversation: updatedConversation, error: null };
