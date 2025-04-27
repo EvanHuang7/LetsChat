@@ -192,9 +192,11 @@ export const updateConnectionStatus = async (req, res) => {
     );
 
     // If accepted, create or update conversation asynchronously
-    if (status === "accepted") {
+    // NOTE: It's best to run them in a workflow, so that it can
+    // retry if any asynchronous update action fails.
+    if (updatedConnection.status === "accepted") {
       // Create a private conversation
-      if (type === "friend") {
+      if (updatedConnection.type === "friend") {
         createConversationService({
           userIds: [updatedConnection.senderId, updatedConnection.receiverId],
           isGroup: false,

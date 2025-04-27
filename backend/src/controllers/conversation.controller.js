@@ -14,9 +14,14 @@ export const getConversation = async (req, res) => {
     const { id: conversationId } = req.params;
 
     // Call the service function to get the conversation
-    const conversation = await getConversationService({
+    const { conversation, error } = await getConversationService({
       conversationId,
     });
+    if (error) {
+      return res.status(400).json({
+        message: error,
+      });
+    }
 
     res.status(200).json(conversation);
   } catch (error) {
@@ -35,15 +40,22 @@ export const createConversation = async (req, res) => {
     // Get userIds, isGroup, groupName from reqest body
     const { userIds, isGroup, groupName } = req.body;
 
-    const conversation = await createConversationService({
+    // TODO: Try to get an existing conversation before create if
+    // it is a private conversation
+
+    // Call the service to create a conversation
+    const { conversation, error } = await createConversationService({
       userIds,
       isGroup,
       groupName,
     });
+    if (error) {
+      return res.status(400).json({
+        message: error,
+      });
+    }
 
-    // TODO: create ConversationReads entries for users after
-    // ConversationReads table created
-
+    // Return the created conversation
     res.status(201).json(conversation);
   } catch (error) {
     console.log("Error in createConversation controller", error.message);
@@ -61,11 +73,17 @@ export const increaselatestSentMessageSequence = async (req, res) => {
     const { conversationId } = req.body;
 
     // Call the service function
-    const updatedConversation = await increaselatestSentMessageSequenceService({
-      conversationId,
-    });
+    const { conversation, error } =
+      await increaselatestSentMessageSequenceService({
+        conversationId,
+      });
+    if (error) {
+      return res.status(400).json({
+        message: error,
+      });
+    }
 
-    res.status(200).json(updatedConversation);
+    res.status(200).json(conversation);
   } catch (error) {
     console.log(
       "Error in increaselatestSentMessageSequence controller",
@@ -86,14 +104,19 @@ export const updateGroupConversation = async (req, res) => {
     const { conversationId, userId, groupName, groupImage } = req.body;
 
     // Call the service function to update the conversation
-    const updatedConversation = await updateGroupConversationService({
+    const { conversation, error } = await updateGroupConversationService({
       conversationId,
       userId,
       groupName,
       groupImage,
     });
+    if (error) {
+      return res.status(400).json({
+        message: error,
+      });
+    }
 
-    res.status(200).json(updatedConversation);
+    res.status(200).json(conversation);
   } catch (error) {
     console.log("Error in updateGroupConversation controller", error.message);
     res.status(500).json({

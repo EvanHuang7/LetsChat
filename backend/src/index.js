@@ -5,6 +5,7 @@ import cors from "cors";
 
 import authRoutes from "./routes/auth.route.js";
 import connectionRoutes from "./routes/connection.route.js";
+import conversationRoutes from "./routes/conversation.route.js";
 import messageRoutes from "./routes/message.route.js";
 import momentRoutes from "./routes/moment.route.js";
 import commentRoutes from "./routes/comment.route.js";
