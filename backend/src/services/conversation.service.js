@@ -29,6 +29,42 @@ export const getConversationService = async ({ conversationId }) => {
   }
 };
 
+// The service function to get a conversation by userIds and isGroup
+export const getConversationByUserIdsService = async ({ userIds, isGroup }) => {
+  try {
+    // Check the inputs
+    if (!isGroup && userIds.length !== 2) {
+      return {
+        conversation: null,
+        error: "Should provide two users for private conversation",
+      };
+    }
+    if (isGroup && userIds.length < 1) {
+      return {
+        conversation: null,
+        error: "At least providing 1 user for group conversation",
+      };
+    }
+
+    // Run query to get a conversation
+    const conversation = await Conversation.findOne({
+      userIds: { $all: userIds },
+      $expr: { $eq: [{ $size: "$userIds" }, userIds.length] },
+      isGroup,
+    }).populate("userIds", "fullName profilePic");
+
+    return { conversation: conversation, error: null };
+  } catch (error) {
+    // If an error occurs, return the error message
+    return {
+      conversation: null,
+      error:
+        error.message ||
+        "An error occurred while getting the conversation by userIds",
+    };
+  }
+};
+
 // The service function to create a conversation
 export const createConversationService = async ({
   userIds,

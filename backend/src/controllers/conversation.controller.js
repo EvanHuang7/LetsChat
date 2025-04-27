@@ -1,6 +1,6 @@
-import Conversation from "../models/conversation.model.js";
 import {
   getConversationService,
+  getConversationByUserIdsService,
   createConversationService,
   increaselatestSentMessageSequenceService,
   updateGroupConversationService,
@@ -40,23 +40,38 @@ export const createConversation = async (req, res) => {
     // Get userIds, isGroup, groupName from reqest body
     const { userIds, isGroup, groupName } = req.body;
 
-    // TODO: Try to get an existing conversation before create if
-    // it is a private conversation
-
-    // Call the service to create a conversation
-    const { conversation, error } = await createConversationService({
-      userIds,
-      isGroup,
-      groupName,
-    });
-    if (error) {
+    // Try to get an existing conversation first
+    const { conversation: existingConversation, error: getError } =
+      await getConversationByUserIdsService({
+        userIds,
+        isGroup,
+      });
+    if (getError) {
       return res.status(400).json({
-        message: error,
+        message: getError,
+      });
+    }
+
+    // Return the existing conversation if there is one
+    if (existingConversation) {
+      return res.status(200).json(existingConversation);
+    }
+
+    // If no existing conversation, create one
+    const { conversation: newConversation, error: createError } =
+      await createConversationService({
+        userIds,
+        isGroup,
+        groupName,
+      });
+    if (createError) {
+      return res.status(400).json({
+        message: createError,
       });
     }
 
     // Return the created conversation
-    res.status(201).json(conversation);
+    res.status(201).json(newConversation);
   } catch (error) {
     console.log("Error in createConversation controller", error.message);
     res.status(500).json({
