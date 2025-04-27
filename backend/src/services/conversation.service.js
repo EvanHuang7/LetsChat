@@ -143,6 +143,46 @@ export const increaselatestSentMessageSequenceService = async ({
   }
 };
 
+// The service function to update latestSentMessageId field
+export const updateLatestSentMessageIdService = async ({
+  conversationId,
+  latestSentMessageId,
+}) => {
+  try {
+    // Validate if the input exists
+    if (!conversationId) {
+      return {
+        conversation: null,
+        error: "ConversationId is required",
+      };
+    }
+
+    if (!latestSentMessageId) {
+      return {
+        conversation: null,
+        error: "LatestSentMessageId is required",
+      };
+    }
+
+    // Run query to update latestSentMessageId
+    const updatedConversation = await Conversation.findByIdAndUpdate(
+      conversationId,
+      { latestSentMessageId: latestSentMessageId },
+      { new: true }
+    ).populate("userIds", "fullName profilePic"); // Populate users info;
+
+    return { conversation: updatedConversation, error: null };
+  } catch (error) {
+    // If an error occurs, return the error message
+    return {
+      conversation: null,
+      error:
+        error.message ||
+        "An error occurred while updating latestSentMessageId field for conversation",
+    };
+  }
+};
+
 // The service function to update a group conversation
 export const updateGroupConversationService = async ({
   conversationId,

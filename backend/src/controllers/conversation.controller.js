@@ -3,6 +3,7 @@ import {
   getConversationByUserIdsService,
   createConversationService,
   increaselatestSentMessageSequenceService,
+  updateLatestSentMessageIdService,
   updateGroupConversationService,
 } from "../services/conversation.service.js";
 
@@ -80,30 +81,57 @@ export const createConversation = async (req, res) => {
   }
 };
 
-// Increase latestSentMessageSequence field of conversation
+// Update some fields of conversation
 // USAGE: Increase "latestSentMessageSequence" when a new message sent
-export const increaselatestSentMessageSequence = async (req, res) => {
+// or update "latestSentMessageId" when a new message sent
+export const updateConversation = async (req, res) => {
   try {
-    // Get conversationId from reqest body
-    const { conversationId } = req.body;
+    // Get conversationId, increaselatestSentMessageSequence and
+    // latestSentMessageId from reqest body
+    const {
+      conversationId,
+      increaselatestSentMessageSequence,
+      latestSentMessageId,
+    } = req.body;
 
-    // Call the service function
-    const { conversation, error } =
-      await increaselatestSentMessageSequenceService({
-        conversationId,
-      });
-    if (error) {
-      return res.status(400).json({
-        message: error,
-      });
+    let conversation = null;
+    let error = null;
+
+    // Call the increaselatestSentMessageSequence service function
+    if (increaselatestSentMessageSequence) {
+      const { conversation: updatedConversation, error: updateSeqError } =
+        await increaselatestSentMessageSequenceService({
+          conversationId,
+        });
+      if (updateSeqError) {
+        return res.status(400).json({
+          message: updateSeqError,
+        });
+      }
+
+      // Save the updated conversation
+      conversation = updatedConversation;
+    }
+
+    if (latestSentMessageId) {
+      const { conversation: updatedConversation, error: updateMessageError } =
+        await updateLatestSentMessageIdService({
+          conversationId,
+          latestSentMessageId,
+        });
+      if (updateMessageError) {
+        return res.status(400).json({
+          message: updateMessageError,
+        });
+      }
+
+      // Save the updated conversation
+      conversation = updatedConversation;
     }
 
     return res.status(200).json(conversation);
   } catch (error) {
-    console.log(
-      "Error in increaselatestSentMessageSequence controller",
-      error.message
-    );
+    console.log("Error in updateConversation controller", error.message);
     return res.status(500).json({
       message: "Interal server error",
     });

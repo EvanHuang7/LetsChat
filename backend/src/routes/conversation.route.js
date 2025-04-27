@@ -3,7 +3,7 @@ import { protectRoute } from "../middleware/auth.middleware.js";
 import {
   getConversation,
   createConversation,
-  increaselatestSentMessageSequence,
+  updateConversation,
   updateGroupConversation,
 } from "../controllers/conversation.controller.js";
 
@@ -18,13 +18,10 @@ router.get("/:id", protectRoute, getConversation);
 // creating a new group conversation by a logged in user
 router.post("/create", protectRoute, createConversation);
 
-// Increase latestSentMessageSequence field of conversation
+// Update some fields of conversation
 // USAGE: Increase "latestSentMessageSequence" when a new message sent
-router.post(
-  "/increase-message-seq",
-  protectRoute,
-  increaselatestSentMessageSequence
-);
+// or update "latestSentMessageId" when a new message sent
+router.post("/update", protectRoute, updateConversation);
 
 // Update group data of conversation
 // USAGE: Update "userIds" when adding new user to group or update "groupName"
