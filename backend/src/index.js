@@ -6,6 +6,7 @@ import cors from "cors";
 import authRoutes from "./routes/auth.route.js";
 import connectionRoutes from "./routes/connection.route.js";
 import conversationRoutes from "./routes/conversation.route.js";
+import convoInfoOfUserRoutes from "./routes/convoInfoOfUser.route.js";
 import messageRoutes from "./routes/message.route.js";
 import momentRoutes from "./routes/moment.route.js";
 import commentRoutes from "./routes/comment.route.js";
@@ -38,6 +39,7 @@ app.use(
 app.use("/api/auth", authRoutes);
 app.use("/api/connection", connectionRoutes);
 app.use("/api/conversation", conversationRoutes);
+app.use("/api/convoInfoOfUser", convoInfoOfUserRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/moment", momentRoutes);
 app.use("/api/comment", commentRoutes);
