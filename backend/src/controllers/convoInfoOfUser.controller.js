@@ -1,16 +1,47 @@
 import {
+  getAllConvoInfoOfUserService,
   getConvoInfoOfUserbyIdsService,
   createConvoInfoOfUserService,
   updateConvoInfoOfUserService,
 } from "../services/convoInfoOfUser.service.js";
 
-// Get a conversation information for a user
-// with userId and conversationId
+// Get all conversation information for logged in user
+// USAGE: Display all conversations when logged in user views
+// friends + groups / all conversations list
+export const getAllConvoInfoOfUser = async (req, res) => {
+  try {
+    // Get current logged in userId as userId
+    const userId = req.user._id;
+
+    // Call the service function to get all convoInfoOfUser records
+    const { allConvoInfoOfUser, error } = await getAllConvoInfoOfUserService({
+      userId,
+    });
+    if (error) {
+      return res.status(400).json({
+        message: error,
+      });
+    }
+
+    return res.status(200).json(allConvoInfoOfUser);
+  } catch (error) {
+    console.log("Error in getAllConvoInfoOfUser controller", error.message);
+    return res.status(500).json({
+      message: "Interal server error",
+    });
+  }
+};
+
+// Get a conversation information for logged in user
+// with conversationId
 // USAGE:
 export const getConvoInfoOfUserbyIds = async (req, res) => {
   try {
-    // Get userId and conversationId from reqest body
-    const { userId, conversationId } = req.body;
+    // Get  conversationId from reqest body
+    const { conversationId } = req.body;
+
+    // Get current logged in userId as userId
+    const userId = req.user._id;
 
     // Call the service function to get the convoInfoOfUser
     const { convoInfoOfUser, error } = await getConvoInfoOfUserbyIdsService({
@@ -32,12 +63,15 @@ export const getConvoInfoOfUserbyIds = async (req, res) => {
   }
 };
 
-// Create a conversation information for a user
+// Create a conversation information for logged in user
 // USAGE:
 export const createConvoInfoOfUser = async (req, res) => {
   try {
-    // Get userId and conversationId from reqest body
-    const { userId, conversationId } = req.body;
+    // Get conversationId from reqest body
+    const { conversationId } = req.body;
+
+    // Get current logged in userId as userId
+    const userId = req.user._id;
 
     // Try to get an existing convoInfoOfUser first
     const { convoInfoOfUser: existingConvoInfoOfUser, error: getError } =
@@ -78,13 +112,16 @@ export const createConvoInfoOfUser = async (req, res) => {
   }
 };
 
-// Update a conversation information for a user
+// Update a conversation information for logged in user
 // USAGE: Update "lastReadMessageSequence" field when a user clicks
 // and views conversation
 export const updateConvoInfoOfUser = async (req, res) => {
   try {
-    // Get userId conversationId, and lastReadMessageSequence from reqest body
-    const { userId, conversationId, lastReadMessageSequence } = req.body;
+    // Get conversationId, and lastReadMessageSequence from reqest body
+    const { conversationId, lastReadMessageSequence } = req.body;
+
+    // Get current logged in userId as userId
+    const userId = req.user._id;
 
     // Call the service function to update the convoInfoOfUser
     const { convoInfoOfUser, error } = await updateConvoInfoOfUserService({

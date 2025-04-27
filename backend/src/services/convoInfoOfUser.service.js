@@ -1,5 +1,40 @@
 import ConvoInfoOfUser from "../models/convoInfoOfUser.model.js";
 
+// The service function to get all conversations information for a user
+export const getAllConvoInfoOfUserService = async ({ userId }) => {
+  try {
+    // Validate if the input exists
+    if (!userId) {
+      return {
+        allConvoInfoOfUser: null,
+        error: "UserId is required",
+      };
+    }
+
+    // Run query to get all convoInfoOfUser records with hydrated info
+    const allConvoInfoOfUser = await ConvoInfoOfUser.find({ userId }).populate({
+      path: "conversationId",
+      populate: {
+        path: "userIds", // Populate the userIds inside conversation
+        select: "fullName profilePic", // Only select needed fields
+      },
+      populate: {
+        path: "latestSentMessageId", // Populate the latestSentMessageId inside conversation
+        select: "senderId text image createdAt", // Only select needed fields
+      },
+    });
+
+    return { allConvoInfoOfUser: allConvoInfoOfUser, error: null };
+  } catch (error) {
+    // If an error occurs, return the error message
+    return {
+      allConvoInfoOfUser: null,
+      error:
+        error.message || "An error occurred while getting all convoInfoOfUser",
+    };
+  }
+};
+
 // The service function to get a conversation information for a user
 // with userId and conversationId
 export const getConvoInfoOfUserbyIdsService = async ({
