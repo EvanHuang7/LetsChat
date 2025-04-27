@@ -21,7 +21,13 @@ export const signup = async (req, res) => {
       });
     }
 
-    //TODO: valid the email format
+    // Validate the email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        message: "Invalid email format",
+      });
+    }
 
     // Check if email elready exists or not
     const user = await User.findOne({ email });
@@ -50,7 +56,7 @@ export const signup = async (req, res) => {
       // Save this user to database
       await newUser.save();
 
-      res.status(201).json({
+      return res.status(201).json({
         _id: newUser._id,
         fullName: newUser.fullName,
         email: newUser.email,
@@ -58,13 +64,13 @@ export const signup = async (req, res) => {
         stickers: newUser.stickers,
       });
     } else {
-      res.status(400).json({
+      return res.status(400).json({
         message: "Invalid user data",
       });
     }
   } catch (error) {
     console.log("Error in signup controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Interal server error",
     });
   }
@@ -93,7 +99,7 @@ export const login = async (req, res) => {
     // and send it to user via API response cookie
     generateToken(user._id, res);
 
-    res.status(200).json({
+    return res.status(200).json({
       _id: user._id,
       fullName: user.fullName,
       email: user.email,
@@ -102,7 +108,7 @@ export const login = async (req, res) => {
     });
   } catch (error) {
     console.log("Error in login controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Interal server error",
     });
   }
@@ -113,12 +119,12 @@ export const logout = (req, res) => {
     // We need to clear out the JWT token in user's browser session
     // via API response cookie
     res.cookie("jwt", "", { maxAge: 0 });
-    res.status(200).json({
+    return res.status(200).json({
       message: "Logged out successfully",
     });
   } catch (error) {
     console.log("Error in logout controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Interal server error",
     });
   }
@@ -127,10 +133,10 @@ export const logout = (req, res) => {
 // Check if user is authenticated
 export const checkAuth = (req, res) => {
   try {
-    res.status(200).json(req.user);
+    return res.status(200).json(req.user);
   } catch (error) {
     console.log("Error in checkAuth controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Interal server error",
     });
   }
@@ -160,10 +166,10 @@ export const updateProfile = async (req, res) => {
       { new: true }
     ).select("-password");
 
-    res.status(200).json(updatedUser);
+    return res.status(200).json(updatedUser);
   } catch (error) {
     console.log("Error in updateProfile controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Interal server error",
     });
   }
@@ -223,10 +229,10 @@ export const updateStickers = async (req, res) => {
       { new: true }
     ).select("-password");
 
-    res.status(200).json(updatedUser);
+    return res.status(200).json(updatedUser);
   } catch (error) {
     console.log("Error in updateStickers controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Interal server error",
     });
   }
