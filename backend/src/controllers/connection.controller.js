@@ -104,21 +104,28 @@ export const sendConnection = async (req, res) => {
 
     // Try to fetch any exsiting friend connection or same groupConversationId
     // inviation between 2 users
-    const existingConnections = await Connection.find({
+    // Build query object dynamically based on type
+    const query = {
       type: type,
-      groupConversationId: groupConversationId,
       $or: [
         { senderId: loggedInUserId, receiverId: selectedUserId },
         { senderId: selectedUserId, receiverId: loggedInUserId },
       ],
-    });
+    };
 
-    // If there are exsiting connection between 2 users
+    // Only pass groupConversationId into query if type === "group"
+    if (type === "group") {
+      query.groupConversationId = groupConversationId;
+    }
+
+    // Try to fetch any existing friend connection or group invitation
+    const existingConnections = await Connection.find(query);
+
+    // If there are existing connection
     if (existingConnections.length > 0) {
       const existingConnection = existingConnections[0];
 
-      // Return error if there are more than 1 existingConnections
-      // Theoretically it should not have more than 1 existingConnections
+      // Return error if more than 1 existing connection (shouldn't happen)
       if (existingConnections.length > 1) {
         return res.status(500).json({
           message:
