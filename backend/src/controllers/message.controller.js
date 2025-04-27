@@ -14,10 +14,10 @@ export const getUsersForSidebar = async (req, res) => {
       _id: { $ne: loggedInUserId },
     }).select("-password");
 
-    res.status(200).json(filteredUsers);
+    return res.status(200).json(filteredUsers);
   } catch (error) {
     console.log("Error in getUsersForSidebar controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Interal server error",
     });
   }
@@ -47,10 +47,10 @@ export const getMessages = async (req, res) => {
       ],
     });
 
-    res.status(200).json(messages);
+    return res.status(200).json(messages);
   } catch (error) {
     console.log("Error in getMessages controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Interal server error",
     });
   }
@@ -112,10 +112,10 @@ export const sendMessage = async (req, res) => {
       io.to(messageReceiverSocketId).emit("newMessage", newMessage);
     }
 
-    res.status(201).json(newMessage);
+    return res.status(201).json(newMessage);
   } catch (error) {
     console.log("Error in sendMessage controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Interal server error",
     });
   }

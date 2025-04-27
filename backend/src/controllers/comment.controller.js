@@ -21,10 +21,10 @@ export const getCommentsWithMomentIds = async (req, res) => {
         .sort({ createdAt: 1 }); // oldest to newest
     }
 
-    res.status(200).json(comments);
+    return res.status(200).json(comments);
   } catch (error) {
     console.log("Error in getCommentsWithMomentIds controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Interal server error",
     });
   }
@@ -70,10 +70,10 @@ export const postComment = async (req, res) => {
     }
     newComment.posterId = user;
 
-    res.status(201).json(newComment);
+    return res.status(201).json(newComment);
   } catch (error) {
     console.log("Error in postComment controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Interal server error",
     });
   }

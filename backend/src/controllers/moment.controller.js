@@ -26,13 +26,11 @@ export const getMoments = async (req, res) => {
       query.createdAt = { $lt: createdBefore };
     }
 
-    // TODO: Update limit to 10 after finishing test
-
     // Get moments with moment poster info first
     const moments = await Moment.find(query)
       .populate("posterId", "fullName profilePic")
       .sort({ createdAt: -1 }) // from newest to oldest
-      .limit(3); // return 10 moments only
+      .limit(10); // return 10 moments only
 
     // Then, get all comments with comment poster info
     // belonging to these moments
@@ -53,10 +51,10 @@ export const getMoments = async (req, res) => {
       };
     });
 
-    res.status(200).json(momentsWithComments);
+    return res.status(200).json(momentsWithComments);
   } catch (error) {
     console.log("Error in getMoments controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Interal server error",
     });
   }
@@ -115,10 +113,10 @@ export const postMoment = async (req, res) => {
     }
     newMoment.posterId = user;
 
-    res.status(201).json(newMoment);
+    return res.status(201).json(newMoment);
   } catch (error) {
     console.log("Error in postMoment controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Interal server error",
     });
   }
@@ -185,10 +183,10 @@ export const updateLikeForMoment = async (req, res) => {
     hydratedMoment.posterId = user;
     hydratedMoment.comments = comments; // will always be an array, even if empty
 
-    res.status(200).json(hydratedMoment);
+    return res.status(200).json(hydratedMoment);
   } catch (error) {
     console.log("Error in updateLikeForMoment controller", error.message);
-    res.status(500).json({
+    return res.status(500).json({
       message: "Interal server error",
     });
   }
