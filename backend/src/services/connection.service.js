@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
 import Connection from "../models/connection.model.js";
+import User from "../models/user.model.js";
 import {
   createConversationService,
   updateGroupConversationService,
 } from "./conversation.service.js";
 
-// The service function to all connections for logged in user
+// The service function to all connections for logged in user as receiver
 export const getConnectionsService = async ({ loggedInUserId }) => {
   try {
     // Validate if the loggedInUserId exists
@@ -31,6 +32,69 @@ export const getConnectionsService = async ({ loggedInUserId }) => {
   }
 };
 
+// The service function to get all users for new connection page
+export const getUsersForConnPageService = async ({ loggedInUserId }) => {
+  try {
+    // Validate if the loggedInUserId exists
+    if (!loggedInUserId) {
+      return {
+        filteredUsers: null,
+        error: "LoggedInUserId is required",
+      };
+    }
+
+    // Get the all fields info except for password field of
+    // all users that are not equal to logged in userId
+    const filteredUsers = await User.find({
+      _id: { $ne: loggedInUserId },
+    })
+      .select("-password")
+      .lean();
+
+    return { filteredUsers: filteredUsers, error: null };
+  } catch (error) {
+    // If an error occurs, return the error message
+    return {
+      filteredUsers: null,
+      error:
+        error.message || "An error occurred while getting users for siderbar",
+    };
+  }
+};
+
+// The service function to all friend connection for logged in user
+// as sender or receiver
+export const getAllFriendConnectionsService = async ({ loggedInUserId }) => {
+  try {
+    // Validate input
+    if (!loggedInUserId) {
+      return {
+        connections: null,
+        error: "LoggedInUserId is required",
+      };
+    }
+
+    // Build query
+    const query = {
+      type: type,
+      $or: [{ senderId: loggedInUserId }, { receiverId: loggedInUserId }],
+    };
+
+    // Fetch any matched friend connections
+    const connections = await Connection.find(query).lean();
+
+    return { connections: connections, error: null };
+  } catch (error) {
+    // If an error occurs, return the error message
+    return {
+      connections: null,
+      error:
+        error.message ||
+        "An error occurred while getting all friend connections service",
+    };
+  }
+};
+
 // The service function to specified connections between logged in user
 // and selected user
 export const getSpecifiedConnectionService = async ({
@@ -45,6 +109,12 @@ export const getSpecifiedConnectionService = async ({
       return {
         connections: null,
         error: "Type is required",
+      };
+    }
+    if (!loggedInUserId) {
+      return {
+        connections: null,
+        error: "LoggedInUserId is required",
       };
     }
     if (!selectedUserId) {

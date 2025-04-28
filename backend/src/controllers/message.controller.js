@@ -1,5 +1,4 @@
 import {
-  getUsersForSidebarService,
   getMessagesService,
   createMessageService,
 } from "../services/message.service.js";
@@ -8,32 +7,6 @@ import {
   updateLatestSentMessageIdService,
 } from "../services/conversation.service.js";
 import { emitNewMessageEventService } from "../services/socket.service.js";
-
-// Get all users except for logged in user for side bar contact list
-// USAGE: Display all app users in sidebar
-export const getUsersForSidebar = async (req, res) => {
-  try {
-    // Get current logged in userId
-    const loggedInUserId = req.user._id;
-
-    // Call service function to getall users
-    const { filteredUsers, error } = await getUsersForSidebarService({
-      loggedInUserId,
-    });
-    if (error) {
-      return res.status(400).json({
-        message: error,
-      });
-    }
-
-    return res.status(200).json(filteredUsers);
-  } catch (error) {
-    console.log("Error in getUsersForSidebar controller", error.message);
-    return res.status(500).json({
-      message: "Interal server error",
-    });
-  }
-};
 
 // Get all messages for a conversation with conversationId in url param
 // USAGE: Display all messages for a conversation in chat container

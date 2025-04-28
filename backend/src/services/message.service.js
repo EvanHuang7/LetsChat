@@ -1,34 +1,5 @@
-import User from "../models/user.model.js";
 import Message from "../models/message.model.js";
 import cloudinary from "../lib/cloudinary.js";
-
-// The service function to get all users for a sidebar
-export const getUsersForSidebarService = async ({ loggedInUserId }) => {
-  try {
-    // Validate if the loggedInUserId exists
-    if (!loggedInUserId) {
-      return {
-        filteredUsers: null,
-        error: "LoggedInUserId is required",
-      };
-    }
-
-    // Get the all fields info except for password field of
-    // all users that are not equal to logged in userId
-    const filteredUsers = await User.find({
-      _id: { $ne: loggedInUserId },
-    }).select("-password");
-
-    return { filteredUsers: filteredUsers, error: null };
-  } catch (error) {
-    // If an error occurs, return the error message
-    return {
-      filteredUsers: null,
-      error:
-        error.message || "An error occurred while getting users for siderbar",
-    };
-  }
-};
 
 // The service function to get all messages for a conversation
 export const getMessagesService = async ({ conversationId }) => {

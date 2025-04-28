@@ -1,6 +1,8 @@
 import {
   createConnectionService,
   getConnectionsService,
+  getUsersForConnPageService,
+  getAllFriendConnectionsService,
   getSpecifiedConnectionService,
   updateConnectionStatusService,
 } from "../services/connection.service.js";
@@ -27,6 +29,64 @@ export const getConnections = async (req, res) => {
     return res.status(200).json(connections);
   } catch (error) {
     console.log("Error in getConnections controller", error.message);
+    return res.status(500).json({
+      message: "Interal server error",
+    });
+  }
+};
+
+// Get all users except for logged in user with connection status
+// USAGE: Display all app users in new connection page
+export const getUsersForConnection = async (req, res) => {
+  try {
+    // Get current logged in userId
+    const loggedInUserId = req.user._id;
+
+    // Call service function to get all users
+    const { filteredUsers, getUsersError } = await getUsersForConnPageService({
+      loggedInUserId,
+    });
+    if (getUsersError) {
+      return res.status(400).json({
+        message: getUsersError,
+      });
+    }
+
+    // Call service function to get all connections
+    const { connections, getConnectionsError } =
+      await getAllFriendConnectionsService({
+        loggedInUserId,
+      });
+    if (getConnectionsError) {
+      return res.status(400).json({
+        message: getConnectionsError,
+      });
+    }
+
+    // Hydrate connection status of users
+    const updatedUsers = filteredUsers.map((user) => {
+      const foundConnection = connections.find(
+        (conn) =>
+          conn.senderId.toString() === user._id.toString() ||
+          conn.receiverId.toString() === user._id.toString()
+      );
+
+      if (foundConnection) {
+        return {
+          ...user,
+          connectionStatus: foundConnection.status, // "pending", "accepted", "rejected"
+        };
+      } else {
+        return {
+          ...user,
+          connectionStatus: "", // no connection
+        };
+      }
+    });
+
+    return res.status(200).json(updatedUsers);
+  } catch (error) {
+    console.log("Error in getUsersForConnection controller", error.message);
     return res.status(500).json({
       message: "Interal server error",
     });

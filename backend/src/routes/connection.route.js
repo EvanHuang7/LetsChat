@@ -2,6 +2,7 @@ import express from "express";
 import { protectRoute } from "../middleware/auth.middleware.js";
 import {
   getConnections,
+  getUsersForConnection,
   getSpecifiedConnection,
   sendConnection,
   updateConnectionStatus,
@@ -14,6 +15,10 @@ const router = express.Router();
 // USAGE: display the connections data for logged in user
 // in New connection page.
 router.get("/get", protectRoute, getConnections);
+
+// Get all users except for logged in user with connection status
+// USAGE: Display all app users in new connection page
+router.get("/users", protectRoute, getUsersForConnection);
 
 // Get specified connections between logged in user
 // and selected user.
