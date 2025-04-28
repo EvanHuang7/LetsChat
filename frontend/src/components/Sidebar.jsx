@@ -138,7 +138,7 @@ const Sidebar = () => {
             <div className="hidden lg:block text-left min-w-0">
               {convoInfo.conversationId.isGroup ? (
                 <div className="flex items-center gap-2">
-                  <Users className="size-4" />
+                  <Users className="size-5" />
                   <span className="font-medium truncate">
                     {convoInfo.conversationId.groupName}
                   </span>
