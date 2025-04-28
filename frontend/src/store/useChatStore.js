@@ -9,7 +9,6 @@ import { useConnectionStore } from "./useConnectionStore";
 // managing state in React apps
 export const useChatStore = create((set, get) => ({
   users: [],
-  // TODO: store it local storage for remembering the conversation
   selectedUser: null,
   messages: [],
 
