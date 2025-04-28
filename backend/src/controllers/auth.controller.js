@@ -1,73 +1,34 @@
-import bcrypt from "bcryptjs";
-
-import User from "../models/user.model.js";
-import { generateToken } from "../lib/utils.js";
-import cloudinary from "../lib/cloudinary.js";
+import {
+  loginService,
+  signupService,
+  updateProfileService,
+  updateStickersService,
+} from "../services/auth.service.js";
 
 export const signup = async (req, res) => {
-  const { fullName, email, password } = req.body;
   try {
-    // check all feilds in request are empty or not
-    if (!fullName || !email || !password) {
-      return res.status(400).json({
-        message: "All fields are required",
-      });
-    }
+    const { fullName, email, password } = req.body;
 
-    // check the length of password
-    if (password.length < 6) {
-      return res.status(400).json({
-        message: "Password must be at least 6 characters",
-      });
-    }
-
-    // Validate the email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return res.status(400).json({
-        message: "Invalid email format",
-      });
-    }
-
-    // Check if email elready exists or not
-    const user = await User.findOne({ email });
-    if (user) {
-      return res.status(400).json({
-        message: "Email already exists",
-      });
-    }
-
-    // Use bcryptjs package to hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    // Create this new user
-    const newUser = new User({
-      fullName: fullName,
-      // We can shorten "email: email" to email
+    // Call the service function to signup a new user
+    const { newUser, error } = await signupService({
+      fullName,
       email,
-      password: hashedPassword,
+      password,
+      res,
     });
-
-    if (newUser) {
-      // If a new user created, we need to generate a JWT token
-      // and sent JTW to user via response cookie
-      generateToken(newUser._id, res);
-      // Save this user to database
-      await newUser.save();
-
-      return res.status(201).json({
-        _id: newUser._id,
-        fullName: newUser.fullName,
-        email: newUser.email,
-        profilePic: newUser.profilePic,
-        stickers: newUser.stickers,
-      });
-    } else {
+    if (error) {
       return res.status(400).json({
-        message: "Invalid user data",
+        message: error,
       });
     }
+
+    return res.status(201).json({
+      _id: newUser._id,
+      fullName: newUser.fullName,
+      email: newUser.email,
+      profilePic: newUser.profilePic,
+      stickers: newUser.stickers,
+    });
   } catch (error) {
     console.log("Error in signup controller", error.message);
     return res.status(500).json({
@@ -77,27 +38,20 @@ export const signup = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const { email, password } = req.body;
   try {
-    // Check if email exists or not
-    const user = await User.findOne({ email });
-    if (!user) {
+    const { email, password } = req.body;
+
+    // Call the service function to signup a new user
+    const { user, error } = await loginService({
+      email,
+      password,
+      res,
+    });
+    if (error) {
       return res.status(400).json({
-        message: "Account does not exist",
+        message: error,
       });
     }
-
-    // Check password is correct or not
-    const isPasswordMatched = await bcrypt.compare(password, user.password);
-    if (!isPasswordMatched) {
-      return res.status(400).json({
-        message: "Password is not correct and please try again",
-      });
-    }
-
-    // If password matches, we need to generate a JWT token
-    // and send it to user via API response cookie
-    generateToken(user._id, res);
 
     return res.status(200).json({
       _id: user._id,
@@ -149,22 +103,16 @@ export const updateProfile = async (req, res) => {
     const { profilePic } = req.body;
     const userId = req.user._id;
 
-    // Check the inputs from request body
-    if (!profilePic) {
+    // Call the service function to update profile
+    const { updatedUser, error } = await updateProfileService({
+      userId,
+      profilePic,
+    });
+    if (error) {
       return res.status(400).json({
-        message: "ProfilePic is required",
+        message: error,
       });
     }
-
-    // Upload base64 profile pic to cloudinary
-    const uploadResult = await cloudinary.uploader.upload(profilePic);
-
-    // Update the user profile pic in database
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { profilePic: uploadResult.secure_url },
-      { new: true }
-    ).select("-password");
 
     return res.status(200).json(updatedUser);
   } catch (error) {
@@ -181,53 +129,21 @@ export const updateStickers = async (req, res) => {
   try {
     const { add, stickerUrl, stickerIndex } = req.body;
     const userId = req.user._id;
+    const existingStickersList = req.user.stickers;
 
-    // Check the inputs from request body
-    if (!stickerUrl) {
-      return res.status(400).json({
-        message: "StickerUrl is required",
-      });
-    }
-
-    // Only deleting a sticker neeed to pass a stickerIndex
-    if (!add && (stickerIndex === undefined || stickerIndex === null)) {
-      return res.status(400).json({
-        message: "StickerIndex is required when deleting a sticker",
-      });
-    }
-
-    // Clone current stickers list
-    let updatedUserStickers = [...req.user.stickers];
-    // If add a new sticker
-    if (add) {
-      if (updatedUserStickers.length < 8) {
-        updatedUserStickers.push(stickerUrl);
-        // Return error if user already has 8 stickers
-      } else {
-        return res.status(400).json({
-          message: "Sorry, a user can only has up to 8 stickers.",
-        });
-      }
-      // If delete an existing sticker
-    } else {
-      // Only remove the sticker when stickerUrl and
-      // stickerIndex are matched in the list.
-      if (updatedUserStickers[stickerIndex] === stickerUrl) {
-        // Remove 1 item at stickerIndex
-        updatedUserStickers.splice(stickerIndex, 1);
-      } else {
-        return res.status(400).json({
-          message: "Sorry, Sticker not found at the provided position.",
-        });
-      }
-    }
-
-    // Update the user stickers in database
-    const updatedUser = await User.findByIdAndUpdate(
+    // Call the service function to update stickers
+    const { updatedUser, error } = await updateStickersService({
       userId,
-      { stickers: updatedUserStickers },
-      { new: true }
-    ).select("-password");
+      add,
+      stickerUrl,
+      stickerIndex,
+      existingStickersList,
+    });
+    if (error) {
+      return res.status(400).json({
+        message: error,
+      });
+    }
 
     return res.status(200).json(updatedUser);
   } catch (error) {
