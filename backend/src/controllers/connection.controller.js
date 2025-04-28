@@ -1,10 +1,9 @@
-import mongoose from "mongoose";
-import User from "../models/user.model.js";
-import Connection from "../models/connection.model.js";
 import {
-  createConversationService,
-  updateGroupConversationService,
-} from "../services/conversation.service.js";
+  createConnectionService,
+  getConnectionsService,
+  getSpecifiedConnectionService,
+  updateConnectionStatusService,
+} from "../services/connection.service.js";
 
 // Get all connection records (friends and groups)
 // for logged in user as receiver.
@@ -15,10 +14,15 @@ export const getConnections = async (req, res) => {
     // Get current logged in userId as receiverId
     const loggedInUserId = req.user._id;
 
-    // Get all connections of receiver is logged in user
-    const connections = await Connection.find({ receiverId: loggedInUserId })
-      .populate("senderId", "fullName profilePic")
-      .sort({ createdAt: -1 });
+    // Call the service function to get all connections
+    const { connections, error } = await getConnectionsService({
+      loggedInUserId,
+    });
+    if (error) {
+      return res.status(400).json({
+        message: error,
+      });
+    }
 
     return res.status(200).json(connections);
   } catch (error) {
@@ -35,40 +39,28 @@ export const getConnections = async (req, res) => {
 // box header when selecting a user from sidebar.
 export const getSpecifiedConnection = async (req, res) => {
   try {
-    // Get type, selectedUserId, groupName from reqest body
-    const { type, selectedUserId, groupName } = req.body;
+    // Get type, selectedUserId, groupConversationId from reqest body
+    const { type, selectedUserId, groupConversationId } = req.body;
     // Get current logged in userId as loggedInUserId
     const loggedInUserId = req.user._id;
 
-    // Check the inputs from request body
-    if (!type) {
-      return res.status(400).json({
-        message: "Type is required",
-      });
-    }
-    if (!selectedUserId) {
-      return res.status(400).json({
-        message: "SelectedUserId is required",
-      });
-    }
-    if (type === "group" && !groupName) {
-      return res.status(400).json({
-        message: "groupName is required when sending a group invite",
-      });
-    }
-
-    const connections = await Connection.find({
-      type: type,
-      groupName: groupName,
-      $or: [
-        { senderId: loggedInUserId, receiverId: selectedUserId },
-        { senderId: selectedUserId, receiverId: loggedInUserId },
-      ],
+    // Call the service function to get sepcified connections
+    const { connections, error } = await getSpecifiedConnectionService({
+      type,
+      loggedInUserId,
+      selectedUserId,
+      groupConversationId,
     });
+    if (error) {
+      return res.status(400).json({
+        message: error,
+        connections: connections,
+      });
+    }
 
     return res.status(200).json(connections);
   } catch (error) {
-    console.log("Error in getConnection controller", error.message);
+    console.log("Error in getSpecifiedConnection controller", error.message);
     return res.status(500).json({
       message: "Interal server error",
     });
@@ -79,99 +71,64 @@ export const getSpecifiedConnection = async (req, res) => {
 // USAGE: send out a friend connection request in Chat box header.
 export const sendConnection = async (req, res) => {
   try {
-    // Get type, selectedUserId, groupName, groupConversationId, message from reqest body
-    const { type, selectedUserId, groupName, groupConversationId, message } =
-      req.body;
+    // Get type, selectedUserId, groupConversationId, message from reqest body
+    const { type, selectedUserId, groupConversationId, message } = req.body;
     // Get current logged in userId as loggedInUserId
     const loggedInUserId = req.user._id;
 
-    // Check the inputs from request body
-    if (!type) {
+    // Try to fetch any existing friend connection or group invitation first
+    const { connections: existingConnections, error: getError } =
+      await getSpecifiedConnectionService({
+        type,
+        loggedInUserId,
+        selectedUserId,
+        groupConversationId,
+      });
+    if (getError) {
       return res.status(400).json({
-        message: "Type is required",
+        message: getError,
+        connection: existingConnections,
       });
     }
-    if (!selectedUserId) {
-      return res.status(400).json({
-        message: "SelectedUserId is required",
-      });
-    }
-    if (type === "group" && !groupConversationId) {
-      return res.status(400).json({
-        message: "groupConversationId is required when sending a group invite",
-      });
-    }
 
-    // Try to fetch any exsiting friend connection or same groupConversationId
-    // inviation between 2 users
-    // Build query object dynamically based on type
-    const query = {
-      type: type,
-      $or: [
-        { senderId: loggedInUserId, receiverId: selectedUserId },
-        { senderId: selectedUserId, receiverId: loggedInUserId },
-      ],
-    };
-
-    // Only pass groupConversationId into query if type === "group"
-    if (type === "group") {
-      query.groupConversationId = groupConversationId;
-    }
-
-    // Try to fetch any existing friend connection or group invitation
-    const existingConnections = await Connection.find(query);
-
-    // If there are existing connection
-    if (existingConnections.length > 0) {
+    // If there is only 1 existing connection
+    if (existingConnections.length === 1) {
       const existingConnection = existingConnections[0];
 
-      // Return error if more than 1 existing connection (shouldn't happen)
-      if (existingConnections.length > 1) {
-        return res.status(500).json({
-          message:
-            "Sorry, error occurs beucase of more than 1 existing connections found",
-          existingConnections: existingConnections,
-        });
-      }
-
-      // Change its staus to pending if it's status is rejected
-      // OR return it directly if it's status is pending or accepted
-      if (existingConnection.status === "rejected") {
-        existingConnection.status = "pending";
-
-        // Swape the sender and reciever if sendId is selectedUserId
-        // instead of loggedInUserId
-        if (
-          existingConnection.senderId.equals(selectedUserId) &&
-          existingConnection.receiverId.equals(loggedInUserId)
-        ) {
-          existingConnection.senderId = new mongoose.Types.ObjectId(
-            loggedInUserId
-          );
-          existingConnection.receiverId = new mongoose.Types.ObjectId(
-            selectedUserId
-          );
+      // Return it directly if it's status is pending or accepted
+      if (existingConnection.status !== "rejected") {
+        return res.status(200).json(existingConnection);
+        // Set staus to pending only if it's status is rejected
+      } else {
+        const { connection: updatedConnection, error: setExistingError } =
+          await setRejectedConnectionToPendingService({
+            existingConnection,
+            loggedInUserId,
+            selectedUserId,
+          });
+        if (setExistingError) {
+          return res.status(400).json({
+            message: setExistingError,
+          });
         }
-
-        // Save this updated connection to database
-        await existingConnection.save();
+        return res.status(200).json(updatedConnection);
       }
-      return res.status(200).json(existingConnection);
     }
 
     // If not existing connection, create this new connection
-    const newConnection = new Connection({
-      // We shorten "type: type" to type
-      type,
-      status: "pending",
-      senderId: loggedInUserId,
-      receiverId: selectedUserId,
-      groupName,
-      groupConversationId: groupConversationId,
-      message,
-    });
-    // Save this new connection to database
-    await newConnection.save();
+    const { newConnection, error: createError } = await createConnectionService(
+      {
+        type,
+        loggedInUserId,
+        selectedUserId,
+        groupConversationId,
+      }
+    );
+    if (createError) {
+      return res.status(400).json({
+        message: createError,
+      });
+    }
 
     return res.status(201).json(newConnection);
   } catch (error) {
@@ -188,67 +145,17 @@ export const updateConnectionStatus = async (req, res) => {
   try {
     const { connectionId, status } = req.body;
 
-    // Check the inputs from request body
-    if (!connectionId) {
-      return res.status(400).json({
-        message: "ConnectionId is required",
-      });
-    }
-    if (!status) {
-      return res.status(400).json({
-        message: "Status is required",
-      });
-    }
-
-    const updatedConnection = await Connection.findByIdAndUpdate(
+    const { updatedConnection, error } = await updateConnectionStatusService({
       connectionId,
-      { status: status },
-      { new: true }
-    );
-
-    // If accepted, create or update conversation asynchronously
-    // NOTE: It's best to run them in a workflow, so that it can
-    // retry if any asynchronous update action fails.
-    if (updatedConnection.status === "accepted") {
-      // Create a private conversation
-      if (updatedConnection.type === "friend") {
-        createConversationService({
-          userIds: [updatedConnection.senderId, updatedConnection.receiverId],
-          isGroup: false,
-        }).catch((err) => {
-          console.error(
-            "Error creating private conversation asynchronously:",
-            err.message
-          );
-        });
-        // Add receiverId to group conversation
-      } else {
-        updateGroupConversationService({
-          conversationId: updatedConnection.groupConversationId,
-          userId: updatedConnection.receiverId,
-        }).catch((err) => {
-          console.error(
-            "Error adding logged in user to group conversation asynchronously:",
-            err.message
-          );
-        });
-      }
-    }
-
-    // Hydrate updatedConnection with sender info beofre return it
-    const user = await User.findById(updatedConnection.senderId).select(
-      "fullName profilePic"
-    );
-    if (!user) {
-      return res.status(404).json({
-        message: "Connection updated, but sender not found",
+      status,
+    });
+    if (error) {
+      return res.status(400).json({
+        message: error,
       });
     }
 
-    let hydratedConnection = updatedConnection.toObject();
-    hydratedConnection.senderId = user;
-
-    return res.status(200).json(hydratedConnection);
+    return res.status(200).json(updatedConnection);
   } catch (error) {
     console.log("Error in updateConnectionStatus controller", error.message);
     return res.status(500).json({

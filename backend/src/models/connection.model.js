@@ -20,7 +20,7 @@ const connectionSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    // TODO: remove it because it's depcreated
+    // TODO: depcrate it in both front and back end
     groupName: {
       type: String,
     },
