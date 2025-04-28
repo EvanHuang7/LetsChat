@@ -143,16 +143,16 @@ const NewConnectionsPage = () => {
                 <div key={user._id} className="card bg-base-200 shadow-sm">
                   <figure className="px-10 pt-10">
                     <img
-                      src={user.profilePic}
+                      src={user.profilePic || "/avatar.png"}
                       alt={user.fullName}
-                      className="rounded-full" // <- still not round, just rounded corners
+                      className="md:size-30 size-25 rounded-full object-cover"
                     />
                   </figure>
                   <div className="card-body items-center text-center">
                     <h2 className="card-title">{user.fullName}</h2>
                     <p>{user.email}</p>
                     <div className="card-actions justify-center">
-                      {/* Conditionally rendered connect button */}
+                      {/* TODO: update it to real time change Conditionally rendered connect button */}
                       {renderConnectButton(user)}
                       {/* View moments button */}
                       <Link
