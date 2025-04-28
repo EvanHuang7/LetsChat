@@ -6,27 +6,27 @@ import { useAuthStore } from "./useAuthStore.js";
 import { useConnectionStore } from "./useConnectionStore.js";
 
 export const useConversationStore = create((set, get) => ({
-  // This is an array containing multiple "convoInfoOfUser" object
-  convoInfoOfUserList: [],
-  isConvoInfoOfUserListLoading: false,
+  // This is an array of "convoInfoOfUser" object
+  convosInfo: [],
+  isConvosInfoLoading: false,
 
   selectedConversation: null,
   unreadMessagesNumberMap: null,
 
   // USAGE: Get all conversations info in sidebar for logged in user
-  getConvoInfoOfUserList: async () => {
+  getConvosInfo: async () => {
     try {
-      set({ isConvoInfoOfUserListLoading: true });
+      set({ isConvosInfoLoading: true });
 
       // Call the endpoint
       const res = await axiosInstance.get("/convoInfoOfUser/getAll");
 
-      set({ convoInfoOfUserList: res.data });
+      set({ convosInfo: res.data });
     } catch (error) {
-      console.log("Error in getConvoInfoOfUserList: ", error);
+      console.log("Error in getConvosInfo: ", error);
       toast.error(error.response.data.message);
     } finally {
-      set({ isConvoInfoOfUserListLoading: false });
+      set({ isConvosInfoLoading: false });
     }
   },
 
@@ -36,8 +36,8 @@ export const useConversationStore = create((set, get) => ({
       // Call endpoint
       const res = await axiosInstance.post("/conversation/create", data);
 
-      // TODO: Build a fake convoInfoOfUser object with new created conversation
-      // and add it  to convoInfoOfUserList
+      // TODO: Build a fake convoInfo object with new created conversation
+      // and add it to convosInfo
 
       // set({ conversations: [res.data, ...get().conversations] });
     } catch (error) {
@@ -56,7 +56,9 @@ export const useConversationStore = create((set, get) => ({
       // Call endpoint
       await axiosInstance.post("/convoInfoOfUser/update", {
         conversationId: selectedConversation._id,
-        lastReadMessageSequence: selectedConversation.latestSentMessageSequence,
+        // If no message in selectedConversation, set it to 0
+        lastReadMessageSequence:
+          selectedConversation.latestSentMessageSequence || 0,
       });
 
       // TODO: update this conversation unread in front-end real time
