@@ -3,7 +3,6 @@ import toast from "react-hot-toast";
 
 import { axiosInstance } from "../lib/axios.js";
 import { useAuthStore } from "./useAuthStore.js";
-import { useConnectionStore } from "./useConnectionStore.js";
 
 export const useConversationStore = create((set, get) => ({
   // This is an array of "convoInfoOfUser" object

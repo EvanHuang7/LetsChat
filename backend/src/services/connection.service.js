@@ -76,7 +76,7 @@ export const getAllFriendConnectionsService = async ({ loggedInUserId }) => {
 
     // Build query
     const query = {
-      type: type,
+      type: "friend",
       $or: [{ senderId: loggedInUserId }, { receiverId: loggedInUserId }],
     };
 

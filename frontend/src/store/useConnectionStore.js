@@ -5,6 +5,7 @@ import { axiosInstance } from "../lib/axios.js";
 import { useChatStore } from "./useChatStore";
 
 export const useConnectionStore = create((set, get) => ({
+  users: [],
   connections: [],
   pendingConnections: [],
   respondedConnections: [],
@@ -26,6 +27,20 @@ export const useConnectionStore = create((set, get) => ({
       toast.error(error.response.data.message);
     } finally {
       set({ isConnectionsLoading: false });
+    }
+  },
+
+  // Call API function to get all users in new connection page
+  getUsersForConnection: async () => {
+    try {
+      // Call the get connections endpoint
+      const res = await axiosInstance.get(`/connection/users`);
+
+      // Set users
+      set({ users: res.data });
+    } catch (error) {
+      console.log("Error in getUsersForConnection: ", error);
+      toast.error(error.response.data.message);
     }
   },
 

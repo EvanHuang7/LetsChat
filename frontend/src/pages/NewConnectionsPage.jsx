@@ -7,52 +7,23 @@ import { useConnectionStore } from "../store/useConnectionStore";
 import ConnectionCard from "../components/connections/ConnectionCard";
 import MomentSkeleton from "../components/skeletons/MomentSkeleton";
 
-// Dummy users list for now (replace with your real passed users)
-const users = [
-  {
-    _id: "1",
-    fullName: "John Doe",
-    intro: "Loves coding",
-    profilePic: "https://i.pravatar.cc/150?img=1",
-    connectionStatus: "Connect",
-  },
-  {
-    _id: "2",
-    fullName: "Jane Smith",
-    intro: "Designer & Creator",
-    profilePic: "https://i.pravatar.cc/150?img=2",
-    connectionStatus: "Pending",
-  },
-  {
-    _id: "3",
-    fullName: "Alice Johnson",
-    intro: "Photographer",
-    profilePic: "https://i.pravatar.cc/150?img=3",
-    connectionStatus: "Connect",
-  },
-  {
-    _id: "4",
-    fullName: "Bob Brown",
-    intro: "Musician",
-    profilePic: "https://i.pravatar.cc/150?img=4",
-    connectionStatus: "Follow",
-  },
-];
-
 const NewConnectionsPage = () => {
   const {
+    users,
+    getUsersForConnection,
     getConnections,
     isConnectionsLoading,
     pendingConnections,
     respondedConnections,
   } = useConnectionStore();
   const { sendConnection } = useConnectionStore();
+  // TODO: get users info from store and update get all users api to return
+  // intro/job/email and connectionStatus
 
   useEffect(() => {
-    // Call getConnections() to get all connection history
-    // for this logged in user
     getConnections();
-  }, [getConnections]);
+    getUsersForConnection();
+  }, [getConnections, getUsersForConnection]);
 
   const renderConnectButton = (user) => {
     const status = user.connectionStatus;
@@ -179,7 +150,7 @@ const NewConnectionsPage = () => {
                   </figure>
                   <div className="card-body items-center text-center">
                     <h2 className="card-title">{user.fullName}</h2>
-                    <p>{user.intro}</p>
+                    <p>{user.email}</p>
                     <div className="card-actions justify-center">
                       {/* Conditionally rendered connect button */}
                       {renderConnectButton(user)}
