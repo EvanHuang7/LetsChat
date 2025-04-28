@@ -1,5 +1,7 @@
-import Comment from "../models/comment.model.js";
-import User from "../models/user.model.js";
+import {
+  getCommentsWithMomentIdsService,
+  postCommentService,
+} from "../services/comment.service.js";
 
 // Get comments for passed in momentIds or ALL comments of ALL moments
 export const getCommentsWithMomentIds = async (req, res) => {
@@ -7,18 +9,14 @@ export const getCommentsWithMomentIds = async (req, res) => {
     // Get momentIds from reqest body
     const { momentIds } = req.body;
 
-    let comments = [];
-
-    // Get comments for momentIds if there are momentIds passed in
-    if (momentIds && momentIds.length > 0) {
-      comments = await Comment.find({ momentId: { $in: momentIds } })
-        .populate("posterId", "fullName profilePic") //show commenter info
-        .sort({ createdAt: 1 }); // oldest to newest
-      // Get comments for all momemnts
-    } else {
-      comments = await Comment.find()
-        .populate("posterId", "fullName profilePic") //show commenter info
-        .sort({ createdAt: 1 }); // oldest to newest
+    // Call the service function to get comments
+    const { comments, error } = await getCommentsWithMomentIdsService({
+      momentIds,
+    });
+    if (error) {
+      return res.status(400).json({
+        message: error,
+      });
     }
 
     return res.status(200).json(comments);
@@ -38,37 +36,17 @@ export const postComment = async (req, res) => {
     // Get current logged in userId as posterId
     const posterId = req.user._id;
 
-    // Check the inputs from request body
-    if (!momentId) {
-      return res.status(400).json({
-        message: "MomentId is required",
-      });
-    }
-    if (!text) {
-      return res.status(400).json({
-        message: "Text is required",
-      });
-    }
-
-    // Create this new comment
-    const newComment = new Comment({
-      // We shorten "posterId: posterId" to posterId
-      posterId,
+    // Call the service function to post comment
+    const { newComment, error } = await postCommentService({
       momentId,
+      posterId,
       text,
     });
-
-    // Save this new message to database
-    await newComment.save();
-
-    // Hydrate newComment with user information beofre return it
-    const user = await User.findById(posterId).select("fullName profilePic");
-    if (!user) {
-      return res.status(404).json({
-        message: "Commented created, but comment poster not found",
+    if (error) {
+      return res.status(400).json({
+        message: error,
       });
     }
-    newComment.posterId = user;
 
     return res.status(201).json(newComment);
   } catch (error) {
