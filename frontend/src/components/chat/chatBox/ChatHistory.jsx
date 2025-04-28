@@ -17,6 +17,7 @@ const ChatHistory = () => {
   // Count how many images are in the message list
   const totalImages = messages.filter((msg) => msg.image).length;
 
+  // TODO: don't work now, fixed it
   // Scroll only when all images are loaded
   useEffect(() => {
     if (imagesLoaded >= totalImages) {
@@ -86,7 +87,7 @@ const ChatHistory = () => {
             {message.text && <p>{message.text}</p>}
           </div>
           {/* Add to sticker button with tooltip */}
-          {message.image && (
+          {message.image && !message.text && (
             <div className="relative group">
               {/* Tooltip */}
               <div
