@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Users } from "lucide-react";
+import { Users, Contact } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
+import { useConversationStore } from "../store/useConversationStore";
 
 const Sidebar = () => {
   const {
@@ -15,45 +16,51 @@ const Sidebar = () => {
     isUsersLoading,
     unreadMessagesNumberMap,
   } = useChatStore();
+  const {
+    convosInfo,
+    getConvosInfo,
+    selectedConversation,
+    setSelectedConversation,
+    isConvosInfoLoading,
+  } = useConversationStore();
   const { onlineUsers } = useAuthStore();
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
   const navigate = useNavigate();
-  // Grabs the userId from "/:userId" route
-  const { userId } = useParams();
+  // Grabs the conversationId from "/:conversationId" route
+  const { conversationId } = useParams();
 
   // Do something when sidebar component starts
   useEffect(() => {
-    // Call getUsers() function to get users list for sidebar
-    getUsers();
-  }, [getUsers]);
+    // Call getConvosInfo() function to get users list for sidebar
+    getConvosInfo();
+  }, [getConvosInfo]);
 
-  // When userId found from "/:userId" route
+  // When conversationId found from "/:conversationId" route
   useEffect(() => {
-    if (users.length > 0 && userId) {
-      const foundUser = users.find((user) => user._id === userId);
-      if (foundUser) {
-        setSelectedUser(foundUser);
+    if (convosInfo.length > 0 && conversationId) {
+      const foundConvoInfo = convosInfo.find(
+        (convoInfo) => convoInfo.conversationId._id === conversationId
+      );
+      if (foundConvoInfo) {
+        setSelectedConversation(foundConvoInfo.conversationId);
       }
     }
-  }, [users, userId, setSelectedUser]);
+  }, [convosInfo, conversationId, setSelectedConversation]);
 
-  // Set filteredUsers according to showOnlineOnly bool field
+  // TODO: Fix it to filter oneline user conversations
   const filteredUsers = showOnlineOnly
     ? users.filter((user) => onlineUsers.includes(user._id))
     : users;
 
-  // Display a loading state if user is loading
-  if (isUsersLoading) return <SidebarSkeleton />;
+  // Display a loading state if conversations are loading
+  if (isConvosInfoLoading) return <SidebarSkeleton />;
 
-  // TODO: fix the issue of new messages from not selected user
-  // does not display a red note OR the messages subscriber only subscribe
-  // to the 1 selected user (not selected user incoming messages is not real time)
   return (
     <aside className="h-full w-20 lg:w-72 border-r border-base-300 flex flex-col transition-all duration-200">
       <div className="border-b border-base-300 w-full p-5">
         <div className="flex items-center gap-2">
-          <Users className="size-6" />
-          <span className="font-medium hidden lg:block">All users</span>
+          <Contact className="size-6" />
+          <span className="font-medium hidden lg:block">All conversations</span>
         </div>
         {/* Online filter toggle */}
         <div className="mt-3 hidden lg:flex items-center gap-2">
@@ -71,64 +78,89 @@ const Sidebar = () => {
           </span>
         </div>
       </div>
-      {/* Display each user */}
+      {/* Display each conversation */}
       <div className="overflow-y-auto w-full py-3">
-        {filteredUsers.map((user) => (
+        {convosInfo.map((convoInfo) => (
           <button
-            key={user._id}
+            key={convoInfo.conversationId._id}
             onClick={() => {
-              setSelectedUser(user);
-              navigate(`/${user._id}`);
+              setSelectedConversation(convoInfo.conversationId);
+              navigate(`/${convoInfo.conversationId._id}`);
             }}
             className={`
               w-full p-3 flex items-center gap-3
               hover:bg-base-300 transition-colors
               ${
-                selectedUser?._id === user._id
+                selectedConversation?._id === convoInfo.conversationId._id
                   ? "bg-base-300 ring-1 ring-base-300"
                   : ""
               }
             `}
           >
             <div className="relative mx-auto lg:mx-0">
-              {/* User profile picture and name */}
+              {/* conversation profile picture and name */}
               <img
-                src={user.profilePic || "/avatar.png"}
-                alt={user.name}
+                src={
+                  (convoInfo.conversationId.isGroup
+                    ? convoInfo.conversationId.groupImageUrl
+                    : convoInfo.conversationId.friend.profilePic) ||
+                  "/avatar.png"
+                }
+                alt={
+                  convoInfo.conversationId.isGroup
+                    ? convoInfo.conversationId.groupName
+                    : convoInfo.conversationId.friend.fullName
+                }
                 className="size-12 object-cover rounded-full"
               />
 
-              {/* 🔴 User unread message badge */}
-              {unreadMessagesNumberMap.get(user._id) > 0 && (
+              {/* 🔴 TODO: Fix it, Conversation unread message badge */}
+              {unreadMessagesNumberMap.get(convoInfo.conversationId._id) >
+                0 && (
                 <span
                   className="absolute -top-2 -right-2 min-w-[1.25rem] h-5 px-1 text-xs font-semibold 
                   text-white bg-red-500 rounded-full flex items-center justify-center shadow-md"
                 >
-                  {unreadMessagesNumberMap.get(user._id)}
+                  {unreadMessagesNumberMap.get(convoInfo.conversationId._id)}
                 </span>
               )}
 
               {/* 🟢 User Online green dot icon */}
-              {onlineUsers.includes(user._id) && (
-                <span
-                  className="absolute bottom-0 right-0 size-3 bg-green-500 
+              {!convoInfo.conversationId.isGroup &&
+                onlineUsers.includes(convoInfo.conversationId.friend._id) && (
+                  <span
+                    className="absolute bottom-0 right-0 size-3 bg-green-500 
                   rounded-full ring-2 ring-zinc-900"
-                />
-              )}
+                  />
+                )}
             </div>
 
-            {/* User info - only visible on larger screens */}
             <div className="hidden lg:block text-left min-w-0">
-              <div className="font-medium truncate">{user.fullName}</div>
-              <div className="text-sm text-zinc-400">
-                {onlineUsers.includes(user._id) ? "Online" : "Offline"}
-              </div>
+              {convoInfo.conversationId.isGroup ? (
+                <div className="flex items-center gap-2">
+                  <Users className="size-4" />
+                  <span className="font-medium truncate">
+                    {convoInfo.conversationId.groupName}
+                  </span>
+                </div>
+              ) : (
+                <>
+                  <div className="font-medium truncate">
+                    {convoInfo.conversationId.friend.fullName}
+                  </div>
+                  <div className="text-sm text-zinc-400">
+                    {onlineUsers.includes(convoInfo.conversationId.friend._id)
+                      ? "Online"
+                      : "Offline"}
+                  </div>
+                </>
+              )}
             </div>
           </button>
         ))}
-        {/* Online filter toggle */}
-        {filteredUsers.length === 0 && (
-          <div className="text-center text-zinc-500 py-4">No online users</div>
+        {/* No conversatons state */}
+        {convosInfo.length === 0 && (
+          <div className="text-center text-zinc-500 py-4">No conversations</div>
         )}
       </div>
     </aside>
