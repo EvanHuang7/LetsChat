@@ -12,12 +12,6 @@ const messageSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    // TODO: deprecate receiverId and update front-end to remove it
-    receiverId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
     sequence: {
       type: Number,
       required: true,

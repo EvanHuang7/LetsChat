@@ -56,8 +56,8 @@ const ChatHistory = () => {
                 src={
                   message.senderId === authUser._id
                     ? authUser.profilePic || "/avatar.png"
-                    : selectedConversation[message.senderId].profilePic ||
-                      "/avatar.png"
+                    : selectedConversation.userIdToInfoMap[message.senderId]
+                        .profilePic || "/avatar.png"
                 }
                 alt="profile pic"
               />

@@ -8,14 +8,7 @@ import SidebarSkeleton from "./skeletons/SidebarSkeleton";
 import { useConversationStore } from "../store/useConversationStore";
 
 const Sidebar = () => {
-  const {
-    users,
-    getUsers,
-    selectedUser,
-    setSelectedUser,
-    isUsersLoading,
-    unreadMessagesNumberMap,
-  } = useChatStore();
+  const { users, unreadMessagesNumberMap } = useChatStore();
   const {
     convosInfo,
     getConvosInfo,
@@ -115,6 +108,7 @@ const Sidebar = () => {
               />
 
               {/* 🔴 TODO: Fix it, Conversation unread message badge */}
+              {/* TODO: building a conversationIdToUnreadNumber Map */}
               {unreadMessagesNumberMap.get(convoInfo.conversationId._id) >
                 0 && (
                 <span

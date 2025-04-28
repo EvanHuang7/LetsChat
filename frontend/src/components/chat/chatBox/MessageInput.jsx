@@ -3,6 +3,7 @@ import { Image, Send, X, Smile, Trash } from "lucide-react";
 import toast from "react-hot-toast";
 
 import { useChatStore } from "../../../store/useChatStore";
+
 import GifsContainer from "./GifsContainer";
 
 const MessageInput = () => {

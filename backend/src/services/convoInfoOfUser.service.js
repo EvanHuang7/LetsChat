@@ -177,8 +177,11 @@ export const updateConvoInfoOfUserService = async ({
         error: "ConversationId is required",
       };
     }
-    // Will return error when lastReadMessageSequence is null or 0
-    if (!lastReadMessageSequence) {
+    // Will return error when lastReadMessageSequence is undefined or null
+    if (
+      lastReadMessageSequence === undefined ||
+      lastReadMessageSequence === null
+    ) {
       return {
         convoInfoOfUser: null,
         error: "LastReadMessageSequence is required",

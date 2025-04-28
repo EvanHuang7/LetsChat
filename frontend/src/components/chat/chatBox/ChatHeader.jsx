@@ -3,11 +3,9 @@ import { X, Users, NotebookText, UserCheck } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { useAuthStore } from "../../../store/useAuthStore";
-import { useChatStore } from "../../../store/useChatStore";
 import { useConversationStore } from "../../../store/useConversationStore";
 
 const ChatHeader = () => {
-  const { selectedUser, setSelectedUser } = useChatStore();
   const { selectedConversation, setSelectedConversation } =
     useConversationStore();
 

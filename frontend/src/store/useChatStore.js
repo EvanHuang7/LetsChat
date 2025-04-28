@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { axiosInstance } from "../lib/axios.js";
 import { useAuthStore } from "./useAuthStore";
 import { useConnectionStore } from "./useConnectionStore";
+import { useConversationStore } from "./useConversationStore";
 
 // Zustand is a handy state management tool for
 // managing state in React apps
@@ -30,6 +31,7 @@ export const useChatStore = create((set, get) => ({
   isUsersLoading: false,
   isMessagesLoading: false,
 
+  // TODO: deprecate it when removing users and selectedUser
   // Function to make HTTP call to "api/message/users" endpoint
   getUsers: async () => {
     try {
@@ -58,11 +60,11 @@ export const useChatStore = create((set, get) => ({
   },
 
   // Function to make HTTP call to "api/message/:id" endpoint
-  getMessages: async (userId) => {
+  getMessages: async (conversationId) => {
     try {
       set({ isMessagesLoading: true });
       // Call the get message endpoint
-      const res = await axiosInstance.get(`/message/${userId}`);
+      const res = await axiosInstance.get(`/message/${conversationId}`);
       set({ messages: res.data });
     } catch (error) {
       console.log("Error in getMessages: ", error);
@@ -75,10 +77,13 @@ export const useChatStore = create((set, get) => ({
   // Function to make HTTP call to "api/message/send/:id" endpoint
   sendMessage: async (data) => {
     try {
-      const { selectedUser, messages } = get();
+      const selectedConversation =
+        useConversationStore.getState().selectedConversation;
+      const { messages } = get();
+
       // Call the send message endpoint
       const res = await axiosInstance.post(
-        `/message/send/${selectedUser._id}`,
+        `/message/send/${selectedConversation._id}`,
         data
       );
       // Add new sent message to messages list
@@ -88,6 +93,8 @@ export const useChatStore = create((set, get) => ({
       toast.error(error.response.data.message);
     }
   },
+
+  //TODO: fix real time message
 
   // Function to subscribe any new incoming messages from selected user
   // for auth user

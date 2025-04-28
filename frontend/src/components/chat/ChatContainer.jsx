@@ -9,7 +9,7 @@ import MessageInput from "./chatBox/MessageInput";
 import MessageSkeleton from "../skeletons/MessageSkeleton";
 
 const ChatContainer = () => {
-  const { selectedUser, getMessages, isMessagesLoading } = useChatStore();
+  const { getMessages, isMessagesLoading } = useChatStore();
   const { selectedConversation } = useConversationStore();
 
   // Do something when chat container component starts
