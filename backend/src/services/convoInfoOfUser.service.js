@@ -12,17 +12,21 @@ export const getAllConvoInfoOfUserService = async ({ userId }) => {
     }
 
     // Run query to get all convoInfoOfUser records with hydrated info
-    const allConvoInfoOfUser = await ConvoInfoOfUser.find({ userId }).populate({
-      path: "conversationId",
-      populate: {
-        path: "userIds", // Populate the userIds inside conversation
-        select: "fullName profilePic", // Only select needed fields
-      },
-      populate: {
-        path: "latestSentMessageId", // Populate the latestSentMessageId inside conversation
-        select: "senderId text image createdAt", // Only select needed fields
-      },
-    });
+    const allConvoInfoOfUser = await ConvoInfoOfUser.find({ userId })
+      .populate({
+        path: "conversationId",
+        populate: [
+          {
+            path: "userIds", // populate userIds inside conversation
+            select: "fullName profilePic",
+          },
+          {
+            path: "latestSentMessageId", // populate latestSentMessageId inside conversation
+            select: "senderId text image createdAt",
+          },
+        ],
+      })
+      .lean();
 
     // Find all friend type conversations, and add a "friend" object
     for (const convoInfo of allConvoInfoOfUser) {
