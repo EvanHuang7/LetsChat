@@ -109,15 +109,14 @@ export const useChatStore = create((set, get) => ({
       // newest value of selectedUser and unreadMessagesNumberMap when a newMessage event triggered.
       // If we put them outside socket.on(), they will keep using the old value
       // from when subscribeToMessages() function is called
-      const {
-        selectedUser,
-        unreadMessagesNumberMap,
-        setUnreadMessagesNumberMap,
-      } = get();
+      const { unreadMessagesNumberMap, setUnreadMessagesNumberMap } = get();
 
-      // If the incoming new message is not sent from current selected
-      // or no user selected yet, update unreadMessagesNumberMap
-      if (newMessage.senderId !== selectedUser?._id) {
+      const selectedConversation =
+        useConversationStore.getState().selectedConversation;
+
+      // If the incoming new message is not sent from current selected conversation
+      // or no conversation selected yet, update unreadMessagesNumberMap
+      if (newMessage.conversationId !== selectedConversation?._id) {
         // TODO: if it's not empty, but having less users, we can
         // do unreadMessagesNumberMap.get(newMessage.senderId) + 1 || 0+1
         setUnreadMessagesNumberMap(

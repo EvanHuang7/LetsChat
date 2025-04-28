@@ -28,9 +28,9 @@ export const emitNewMessageEventService = async ({
 
     // Get all users except sender and emit newMessage to all their sockets if online
     const promises = userIds
-      .filter((userId) => userId.toString() !== senderId.toString())
-      .map((userId) => {
-        const receiverSocketId = getSocketIdByUserId(userId);
+      .filter((user) => user._id.toString() !== senderId.toString())
+      .map((user) => {
+        const receiverSocketId = getSocketIdByUserId(user._id);
         if (receiverSocketId) {
           return io.to(receiverSocketId).emit("newMessage", newMessage);
         }
