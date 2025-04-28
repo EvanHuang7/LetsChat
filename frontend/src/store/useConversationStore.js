@@ -47,6 +47,20 @@ export const useConversationStore = create((set, get) => ({
 
   // Function to set a selected conversation
   setSelectedConversation: async (selectedConversation) => {
+    // Build userIdToInfoMap
+    if (selectedConversation) {
+      const userIdToInfoMap = {};
+      selectedConversation.userIds.forEach((user) => {
+        userIdToInfoMap[user._id] = {
+          _id: user._id,
+          fullName: user.fullName,
+          profilePic: user.profilePic,
+        };
+      });
+
+      selectedConversation.userIdToInfoMap = userIdToInfoMap;
+    }
+
     set({ selectedConversation });
 
     // If select a conversation instead of closing a conversation,

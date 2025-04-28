@@ -4,10 +4,12 @@ import toast from "react-hot-toast";
 
 import { useChatStore } from "../../../store/useChatStore";
 import { useAuthStore } from "../../../store/useAuthStore";
+import { useConversationStore } from "../../../store/useConversationStore";
 import { formatMessageTime } from "../../../lib/utils";
 
 const ChatHistory = () => {
-  const { messages, selectedUser } = useChatStore();
+  const { messages } = useChatStore();
+  const { selectedConversation } = useConversationStore();
   const { authUser, updateStickers } = useAuthStore();
   const messageEndRef = useRef(null);
   const [imagesLoaded, setImagesLoaded] = useState(0);
@@ -54,7 +56,8 @@ const ChatHistory = () => {
                 src={
                   message.senderId === authUser._id
                     ? authUser.profilePic || "/avatar.png"
-                    : selectedUser.profilePic || "/avatar.png"
+                    : selectedConversation[message.senderId].profilePic ||
+                      "/avatar.png"
                 }
                 alt="profile pic"
               />
