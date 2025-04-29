@@ -35,7 +35,7 @@ export const useConversationStore = create((set, get) => ({
     }
   },
 
-  // Create a conversation when logged in user creates a group conversation
+  // USAGE: Create a conversation when logged in user creates a group conversation
   createConversation: async (data) => {
     try {
       // Call endpoint
@@ -51,6 +51,7 @@ export const useConversationStore = create((set, get) => ({
     }
   },
 
+  // USAGE: Update convoInfoOfUser when selecting or leaving conversation
   updateConvoInfoOfUser: async (conversation) => {
     try {
       // Call endpoint
@@ -93,7 +94,7 @@ export const useConversationStore = create((set, get) => ({
     }
   },
 
-  // Build convoIdtoUnreadMap for all convosInfo
+  // USAGE: Build convoIdtoUnreadMap when getting all convosInfo in sidebar
   buildConvoIdtoUnreadMap: (convosInfo) => {
     if (convosInfo) {
       const convoIdtoUnreadMap = {};
@@ -107,7 +108,7 @@ export const useConversationStore = create((set, get) => ({
     }
   },
 
-  // Build userIdToInfoMap for a selected conversation
+  // USAGE: Build userIdToInfoMap when selecting a conversation
   buildUserIdToInfoMap: (selectedConversation) => {
     if (selectedConversation) {
       const userIdToInfoMap = {};
@@ -123,7 +124,6 @@ export const useConversationStore = create((set, get) => ({
     }
   },
 
-  // TODO: call it when sending a new message
   // Update front-end unread message numer data (selectedConversation sequence)
   // when receving new message or send new message
   updateSelectedConversationMessageSequence: (newMessage) => {
@@ -142,7 +142,6 @@ export const useConversationStore = create((set, get) => ({
     }
   },
 
-  // TODO: call it when sending a new message
   // Update front-end unread message numer data (convosInfo sequence)
   // when receving new message or send new message
   updateConvosInfoMessageSequence: (newMessage) =>

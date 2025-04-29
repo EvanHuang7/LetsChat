@@ -14,7 +14,7 @@ export const useMessageStore = create((set, get) => ({
   unreadNumInHomeIcon: 0,
   setUnreadNumInHomeIcon: (value) => set({ unreadNumInHomeIcon: value }),
 
-  // Function to make HTTP call to "api/message/:id" endpoint
+  // USAGE: Get all messages after selecting a conversation
   getMessages: async (conversationId) => {
     try {
       set({ isMessagesLoading: true });
@@ -29,7 +29,7 @@ export const useMessageStore = create((set, get) => ({
     }
   },
 
-  // Function to make HTTP call to "api/message/send/:id" endpoint
+  // USAGE: send a message from message input component
   sendMessage: async (data) => {
     try {
       const selectedConversation =
@@ -41,18 +41,28 @@ export const useMessageStore = create((set, get) => ({
         `/message/send/${selectedConversation._id}`,
         data
       );
+      const newMessage = res.data;
       // Add new sent message to messages list
-      set({ messages: [...messages, res.data] });
+      set({ messages: [...messages, newMessage] });
+
+      // Update front-end data (convosInfo sequence)
+      useConversationStore
+        .getState()
+        .updateConvosInfoMessageSequence(newMessage);
+
+      // Update front-end data (selectedConversation sequence)
+      useConversationStore
+        .getState()
+        .updateSelectedConversationMessageSequence(newMessage);
     } catch (error) {
       console.log("Error in sendMessage: ", error);
       toast.error(error.response.data.message);
     }
   },
 
-  // Function to subscribe any new incoming messages from selected user
-  // for auth user
+  // USAGE: Subscribe any new incoming messages from conversations
+  // in navbar component for auth user
   subscribeToMessages: () => {
-    // Get a state from another store file in a store file
     const socket = useAuthStore.getState().socket;
 
     // Listen to "newMessage" event and update messages list
@@ -81,6 +91,7 @@ export const useMessageStore = create((set, get) => ({
       // If the incoming new message is not sent from current selected conversation
       // or no conversation selected yet, update unreadMessagesNumberMap
       if (newMessage.conversationId !== selectedConversation?._id) {
+        // Set unread badge in home icon
         get().setUnreadNumInHomeIcon(get().unreadNumInHomeIcon + 1);
 
         useConversationStore
