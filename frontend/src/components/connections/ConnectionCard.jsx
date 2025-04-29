@@ -28,7 +28,7 @@ const ConnectionCard = ({ connection }) => {
   };
 
   return (
-    <div className="bg-base-200 p-4 rounded-xl shadow-md">
+    <div key={connection._id} className="bg-base-200 p-4 rounded-xl shadow-md">
       <div className="flex items-start gap-4">
         {/* connection sender profile image */}
         <div className="flex-shrink-0">
