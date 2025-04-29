@@ -20,7 +20,7 @@ export const useAuthStore = create((set, get) => ({
   isLoggingIn: false,
   isUpdatingProfile: false,
 
-  // Function to make HTTP call to "api/auth/check" endpoint
+  // USAGE: Check authentication when app starts
   checkAuth: async () => {
     try {
       // Call the auth check endpoint
@@ -41,7 +41,7 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  // Function to make HTTP call to "api/auth/signup" endpoint
+  // USAGE: Signup a user
   signup: async (data) => {
     try {
       set({ isSigningUp: true });
@@ -61,7 +61,7 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  // Function to make HTTP call to "api/auth/login" endpoint
+  // USAGE: Login a user
   login: async (data) => {
     try {
       set({ isLoggingIn: true });
@@ -81,7 +81,7 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  // Function to make HTTP call to "api/auth/logout" endpoint
+  // USAGE: Logout a user
   logout: async () => {
     try {
       // Call the logout endpoint
@@ -98,7 +98,7 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  // Function to make HTTP call to "api/auth/update-profile" endpoint
+  // USAGE: Update user picture in profile page
   updateProfile: async (data) => {
     try {
       set({ isUpdatingProfile: true });
@@ -115,7 +115,7 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  // Function to make HTTP call to "api/auth/update-stickers" endpoint
+  // USAGE: Add or remove user stickers list in chat box
   updateStickers: async (data) => {
     try {
       // Call the update-stickers endpoint
@@ -132,7 +132,8 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
-  // Function to connect to socket io server
+  // USAGE: Create socket io client and start connection to socket io server
+  // after checkAuth, signup or login succeed and listen to the "getOnlineUsers" event
   connectSocket: () => {
     const { authUser } = get();
     // If user is not auth granted or already connected to socket,
@@ -158,7 +159,7 @@ export const useAuthStore = create((set, get) => ({
     });
   },
 
-  // Function to disconnect to socket io server
+  // USAGE: Disconnect socket after logout succeed
   disconnectSocket: () => {
     if (get().socket?.connected) get().socket?.disconnect();
   },

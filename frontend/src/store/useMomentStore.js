@@ -10,7 +10,8 @@ export const useMomentStore = create((set, get) => ({
 
   isMomentsLoading: false,
 
-  // Call API function to get 10 moments of all users or specific user
+  // USAGE: Get 10 moments of all users or specific user in
+  // all moments page or one user's moment page
   getMoments: async (userId, data) => {
     try {
       // Only display the moment skeletons when arrving this page
@@ -47,7 +48,7 @@ export const useMomentStore = create((set, get) => ({
     }
   },
 
-  // Call API function to post a moment for logged in user
+  // USAGE: Post a moment in moment writer component
   postMoment: async (data) => {
     try {
       const { moments } = get();
@@ -63,7 +64,7 @@ export const useMomentStore = create((set, get) => ({
     }
   },
 
-  // Call API function to post a comment for logged in user
+  // USAGE: Post a comment in comment writer component
   postComment: async (data) => {
     try {
       // Call the post comment endpoint
@@ -90,7 +91,7 @@ export const useMomentStore = create((set, get) => ({
     }
   },
 
-  // Call API function to update like status for logged in user
+  // USAGE: Like or dislike a moment in moments page
   updateLikeStatus: async (data) => {
     try {
       // Call the update-like endpoint
@@ -105,7 +106,7 @@ export const useMomentStore = create((set, get) => ({
 
       if (data.like) {
         toast("Thanks your like!", {
-          icon: "👍",
+          icon: "💖",
         });
       }
     } catch (error) {
@@ -114,6 +115,7 @@ export const useMomentStore = create((set, get) => ({
     }
   },
 
+  // USAGE: Clear existing moments if switching userId in url
   clearMoments: () => {
     set({ moments: [] });
   },

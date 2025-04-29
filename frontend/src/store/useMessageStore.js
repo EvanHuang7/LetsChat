@@ -60,8 +60,8 @@ export const useMessageStore = create((set, get) => ({
     }
   },
 
-  // USAGE: Subscribe any new incoming messages from conversations
-  // in navbar component for auth user
+  // USAGE: Set socket client to listen to "newMessage" event from
+  // socket server in navbar component for auth user
   subscribeToMessages: () => {
     const socket = useAuthStore.getState().socket;
 
@@ -112,7 +112,7 @@ export const useMessageStore = create((set, get) => ({
     });
   },
 
-  // USAGE: Unsubscribe any new incoming messages when navbar component destroyed
+  // USAGE: Unsubscribe from "newMessage" event when navbar component destroyed
   unsubscribeFromMessages: () => {
     const socket = useAuthStore.getState().socket;
     socket.off("newMessage");

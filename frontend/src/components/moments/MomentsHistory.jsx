@@ -38,7 +38,7 @@ const MomentsHistory = forwardRef((props, ref) => {
   const [hasMoreMoments, setHasMoreMoments] = useState(true);
 
   useEffect(() => {
-    // Clear old moments if switching userId in url
+    // Clear existing moments if switching userId in url
     clearMoments();
     getMoments(id, { lastMomentCreatedAt: null });
   }, [id, getMoments, clearMoments]);
