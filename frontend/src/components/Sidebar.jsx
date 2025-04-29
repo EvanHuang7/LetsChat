@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Users, Contact } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
 import { useConversationStore } from "../store/useConversationStore";

@@ -60,6 +60,8 @@ export const useConversationStore = create((set, get) => ({
 
   // Function to set a selected conversation
   setSelectedConversation: async (selectedConversation) => {
+    console.log("selectedConversation", selectedConversation);
+
     // Build userIdToInfoMap
     if (selectedConversation) {
       const userIdToInfoMap = {};
@@ -76,15 +78,16 @@ export const useConversationStore = create((set, get) => ({
 
     set({ selectedConversation });
 
+    // TODO: update convoInfoOfUser when closing a conversation too
+    // from X button or go to another page
+
     // If select a conversation instead of closing a conversation,
     // clear unread messages number
     if (selectedConversation) {
       // Call endpoint
       await axiosInstance.post("/convoInfoOfUser/update", {
         conversationId: selectedConversation._id,
-        // If no message in selectedConversation, set it to 0
-        lastReadMessageSequence:
-          selectedConversation.latestSentMessageSequence || 0,
+        lastReadMessageSequence: selectedConversation.latestSentMessageSequence,
       });
 
       // TODO: update this conversation unread in front-end real time

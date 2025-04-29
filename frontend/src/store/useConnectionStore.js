@@ -2,7 +2,7 @@ import { create } from "zustand";
 import toast from "react-hot-toast";
 
 import { axiosInstance } from "../lib/axios.js";
-import { useChatStore } from "./useChatStore";
+import { useMessageStore } from "./useMessageStore";
 
 export const useConnectionStore = create((set, get) => ({
   users: [],
@@ -86,7 +86,7 @@ export const useConnectionStore = create((set, get) => ({
       await axiosInstance.post(`/connection/send`, data);
 
       // Update connection status for selectedUser
-      const selectedUser = useChatStore.getState().selectedUser;
+      const selectedUser = useMessageStore.getState().selectedUser;
       selectedUser.connectionStatus = "pending";
       set({ selectedUser });
 

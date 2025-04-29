@@ -2,12 +2,12 @@ import { create } from "zustand";
 import toast from "react-hot-toast";
 
 import { axiosInstance } from "../lib/axios.js";
-import { useAuthStore } from "./useAuthStore";
-import { useConversationStore } from "./useConversationStore";
+import { useAuthStore } from "./useAuthStore.js";
+import { useConversationStore } from "./useConversationStore.js";
 
 // Zustand is a handy state management tool for
 // managing state in React apps
-export const useChatStore = create((set, get) => ({
+export const useMessageStore = create((set, get) => ({
   messages: [],
   isMessagesLoading: false,
 

@@ -15,7 +15,6 @@ import NewConnectionsPage from "./pages/NewConnectionsPage";
 
 import { useAuthStore } from "./store/useAuthStore";
 import { useThemeStore } from "./store/useThemeStore";
-import { useChatStore } from "./store/useChatStore";
 
 const App = () => {
   // Get the needed variables and function from useAuthStore

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Trash } from "lucide-react";
 import toast from "react-hot-toast";
 
-import { useChatStore } from "../../../store/useChatStore";
+import { useMessageStore } from "../../../store/useMessageStore";
 import { useAuthStore } from "../../../store/useAuthStore";
 
 const GifsContainer = ({ showGifPicker, setShowGifPicker, gifButtonRef }) => {
@@ -10,7 +10,7 @@ const GifsContainer = ({ showGifPicker, setShowGifPicker, gifButtonRef }) => {
   const [gifs, setGifs] = useState(null);
   const [gifToDelete, setGifToDelete] = useState(null);
 
-  const { sendMessage } = useChatStore();
+  const { sendMessage } = useMessageStore();
 
   const gifPickerRef = useRef(null);
 

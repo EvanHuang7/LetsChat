@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react";
 import { Image, Send, X, Smile, Trash } from "lucide-react";
 import toast from "react-hot-toast";
 
-import { useChatStore } from "../../../store/useChatStore";
+import { useMessageStore } from "../../../store/useMessageStore";
 
 import GifsContainer from "./GifsContainer";
 
@@ -10,7 +10,7 @@ const MessageInput = () => {
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const [showGifPicker, setShowGifPicker] = useState(false);
-  const { sendMessage } = useChatStore();
+  const { sendMessage } = useMessageStore();
 
   const fileInputRef = useRef(null);
   const gifButtonRef = useRef(null);

@@ -1,6 +1,5 @@
 import React from "react";
 
-import { useChatStore } from "../store/useChatStore";
 import { useConversationStore } from "../store/useConversationStore";
 
 import Sidebar from "../components/Sidebar";

@@ -12,7 +12,7 @@ import {
 
 import { useAuthStore } from "../store/useAuthStore";
 import { useConnectionStore } from "../store/useConnectionStore";
-import { useChatStore } from "../store/useChatStore";
+import { useMessageStore } from "../store/useMessageStore";
 
 const Navbar = () => {
   // Get the needed variables and function from useAuthStore
@@ -22,7 +22,7 @@ const Navbar = () => {
     setShowUnreadInHomeIcon,
     subscribeToMessages,
     unsubscribeFromMessages,
-  } = useChatStore();
+  } = useMessageStore();
   const { getConnections, pendingConnections } = useConnectionStore();
 
   useEffect(() => {
@@ -64,7 +64,7 @@ const Navbar = () => {
                     className="absolute -top-1 -right-1 min-w-[1rem] h-4 px-1 text-[10px] sm:text-xs font-semibold 
                 text-white bg-red-500 rounded-full flex items-center justify-center shadow-md"
                   >
-                    <MessageSquareDot className="size-3" />
+                    <MessageSquareDot className="size-3 animate-bounce" />
                   </span>
                 )}
               </div>

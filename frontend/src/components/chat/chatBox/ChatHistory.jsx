@@ -2,13 +2,13 @@ import React, { useRef, useEffect, useState } from "react";
 import { SmilePlus } from "lucide-react";
 import toast from "react-hot-toast";
 
-import { useChatStore } from "../../../store/useChatStore";
+import { useMessageStore } from "../../../store/useMessageStore";
 import { useAuthStore } from "../../../store/useAuthStore";
 import { useConversationStore } from "../../../store/useConversationStore";
 import { formatMessageTime } from "../../../lib/utils";
 
 const ChatHistory = () => {
-  const { messages } = useChatStore();
+  const { messages } = useMessageStore();
   const { selectedConversation } = useConversationStore();
   const { authUser, updateStickers } = useAuthStore();
   const messageEndRef = useRef(null);
