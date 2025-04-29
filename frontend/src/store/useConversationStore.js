@@ -11,6 +11,8 @@ export const useConversationStore = create((set, get) => ({
   selectedConversation: null,
   convoIdtoUnreadMap: null,
 
+  setConvosInfo: (value) => set({ convosInfo: value }),
+
   // USAGE: Get all conversations info in sidebar for logged in user
   getConvosInfo: async () => {
     try {
@@ -60,9 +62,13 @@ export const useConversationStore = create((set, get) => ({
 
   // Function to set a selected conversation
   setSelectedConversation: async (selectedConversation) => {
+    const previousConversation = get().selectedConversation;
+    set({ selectedConversation });
+
+    console.log("previousConversation", previousConversation);
     console.log("selectedConversation", selectedConversation);
 
-    // Build userIdToInfoMap
+    // Build userIdToInfoMap of selecting a conversation
     if (selectedConversation) {
       const userIdToInfoMap = {};
       selectedConversation.userIds.forEach((user) => {
@@ -76,21 +82,33 @@ export const useConversationStore = create((set, get) => ({
       selectedConversation.userIdToInfoMap = userIdToInfoMap;
     }
 
-    set({ selectedConversation });
+    // TODO: If go to one conversation from previous conversation,
+    // call endpoint clear the unread in Db for previous conversation
 
-    // TODO: update convoInfoOfUser when closing a conversation too
-    // from X button or go to another page
-
-    // If select a conversation instead of closing a conversation,
-    // clear unread messages number
+    // If selecting a conversation from null, only clear unread
+    // message number for current selected conversation
     if (selectedConversation) {
+      console.log("update selectedConversation", selectedConversation);
+
       // Call endpoint
       await axiosInstance.post("/convoInfoOfUser/update", {
         conversationId: selectedConversation._id,
         lastReadMessageSequence: selectedConversation.latestSentMessageSequence,
       });
 
-      // TODO: update this conversation unread in front-end real time
+      // Reset this conversation unread num in front-end to 0
+      get().updateConvoIdtoUnreadMap(selectedConversation._id, 0);
+    }
+
+    // If closing a conversation from X button or go to another page.
+    if (!selectedConversation && previousConversation) {
+      console.log("update previous convo", previousConversation);
+
+      // Call endpoint
+      await axiosInstance.post("/convoInfoOfUser/update", {
+        conversationId: previousConversation._id,
+        lastReadMessageSequence: previousConversation.latestSentMessageSequence,
+      });
     }
   },
 
@@ -99,4 +117,41 @@ export const useConversationStore = create((set, get) => ({
     updatedConvoIdtoUnreadMap[conversationId] = value;
     set({ convoIdtoUnreadMap: updatedConvoIdtoUnreadMap });
   },
+
+  updateSelectedConversationMessageSequence: (newMessage) => {
+    const selectedConversation = get().selectedConversation;
+
+    if (
+      newMessage.conversationId === selectedConversation?._id &&
+      newMessage.sequence > selectedConversation.latestSentMessageSequence
+    ) {
+      const updatedSelectedConversation = {
+        ...get().selectedConversation,
+        latestSentMessageSequence: newMessage.sequence,
+      };
+
+      set({ selectedConversation: updatedSelectedConversation });
+    }
+  },
+
+  updateConvosInfoMessageSequence: (newMessage) =>
+    set((state) => {
+      const updatedConvos = state.convosInfo.map((convo) => {
+        if (
+          convo.conversationId._id === newMessage.conversationId &&
+          newMessage.sequence > convo.conversationId.latestSentMessageSequence
+        ) {
+          return {
+            ...convo,
+            conversationId: {
+              ...convo.conversationId,
+              latestSentMessageSequence: newMessage.sequence,
+            },
+          };
+        }
+        return convo;
+      });
+
+      return { convosInfo: updatedConvos };
+    }),
 }));
