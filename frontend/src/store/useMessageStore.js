@@ -67,6 +67,17 @@ export const useMessageStore = create((set, get) => ({
       const selectedConversation =
         useConversationStore.getState().selectedConversation;
 
+      // Update front-end data (convosInfo sequence)
+      useConversationStore
+        .getState()
+        .updateConvosInfoMessageSequence(newMessage);
+
+      // Update front-end data (selectedConversation sequence)
+      useConversationStore
+        .getState()
+        .updateSelectedConversationMessageSequence(newMessage);
+
+      // Update front-end for read dot map (convoIdtoUnreadMap)
       // If the incoming new message is not sent from current selected conversation
       // or no conversation selected yet, update unreadMessagesNumberMap
       if (newMessage.conversationId !== selectedConversation?._id) {
