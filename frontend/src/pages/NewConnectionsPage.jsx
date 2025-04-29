@@ -42,7 +42,10 @@ const NewConnectionsPage = () => {
             ) : (
               <div className="space-y-4">
                 {pendingConnections.map((pendingConnection) => (
-                  <ConnectionCard connection={pendingConnection} />
+                  <ConnectionCard
+                    key={pendingConnection._id}
+                    connection={pendingConnection}
+                  />
                 ))}
               </div>
             )}
@@ -65,7 +68,10 @@ const NewConnectionsPage = () => {
             ) : (
               <div className="space-y-4">
                 {respondedConnections.map((respondedConnection) => (
-                  <ConnectionCard connection={respondedConnection} />
+                  <ConnectionCard
+                    key={respondedConnection._id}
+                    connection={respondedConnection}
+                  />
                 ))}
               </div>
             )}
@@ -78,7 +84,7 @@ const NewConnectionsPage = () => {
             </h2>
             <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
               {users.map((user) => (
-                <UserCard user={user} />
+                <UserCard key={user._id} user={user} />
               ))}
             </div>
           </section>
