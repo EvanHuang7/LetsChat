@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import { Users, Contact } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { useAuthStore } from "../store/useAuthStore";
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
+
+import { useAuthStore } from "../store/useAuthStore";
 import { useConversationStore } from "../store/useConversationStore";
 
 const Sidebar = () => {
+  const { onlineUsers } = useAuthStore();
   const {
     convosInfo,
     getConvosInfo,
@@ -15,13 +17,14 @@ const Sidebar = () => {
     convoIdtoUnreadMap,
     isConvosInfoLoading,
   } = useConversationStore();
-  const { onlineUsers } = useAuthStore();
+
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
+
   const navigate = useNavigate();
   // Grabs the conversationId from "/:conversationId" route
   const { conversationId } = useParams();
 
-  // Do something when sidebar component starts
+  // Triger the logic insdie when sidebar component starts
   useEffect(() => {
     // Call getConvosInfo() function to get users list for sidebar
     getConvosInfo();

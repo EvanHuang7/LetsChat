@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   LogOut,
@@ -10,26 +10,29 @@ import {
   MessageSquareDot,
 } from "lucide-react";
 
+import { usePrevious } from "../lib/utils";
+
 import { useAuthStore } from "../store/useAuthStore";
 import { useConnectionStore } from "../store/useConnectionStore";
-import { useMessageStore } from "../store/useMessageStore";
 import { useConversationStore } from "../store/useConversationStore";
+import { useMessageStore } from "../store/useMessageStore";
 
 const Navbar = () => {
   // Get the needed variables and function from useAuthStore
   const { authUser, logout } = useAuthStore();
+  const { getConnections, pendingConnections } = useConnectionStore();
+  const { setSelectedConversation } = useConversationStore();
   const {
     unreadNumInHomeIcon,
     setUnreadNumInHomeIcon,
     subscribeToMessages,
     unsubscribeFromMessages,
   } = useMessageStore();
-  const { getConnections, pendingConnections } = useConnectionStore();
-  const { setSelectedConversation } = useConversationStore();
+
   const location = useLocation();
   const prevPath = usePrevious(location.pathname);
 
-  // Check if user is on home or conversation page
+  // Check if user currently is in home or conversation page
   const isHomeOrConversationPage =
     location.pathname === "/" || location.pathname.startsWith("/conversation/");
 
@@ -63,14 +66,6 @@ const Navbar = () => {
       setSelectedConversation(null);
     }
   }, [location.pathname, prevPath]);
-
-  function usePrevious(value) {
-    const ref = useRef();
-    useEffect(() => {
-      ref.current = value;
-    }, [value]);
-    return ref.current;
-  }
 
   return (
     <header

@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+
 export function formatMessageTime(date) {
   return new Date(date).toLocaleTimeString("en-US", {
     month: "short", // e.g., "Apr"
@@ -6,4 +8,12 @@ export function formatMessageTime(date) {
     minute: "2-digit",
     hour12: false, // 24-hour format
   });
+}
+
+export function usePrevious(value) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+  return ref.current;
 }
