@@ -11,8 +11,8 @@ export const useMessageStore = create((set, get) => ({
   messages: [],
   isMessagesLoading: false,
 
-  showUnreadInHomeIcon: false,
-  setShowUnreadInHomeIcon: (value) => set({ showUnreadInHomeIcon: value }),
+  unreadNumInHomeIcon: 0,
+  setUnreadNumInHomeIcon: (value) => set({ unreadNumInHomeIcon: value }),
 
   // Function to make HTTP call to "api/message/:id" endpoint
   getMessages: async (conversationId) => {
@@ -70,13 +70,13 @@ export const useMessageStore = create((set, get) => ({
       // If the incoming new message is not sent from current selected conversation
       // or no conversation selected yet, update unreadMessagesNumberMap
       if (newMessage.conversationId !== selectedConversation?._id) {
-        get().setShowUnreadInHomeIcon(true);
+        get().setUnreadNumInHomeIcon(get().unreadNumInHomeIcon + 1);
 
         useConversationStore
           .getState()
           .updateConvoIdtoUnreadMap(
             newMessage.conversationId,
-            convoIdtoUnreadMap[newMessage.conversationId] + 1 || 1
+            convoIdtoUnreadMap?.[newMessage.conversationId] + 1 || 1
           );
         return;
       }

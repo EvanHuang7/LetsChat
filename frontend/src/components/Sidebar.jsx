@@ -27,7 +27,7 @@ const Sidebar = () => {
     getConvosInfo();
   }, [getConvosInfo]);
 
-  // When conversationId found from "/:conversationId" route
+  // When conversationId found from "conversation/:conversationId" route
   useEffect(() => {
     if (convosInfo.length > 0 && conversationId && !selectedConversation) {
       const foundConvoInfo = convosInfo.find(
@@ -77,7 +77,7 @@ const Sidebar = () => {
             key={convoInfo.conversationId._id}
             onClick={() => {
               setSelectedConversation(convoInfo.conversationId);
-              navigate(`/${convoInfo.conversationId._id}`);
+              navigate(`/conversation/${convoInfo.conversationId._id}`);
             }}
             className={`
               w-full p-3 flex items-center gap-3

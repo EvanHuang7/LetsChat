@@ -48,7 +48,7 @@ const App = () => {
           element={authUser ? <HomePage /> : <Navigate to="/login" />}
         />
         <Route
-          path="/:conversationId"
+          path="/conversation/:conversationId"
           element={authUser ? <HomePage /> : <Navigate to="/login" />}
         />
         <Route
