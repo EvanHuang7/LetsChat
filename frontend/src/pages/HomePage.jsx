@@ -1,8 +1,8 @@
 import React from "react";
 
 import Sidebar from "../components/Sidebar";
-import NoChatState from "../components/chat/NoChatState";
-import ChatContainer from "../components/chat/ChatContainer";
+import NoConversation from "../components/conversation/NoConversation";
+import ConversationContainer from "../components/conversation/ConversationContainer";
 
 import { useConversationStore } from "../store/useConversationStore";
 
@@ -16,7 +16,11 @@ const HomePage = () => {
           <div className="flex h-full rounded-lg overflow-hidden">
             <Sidebar />
 
-            {!selectedConversation ? <NoChatState /> : <ChatContainer />}
+            {!selectedConversation ? (
+              <NoConversation />
+            ) : (
+              <ConversationContainer />
+            )}
           </div>
         </div>
       </div>

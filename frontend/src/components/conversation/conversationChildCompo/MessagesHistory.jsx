@@ -8,7 +8,7 @@ import { useAuthStore } from "../../../store/useAuthStore";
 import { useConversationStore } from "../../../store/useConversationStore";
 import { useMessageStore } from "../../../store/useMessageStore";
 
-const ChatHistory = () => {
+const MessagesHistory = () => {
   const { authUser, updateStickers } = useAuthStore();
   const { selectedConversation } = useConversationStore();
   const { messages } = useMessageStore();
@@ -137,4 +137,4 @@ const ChatHistory = () => {
   );
 };
 
-export default ChatHistory;
+export default MessagesHistory;

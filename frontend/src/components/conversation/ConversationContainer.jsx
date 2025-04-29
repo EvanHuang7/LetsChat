@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
 
-import ChatHeader from "./chatBox/ChatHeader";
-import ChatHistory from "./chatBox/ChatHistory";
-import MessageInput from "./chatBox/MessageInput";
+import ConversationHeader from "./conversationChildCompo/ConversationHeader";
+import MessagesHistory from "./conversationChildCompo/MessagesHistory";
+import MessageInput from "./conversationChildCompo/MessageInput";
 import MessageSkeleton from "../skeletons/MessageSkeleton";
 
 import { useConversationStore } from "../../store/useConversationStore";
 import { useMessageStore } from "../../store/useMessageStore";
 
-const ChatContainer = () => {
+const ConversationContainer = () => {
   const { selectedConversation } = useConversationStore();
   const { getMessages, isMessagesLoading } = useMessageStore();
 
@@ -25,7 +25,7 @@ const ChatContainer = () => {
   if (isMessagesLoading) {
     return (
       <div className="flex-1 flex flex-col overflow-auto">
-        <ChatHeader />
+        <ConversationHeader />
         <MessageSkeleton />
         <MessageInput />
       </div>
@@ -34,11 +34,11 @@ const ChatContainer = () => {
 
   return (
     <div className="flex-1 flex flex-col overflow-auto">
-      <ChatHeader />
-      <ChatHistory />
+      <ConversationHeader />
+      <MessagesHistory />
       <MessageInput />
     </div>
   );
 };
 
-export default ChatContainer;
+export default ConversationContainer;

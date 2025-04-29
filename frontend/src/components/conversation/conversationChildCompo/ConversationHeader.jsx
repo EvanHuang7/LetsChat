@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../../store/useAuthStore";
 import { useConversationStore } from "../../../store/useConversationStore";
 
-const ChatHeader = () => {
+const ConversationHeader = () => {
   const { onlineUsers } = useAuthStore();
   const { selectedConversation, setSelectedConversation } =
     useConversationStore();
@@ -93,4 +93,4 @@ const ChatHeader = () => {
   );
 };
 
-export default ChatHeader;
+export default ConversationHeader;
