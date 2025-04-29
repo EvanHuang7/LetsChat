@@ -7,6 +7,7 @@ import {
   UserPen,
   Notebook,
   UserPlus,
+  MessageSquareDot,
 } from "lucide-react";
 
 import { useAuthStore } from "../store/useAuthStore";
@@ -17,13 +18,12 @@ const Navbar = () => {
   // Get the needed variables and function from useAuthStore
   const { authUser, logout } = useAuthStore();
   const {
+    showUnreadInHomeIcon,
+    setShowUnreadInHomeIcon,
     subscribeToMessages,
     unsubscribeFromMessages,
-    unreadMessagesNumberMap,
   } = useChatStore();
   const { getConnections, pendingConnections } = useConnectionStore();
-
-  const [totalUnreadMessages, setTotalUnreadMessages] = useState(0);
 
   useEffect(() => {
     // If user auth granted or a user logged in,
@@ -39,15 +39,7 @@ const Navbar = () => {
       // removed (unmounted) or before the effect re-runs (if dependencies change)
       return () => unsubscribeFromMessages();
     }
-  }, [authUser, subscribeToMessages, getConnections, unsubscribeFromMessages]);
-
-  useEffect(() => {
-    const total = Array.from(unreadMessagesNumberMap.values()).reduce(
-      (sum, num) => sum + num,
-      0
-    );
-    setTotalUnreadMessages(total);
-  }, [unreadMessagesNumberMap]);
+  }, [authUser]);
 
   return (
     <header
@@ -61,17 +53,18 @@ const Navbar = () => {
             <Link
               to="/"
               className="flex items-center gap-2.5 hover:opacity-80 transition-all"
+              onClick={() => setShowUnreadInHomeIcon(false)}
             >
               <div className="relative size-9 rounded-lg bg-primary/10 flex items-center justify-center">
                 <House className="w-5 h-5 text-primary" />
 
                 {/* 🔴 unread message badge */}
-                {totalUnreadMessages > 0 && (
+                {showUnreadInHomeIcon && (
                   <span
                     className="absolute -top-1 -right-1 min-w-[1rem] h-4 px-1 text-[10px] sm:text-xs font-semibold 
                 text-white bg-red-500 rounded-full flex items-center justify-center shadow-md"
                   >
-                    {totalUnreadMessages}
+                    <MessageSquareDot className="size-3" />
                   </span>
                 )}
               </div>

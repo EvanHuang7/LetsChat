@@ -2,7 +2,6 @@ import { create } from "zustand";
 import toast from "react-hot-toast";
 
 import { axiosInstance } from "../lib/axios.js";
-import { useAuthStore } from "./useAuthStore.js";
 
 export const useConversationStore = create((set, get) => ({
   // This is an array of "convoInfoOfUser" object
@@ -10,7 +9,7 @@ export const useConversationStore = create((set, get) => ({
   isConvosInfoLoading: false,
 
   selectedConversation: null,
-  unreadMessagesNumberMap: null,
+  convoIdtoUnreadMap: null,
 
   // USAGE: Get all conversations info in sidebar for logged in user
   getConvosInfo: async () => {
@@ -19,8 +18,22 @@ export const useConversationStore = create((set, get) => ({
 
       // Call the endpoint
       const res = await axiosInstance.get("/convoInfoOfUser/getAll");
+      const convosInfo = res.data;
 
-      set({ convosInfo: res.data });
+      // Set convosInfo
+      set({ convosInfo: convosInfo });
+
+      // Build convoIdtoUnreadMap
+      if (convosInfo) {
+        const convoIdtoUnreadMap = {};
+        convosInfo.forEach((convoInfo) => {
+          convoIdtoUnreadMap[convoInfo.conversationId._id] =
+            convoInfo.conversationId.latestSentMessageSequence -
+            convoInfo.lastReadMessageSequence;
+        });
+        // Set convoIdtoUnreadMap
+        set({ convoIdtoUnreadMap: convoIdtoUnreadMap });
+      }
     } catch (error) {
       console.log("Error in getConvosInfo: ", error);
       toast.error(error.response.data.message);
@@ -76,5 +89,11 @@ export const useConversationStore = create((set, get) => ({
 
       // TODO: update this conversation unread in front-end real time
     }
+  },
+
+  updateConvoIdtoUnreadMap: (conversationId, value) => {
+    const updatedConvoIdtoUnreadMap = get().convoIdtoUnreadMap;
+    updatedConvoIdtoUnreadMap[conversationId] = value;
+    set({ convoIdtoUnreadMap: updatedConvoIdtoUnreadMap });
   },
 }));

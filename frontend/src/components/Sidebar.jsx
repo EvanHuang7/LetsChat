@@ -8,12 +8,12 @@ import SidebarSkeleton from "./skeletons/SidebarSkeleton";
 import { useConversationStore } from "../store/useConversationStore";
 
 const Sidebar = () => {
-  const { users, unreadMessagesNumberMap } = useChatStore();
   const {
     convosInfo,
     getConvosInfo,
     selectedConversation,
     setSelectedConversation,
+    convoIdtoUnreadMap,
     isConvosInfoLoading,
   } = useConversationStore();
   const { onlineUsers } = useAuthStore();
@@ -30,7 +30,7 @@ const Sidebar = () => {
 
   // When conversationId found from "/:conversationId" route
   useEffect(() => {
-    if (convosInfo.length > 0 && conversationId) {
+    if (convosInfo.length > 0 && conversationId && !selectedConversation) {
       const foundConvoInfo = convosInfo.find(
         (convoInfo) => convoInfo.conversationId._id === conversationId
       );
@@ -41,9 +41,9 @@ const Sidebar = () => {
   }, [convosInfo, conversationId, setSelectedConversation]);
 
   // TODO: Fix it to filter oneline user conversations
-  const filteredUsers = showOnlineOnly
-    ? users.filter((user) => onlineUsers.includes(user._id))
-    : users;
+  // const filteredUsers = showOnlineOnly
+  //   ? users.filter((user) => onlineUsers.includes(user._id))
+  //   : users;
 
   // Display a loading state if conversations are loading
   if (isConvosInfoLoading) return <SidebarSkeleton />;
@@ -107,15 +107,13 @@ const Sidebar = () => {
                 className="size-12 object-cover rounded-full"
               />
 
-              {/* 🔴 TODO: Fix it, Conversation unread message badge */}
-              {/* TODO: building a conversationIdToUnreadNumber Map */}
-              {unreadMessagesNumberMap.get(convoInfo.conversationId._id) >
-                0 && (
+              {/* 🔴 Conversation unread message badge */}
+              {convoIdtoUnreadMap?.[convoInfo.conversationId._id] > 0 && (
                 <span
                   className="absolute -top-2 -right-2 min-w-[1.25rem] h-5 px-1 text-xs font-semibold 
                   text-white bg-red-500 rounded-full flex items-center justify-center shadow-md"
                 >
-                  {unreadMessagesNumberMap.get(convoInfo.conversationId._id)}
+                  {convoIdtoUnreadMap[convoInfo.conversationId._id]}
                 </span>
               )}
 
