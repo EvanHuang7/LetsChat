@@ -5,12 +5,12 @@ import toast from "react-hot-toast";
 import { useMomentStore } from "../../store/useMomentStore";
 
 const MomentWriter = () => {
+  const { postMoment } = useMomentStore();
+
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
   const formRef = useRef();
-
-  const { postMoment } = useMomentStore();
 
   const handleImageChange = (event) => {
     // Get image file of user selected and check it
@@ -75,7 +75,7 @@ const MomentWriter = () => {
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
-          {/* Hidden input image field */}
+          {/* Hidden input image DOM */}
           <input
             type="file"
             accept="image/*"

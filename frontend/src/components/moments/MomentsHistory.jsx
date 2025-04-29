@@ -8,15 +8,17 @@ import { ThumbsUp, MessageSquare, FilePlus, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
 
-import { useMomentStore } from "../../store/useMomentStore";
-import { useAuthStore } from "../../store/useAuthStore";
 import MomentSkeleton from "../skeletons/MomentSkeleton";
 import CommentsHistory from "./comments/CommentsHistory";
 import CommentWriter from "./comments/CommentWriter";
 
+import { useAuthStore } from "../../store/useAuthStore";
+import { useMomentStore } from "../../store/useMomentStore";
+
 // "forwardRef((props, ref)" is used to expose method to parent component
 // "ref" is ref object as input from parent component
 const MomentsHistory = forwardRef((props, ref) => {
+  const { authUser } = useAuthStore();
   const {
     isMomentsLoading,
     moments,
@@ -24,18 +26,17 @@ const MomentsHistory = forwardRef((props, ref) => {
     updateLikeStatus,
     clearMoments,
   } = useMomentStore();
-  const { authUser } = useAuthStore();
-  const { id } = useParams();
 
   // Intialize this state in this component instead of CommentWriter
   // component because it will remember the commentText even if
   // user close and reopen the CommentWriter component
   const [commentText, setCommentText] = useState("");
   const [activeCommentMomentId, setActiveCommentMomentId] = useState(null);
-
-  const [lastMomentCreatedAt, setLastMomentCreatedAt] = useState(null); // to track the last moment timestamp
+  const [lastMomentCreatedAt, setLastMomentCreatedAt] = useState(null);
   const [loadingMore, setLoadingMore] = useState(false); // to prevent multiple loads at the same time
   const [hasMoreMoments, setHasMoreMoments] = useState(true);
+
+  const { id } = useParams();
 
   useEffect(() => {
     // Clear existing moments if switching userId in url
