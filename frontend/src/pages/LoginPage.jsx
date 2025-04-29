@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Eye, EyeOff, Loader2, MessagesSquare } from "lucide-react";
 
-import { useAuthStore } from "../store/useAuthStore";
 import LoginSignupImage from "../components/LoginSignupImage";
+
+import { useAuthStore } from "../store/useAuthStore";
 
 const LoginPage = () => {
   // Intialize needed variables and corresponding update value functions

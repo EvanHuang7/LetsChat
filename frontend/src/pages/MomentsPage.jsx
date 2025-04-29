@@ -33,8 +33,7 @@ const MomentsPage = () => {
         <div className="bg-base-100 rounded-xl p-6 space-y-8">
           {/* Post a moment */}
           {id === "all" && <MomentWriter />}
-          {/* Moment List */}
-          {/* pass ref object as input to child */}
+          {/* Moment List, Pass ref object as input to child */}
           <MomentsHistory ref={momentsRef} />
         </div>
       </div>

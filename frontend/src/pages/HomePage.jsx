@@ -1,10 +1,10 @@
 import React from "react";
 
-import { useConversationStore } from "../store/useConversationStore";
-
 import Sidebar from "../components/Sidebar";
 import NoChatState from "../components/chat/NoChatState";
 import ChatContainer from "../components/chat/ChatContainer";
+
+import { useConversationStore } from "../store/useConversationStore";
 
 const HomePage = () => {
   const { selectedConversation } = useConversationStore();

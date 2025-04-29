@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { MessagesSquare, Eye, EyeOff, Loader2 } from "lucide-react";
-import { useAuthStore } from "../store/useAuthStore";
+
 import LoginSignupImage from "../components/LoginSignupImage";
+
+import { useAuthStore } from "../store/useAuthStore";
 
 const SignUpPage = () => {
   // Intialize needed variables and corresponding update value functions
