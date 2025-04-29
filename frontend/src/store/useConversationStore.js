@@ -82,15 +82,18 @@ export const useConversationStore = create((set, get) => ({
       selectedConversation.userIdToInfoMap = userIdToInfoMap;
     }
 
-    // TODO: If go to one conversation from previous conversation,
-    // call endpoint clear the unread in Db for previous conversation
+    // TODO: Check all 3 cases work.
+    // 1. null => select convo
+    // 2. select convo => null
+    // 3. select convo => another convo
 
-    // If selecting a conversation from null, only clear unread
-    // message number for current selected conversation
+    // If selecting a conversation from null or from previous conversation,
+    // clear unread message number for current selected conversation
+    // and clear previous conversation unread message num in next If state
     if (selectedConversation) {
       console.log("update selectedConversation", selectedConversation);
 
-      // Call endpoint
+      // Call endpoint to udpate back-end data
       await axiosInstance.post("/convoInfoOfUser/update", {
         conversationId: selectedConversation._id,
         lastReadMessageSequence: selectedConversation.latestSentMessageSequence,
@@ -100,11 +103,13 @@ export const useConversationStore = create((set, get) => ({
       get().updateConvoIdtoUnreadMap(selectedConversation._id, 0);
     }
 
-    // If closing a conversation from X button or go to another page.
-    if (!selectedConversation && previousConversation) {
+    // If closing a conversation from X button or go to another page
+    // or switching from previousConversation to another conversation.
+    // clear unread message number for previousConversation
+    if (previousConversation) {
       console.log("update previous convo", previousConversation);
 
-      // Call endpoint
+      // Call endpoint to udpate back-end data
       await axiosInstance.post("/convoInfoOfUser/update", {
         conversationId: previousConversation._id,
         lastReadMessageSequence: previousConversation.latestSentMessageSequence,
@@ -112,12 +117,7 @@ export const useConversationStore = create((set, get) => ({
     }
   },
 
-  updateConvoIdtoUnreadMap: (conversationId, value) => {
-    const updatedConvoIdtoUnreadMap = get().convoIdtoUnreadMap;
-    updatedConvoIdtoUnreadMap[conversationId] = value;
-    set({ convoIdtoUnreadMap: updatedConvoIdtoUnreadMap });
-  },
-
+  // TODO: call it when sending a new message
   updateSelectedConversationMessageSequence: (newMessage) => {
     const selectedConversation = get().selectedConversation;
 
@@ -134,6 +134,7 @@ export const useConversationStore = create((set, get) => ({
     }
   },
 
+  // TODO: call it when sending a new message
   updateConvosInfoMessageSequence: (newMessage) =>
     set((state) => {
       const updatedConvos = state.convosInfo.map((convo) => {
@@ -154,4 +155,10 @@ export const useConversationStore = create((set, get) => ({
 
       return { convosInfo: updatedConvos };
     }),
+
+  updateConvoIdtoUnreadMap: (conversationId, value) => {
+    const updatedConvoIdtoUnreadMap = get().convoIdtoUnreadMap;
+    updatedConvoIdtoUnreadMap[conversationId] = value;
+    set({ convoIdtoUnreadMap: updatedConvoIdtoUnreadMap });
+  },
 }));

@@ -13,6 +13,7 @@ import {
 import { useAuthStore } from "../store/useAuthStore";
 import { useConnectionStore } from "../store/useConnectionStore";
 import { useMessageStore } from "../store/useMessageStore";
+import { useConversationStore } from "../store/useConversationStore";
 
 const Navbar = () => {
   // Get the needed variables and function from useAuthStore
@@ -24,6 +25,7 @@ const Navbar = () => {
     unsubscribeFromMessages,
   } = useMessageStore();
   const { getConnections, pendingConnections } = useConnectionStore();
+  const { setSelectedConversation } = useConversationStore();
   const location = useLocation();
   const prevPath = usePrevious(location.pathname);
 
@@ -57,7 +59,8 @@ const Navbar = () => {
 
     if (wasHomeOrConversationPage && isNowDifferentPage) {
       setUnreadNumInHomeIcon(0);
-      //TODO: set selectedConversation to null and pass previous conversationId
+      // Set selectedConversation to null to update unread message num
+      setSelectedConversation(null);
     }
   }, [location.pathname, prevPath]);
 
