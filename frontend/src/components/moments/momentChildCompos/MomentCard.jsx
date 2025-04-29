@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { ThumbsUp, MessageSquare } from "lucide-react";
 import toast from "react-hot-toast";
 
-import CommentsHistory from "./comments/CommentsHistory";
-import CommentWriter from "./comments/CommentWriter";
+import CommentsHistory from "./CommentsHistory";
+import CommentWriter from "./CommentWriter";
 
-import { useAuthStore } from "../../store/useAuthStore";
-import { useMomentStore } from "../../store/useMomentStore";
+import { useAuthStore } from "../../../store/useAuthStore";
+import { useMomentStore } from "../../../store/useMomentStore";
 
 const MomentCard = ({ moment }) => {
   const { authUser } = useAuthStore();

@@ -9,13 +9,13 @@ import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
 
 import MomentSkeleton from "../skeletons/MomentSkeleton";
-import MomentCard from "./MomentCard";
+import MomentCard from "./momentChildCompos/MomentCard";
 
 import { useMomentStore } from "../../store/useMomentStore";
 
 // "forwardRef((props, ref)" is used to expose method to parent component
 // "ref" is ref object as input from parent component
-const MomentsHistory = forwardRef((props, ref) => {
+const MomentsContainer = forwardRef((props, ref) => {
   const { isMomentsLoading, moments, getMoments, clearMoments } =
     useMomentStore();
 
@@ -108,4 +108,4 @@ const MomentsHistory = forwardRef((props, ref) => {
   );
 });
 
-export default MomentsHistory;
+export default MomentsContainer;

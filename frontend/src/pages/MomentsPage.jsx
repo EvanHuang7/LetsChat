@@ -2,7 +2,7 @@ import { useParams } from "react-router-dom";
 import React, { useRef, useEffect } from "react";
 
 import MomentWriter from "../components/moments/MomentWriter";
-import MomentsHistory from "../components/moments/MomentsHistory";
+import MomentsContainer from "../components/moments/MomentsContainer";
 
 const MomentsPage = () => {
   const { id } = useParams();
@@ -34,7 +34,7 @@ const MomentsPage = () => {
           {/* Post a moment */}
           {id === "all" && <MomentWriter />}
           {/* Moment List, Pass ref object as input to child */}
-          <MomentsHistory ref={momentsRef} />
+          <MomentsContainer ref={momentsRef} />
         </div>
       </div>
     </div>
