@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useRef } from "react";
+import { Link, useLocation } from "react-router-dom";
 import {
   LogOut,
   House,
@@ -18,12 +18,18 @@ const Navbar = () => {
   // Get the needed variables and function from useAuthStore
   const { authUser, logout } = useAuthStore();
   const {
-    showUnreadInHomeIcon,
-    setShowUnreadInHomeIcon,
+    unreadNumInHomeIcon,
+    setUnreadNumInHomeIcon,
     subscribeToMessages,
     unsubscribeFromMessages,
   } = useMessageStore();
   const { getConnections, pendingConnections } = useConnectionStore();
+  const location = useLocation();
+  const prevPath = usePrevious(location.pathname);
+
+  // Check if user is on home or conversation page
+  const isHomeOrConversationPage =
+    location.pathname === "/" || location.pathname.startsWith("/conversation/");
 
   useEffect(() => {
     // If user auth granted or a user logged in,
@@ -41,6 +47,28 @@ const Navbar = () => {
     }
   }, [authUser]);
 
+  // When user go to another page from home or conversation page
+  useEffect(() => {
+    const wasHomeOrConversationPage =
+      prevPath === "/" || prevPath?.startsWith("/conversation/");
+    const isNowDifferentPage =
+      location.pathname !== "/" &&
+      !location.pathname.startsWith("/conversation/");
+
+    if (wasHomeOrConversationPage && isNowDifferentPage) {
+      setUnreadNumInHomeIcon(0);
+      //TODO: set selectedConversation to null and pass previous conversationId
+    }
+  }, [location.pathname, prevPath]);
+
+  function usePrevious(value) {
+    const ref = useRef();
+    useEffect(() => {
+      ref.current = value;
+    }, [value]);
+    return ref.current;
+  }
+
   return (
     <header
       className="bg-base-100 border-b border-base-300 fixed w-full top-0 z-40 
@@ -53,13 +81,13 @@ const Navbar = () => {
             <Link
               to="/"
               className="flex items-center gap-2.5 hover:opacity-80 transition-all"
-              onClick={() => setShowUnreadInHomeIcon(false)}
+              onClick={() => setUnreadNumInHomeIcon(0)}
             >
               <div className="relative size-9 rounded-lg bg-primary/10 flex items-center justify-center">
                 <House className="w-5 h-5 text-primary" />
 
                 {/* 🔴 unread message badge */}
-                {showUnreadInHomeIcon && (
+                {unreadNumInHomeIcon > 0 && !isHomeOrConversationPage && (
                   <span
                     className="absolute -top-1 -right-1 min-w-[1rem] h-4 px-1 text-[10px] sm:text-xs font-semibold 
                 text-white bg-red-500 rounded-full flex items-center justify-center shadow-md"
