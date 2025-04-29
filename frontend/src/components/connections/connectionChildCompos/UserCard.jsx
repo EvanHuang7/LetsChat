@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { UserPlus, NotebookText, UserCheck } from "lucide-react";
 import toast from "react-hot-toast";
 
-import { useConnectionStore } from "../../store/useConnectionStore";
+import { useConnectionStore } from "../../../store/useConnectionStore";
 
 const UserCard = ({ user }) => {
   const { sendConnection } = useConnectionStore();
