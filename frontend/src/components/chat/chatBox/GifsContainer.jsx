@@ -2,15 +2,15 @@ import React, { useState, useRef, useEffect } from "react";
 import { Trash } from "lucide-react";
 import toast from "react-hot-toast";
 
-import { useMessageStore } from "../../../store/useMessageStore";
 import { useAuthStore } from "../../../store/useAuthStore";
+import { useMessageStore } from "../../../store/useMessageStore";
 
 const GifsContainer = ({ showGifPicker, setShowGifPicker, gifButtonRef }) => {
   const { authUser, updateStickers } = useAuthStore();
+  const { sendMessage } = useMessageStore();
+
   const [gifs, setGifs] = useState(null);
   const [gifToDelete, setGifToDelete] = useState(null);
-
-  const { sendMessage } = useMessageStore();
 
   const gifPickerRef = useRef(null);
 
@@ -132,12 +132,12 @@ const GifsContainer = ({ showGifPicker, setShowGifPicker, gifButtonRef }) => {
         open={gifToDelete !== null}
       >
         <div
-          className="modal-box max-w-xs sm:max-w-sm" // 👈 smaller modal size
-          onClick={(e) => e.stopPropagation()} // 👈 prevent closing on outside click
+          className="modal-box max-w-xs sm:max-w-sm"
+          onClick={(e) => e.stopPropagation()} // prevent closing on outside click
         >
-          <h3 className="font-bold text-lg">Delete GIF?</h3>
+          <h3 className="font-bold text-lg">Delete Sticker?</h3>
           <p className="py-4 text-zinc-600">
-            Are you sure you want to delete this GIF?
+            Are you sure you want to delete this Sticker?
           </p>
           <div className="modal-action">
             <form method="dialog" className="flex gap-3">

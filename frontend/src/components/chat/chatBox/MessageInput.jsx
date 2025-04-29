@@ -2,15 +2,16 @@ import React, { useState, useRef } from "react";
 import { Image, Send, X, Smile, Trash } from "lucide-react";
 import toast from "react-hot-toast";
 
-import { useMessageStore } from "../../../store/useMessageStore";
-
 import GifsContainer from "./GifsContainer";
 
+import { useMessageStore } from "../../../store/useMessageStore";
+
 const MessageInput = () => {
+  const { sendMessage } = useMessageStore();
+
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const [showGifPicker, setShowGifPicker] = useState(false);
-  const { sendMessage } = useMessageStore();
 
   const fileInputRef = useRef(null);
   const gifButtonRef = useRef(null);
@@ -102,6 +103,7 @@ const MessageInput = () => {
           <Smile size={20} />
         </button>
 
+        {/* input composer */}
         <div className="flex-1 flex gap-2">
           <input
             type="text"

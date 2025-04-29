@@ -6,10 +6,10 @@ import { useAuthStore } from "../../../store/useAuthStore";
 import { useConversationStore } from "../../../store/useConversationStore";
 
 const ChatHeader = () => {
+  const { onlineUsers } = useAuthStore();
   const { selectedConversation, setSelectedConversation } =
     useConversationStore();
 
-  const { onlineUsers } = useAuthStore();
   const navigate = useNavigate();
 
   return (

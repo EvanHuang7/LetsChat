@@ -2,18 +2,20 @@ import React, { useRef, useEffect, useState } from "react";
 import { SmilePlus } from "lucide-react";
 import toast from "react-hot-toast";
 
-import { useMessageStore } from "../../../store/useMessageStore";
-import { useAuthStore } from "../../../store/useAuthStore";
-import { useConversationStore } from "../../../store/useConversationStore";
 import { formatMessageTime } from "../../../lib/utils";
 
+import { useAuthStore } from "../../../store/useAuthStore";
+import { useConversationStore } from "../../../store/useConversationStore";
+import { useMessageStore } from "../../../store/useMessageStore";
+
 const ChatHistory = () => {
-  const { messages } = useMessageStore();
-  const { selectedConversation } = useConversationStore();
   const { authUser, updateStickers } = useAuthStore();
-  const messageEndRef = useRef(null);
+  const { selectedConversation } = useConversationStore();
+  const { messages } = useMessageStore();
+
   const [imagesLoaded, setImagesLoaded] = useState(0);
 
+  const messageEndRef = useRef(null);
   // Count how many images are in the message list
   const totalImages = messages.filter((msg) => msg.image).length;
 
@@ -42,7 +44,7 @@ const ChatHistory = () => {
 
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-4">
-      {messages.map((message, idx) => (
+      {messages.map((message) => (
         <div
           key={message._id}
           className={`chat ${

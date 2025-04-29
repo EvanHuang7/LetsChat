@@ -1,6 +1,7 @@
 import React from "react";
 import toast from "react-hot-toast";
 import { UserPlus, Users, Check, X } from "lucide-react";
+
 import { useConnectionStore } from "../../store/useConnectionStore";
 
 const ConnectionCard = ({ connection }) => {

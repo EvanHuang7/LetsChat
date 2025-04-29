@@ -1,16 +1,16 @@
 import React, { useEffect } from "react";
 
-import { useMessageStore } from "../../store/useMessageStore";
-import { useConversationStore } from "../../store/useConversationStore";
-
 import ChatHeader from "./chatBox/ChatHeader";
 import ChatHistory from "./chatBox/ChatHistory";
 import MessageInput from "./chatBox/MessageInput";
 import MessageSkeleton from "../skeletons/MessageSkeleton";
 
+import { useConversationStore } from "../../store/useConversationStore";
+import { useMessageStore } from "../../store/useMessageStore";
+
 const ChatContainer = () => {
-  const { getMessages, isMessagesLoading } = useMessageStore();
   const { selectedConversation } = useConversationStore();
+  const { getMessages, isMessagesLoading } = useMessageStore();
 
   // Do something when chat container component starts
   // We should call useEffect() before any logic conditions
