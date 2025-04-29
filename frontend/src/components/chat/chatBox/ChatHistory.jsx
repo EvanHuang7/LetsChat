@@ -66,8 +66,13 @@ const ChatHistory = () => {
             </div>
           </div>
           {/* Time */}
-          <div className="chat-header mb-1">
-            <time className="text-xs opacity-50 ml-1">
+          <div className="text-xs chat-header mb-1 ml-0.5">
+            <div className="opacity-70">
+              {selectedConversation.isGroup &&
+                selectedConversation.userIdToInfoMap[message.senderId]
+                  ?.fullName}
+            </div>
+            <time className="opacity-50">
               {formatMessageTime(message.createdAt)}
             </time>
           </div>
