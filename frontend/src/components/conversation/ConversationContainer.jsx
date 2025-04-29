@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 
-import ConversationHeader from "./conversationChildCompo/ConversationHeader";
-import MessagesHistory from "./conversationChildCompo/MessagesHistory";
-import MessageInput from "./conversationChildCompo/MessageInput";
+import ConversationHeader from "./conversationChildCompos/ConversationHeader";
+import MessagesHistory from "./conversationChildCompos/MessagesHistory";
+import MessageInput from "./conversationChildCompos/MessageInput";
 import MessageSkeleton from "../skeletons/MessageSkeleton";
 
 import { useConversationStore } from "../../store/useConversationStore";
