@@ -17,7 +17,6 @@ const ChatHistory = () => {
   // Count how many images are in the message list
   const totalImages = messages.filter((msg) => msg.image).length;
 
-  // TODO: don't work now, fixed it
   // Scroll only when all images are loaded
   useEffect(() => {
     if (imagesLoaded >= totalImages) {
@@ -58,7 +57,7 @@ const ChatHistory = () => {
                   message.senderId === authUser._id
                     ? authUser.profilePic || "/avatar.png"
                     : selectedConversation.userIdToInfoMap[message.senderId]
-                        .profilePic || "/avatar.png"
+                        ?.profilePic || "/avatar.png"
                 }
                 alt="profile pic"
               />
@@ -82,6 +81,11 @@ const ChatHistory = () => {
                 }}
                 className="md:max-w-[250px] rounded-md mb-2 object-contain"
                 onLoad={() => setImagesLoaded((prev) => prev + 1)}
+                onError={(e) => {
+                  setImagesLoaded((prev) => prev + 1);
+                  e.target.onerror = null; // prevent infinite loop
+                  e.target.src = "/fallback-image.png"; // fallback image
+                }}
               />
             )}
             {message.text && <p>{message.text}</p>}

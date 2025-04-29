@@ -4,6 +4,7 @@ import {
   getUsersForConnPageService,
   getAllFriendConnectionsService,
   getSpecifiedConnectionService,
+  setRejectedConnectionToPendingService,
   updateConnectionStatusService,
 } from "../services/connection.service.js";
 
