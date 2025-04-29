@@ -11,7 +11,9 @@ export const useConnectionStore = create((set, get) => ({
   respondedConnections: [],
   isConnectionsLoading: false,
 
-  // Call API function to get connections for logged in user
+  // USAGE: Get all connections for logged in user in sidebar component to
+  // display the pending conversaton numeber and display all connections
+  // in new connections page
   getConnections: async () => {
     try {
       set({ isConnectionsLoading: true });
@@ -30,7 +32,7 @@ export const useConnectionStore = create((set, get) => ({
     }
   },
 
-  // Call API function to get all users in new connection page
+  // USAGE: Get all users to display them in new connection page
   getUsersForConnection: async () => {
     try {
       // Call the get connections endpoint
@@ -44,7 +46,7 @@ export const useConnectionStore = create((set, get) => ({
     }
   },
 
-  // Call API function to update connection status for logged in user
+  // USAGE: Accept or reject a connection in new connection page
   updateConnectionStatus: async (data) => {
     try {
       // Call the update-status endpoint
@@ -78,29 +80,36 @@ export const useConnectionStore = create((set, get) => ({
     }
   },
 
-  // Call API function to send a connection status
-  // from logged in user to selected user
+  // USAGE: send a connection from logged in user to selected user
+  // in all users section of new connection page
   sendConnection: async (data) => {
     try {
       // Call the send connection endpoint
       await axiosInstance.post(`/connection/send`, data);
 
-      // Update connection status for selectedUser
-      const selectedUser = useMessageStore.getState().selectedUser;
-      selectedUser.connectionStatus = "pending";
-      set({ selectedUser });
+      // Update connection status for selectedUser in users list
+      set((state) => ({
+        users: state.users.map((user) => {
+          return user._id === data.selectedUserId
+            ? {
+                ...user,
+                connectionStatus: "pending",
+              }
+            : user;
+        }),
+      }));
 
       toast("Friend connection sent sucessfully!", {
         icon: "🥳",
       });
     } catch (error) {
-      console.log("Error in updateConnectionStatus: ", error);
+      console.log("Error in sendConnection: ", error);
       toast.error(error.response.data.message);
     }
   },
 
-  // Call API function to get specified connections between two users
-  // for logged in user as connection sender
+  // USAGE:
+  // Get specified connections between two users for logged in user as connection sender
   getSpecifiedConnections: async (data) => {
     try {
       // Call the get-specified endpoint
@@ -112,12 +121,12 @@ export const useConnectionStore = create((set, get) => ({
     }
   },
 
-  // Get all pending connections by filtering all connections
+  // USAGE: Show all pending connections in pending connections section
   getPendingConnections: () => {
     return get().connections.filter((c) => c.status === "pending");
   },
 
-  // Get all responded connections by filtering all connections
+  // USAGE: Show all responded connections in responded connections section
   getRespondedConnections: () => {
     return get().connections.filter((c) => c.status !== "pending");
   },

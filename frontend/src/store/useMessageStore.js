@@ -112,7 +112,7 @@ export const useMessageStore = create((set, get) => ({
     });
   },
 
-  // Function to unsubscribe any new incoming messages for auth user
+  // USAGE: Unsubscribe any new incoming messages when navbar component destroyed
   unsubscribeFromMessages: () => {
     const socket = useAuthStore.getState().socket;
     socket.off("newMessage");

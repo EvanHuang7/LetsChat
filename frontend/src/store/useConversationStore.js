@@ -51,7 +51,7 @@ export const useConversationStore = create((set, get) => ({
     }
   },
 
-  // USAGE: Update convoInfoOfUser when selecting or leaving conversation
+  // USAGE: Update unread message number in DB when selecting or leaving conversation
   updateConvoInfoOfUser: async (conversation) => {
     try {
       // Call endpoint
@@ -66,7 +66,7 @@ export const useConversationStore = create((set, get) => ({
   },
 
   // Function to set a selected conversation
-  // Udpate back-end unread message numer data
+  // USAGE: Udpate back-end unread message numer for user when when selecting or leaving conversation
   setSelectedConversation: async (selectedConversation) => {
     const previousConversation = get().selectedConversation;
     set({ selectedConversation });
@@ -124,7 +124,7 @@ export const useConversationStore = create((set, get) => ({
     }
   },
 
-  // Update front-end unread message numer data (selectedConversation sequence)
+  // USAGE: Update front-end unread message numer data (selectedConversation sequence)
   // when receving new message or send new message
   updateSelectedConversationMessageSequence: (newMessage) => {
     const selectedConversation = get().selectedConversation;
@@ -142,7 +142,7 @@ export const useConversationStore = create((set, get) => ({
     }
   },
 
-  // Update front-end unread message numer data (convosInfo sequence)
+  // USAGE: Update front-end unread message numer data (convosInfo sequence)
   // when receving new message or send new message
   updateConvosInfoMessageSequence: (newMessage) =>
     set((state) => {
@@ -165,7 +165,7 @@ export const useConversationStore = create((set, get) => ({
       return { convosInfo: updatedConvos };
     }),
 
-  // Update front-end unread message numer data (convoIdtoUnreadMap sequence)
+  // USAGE: Update front-end unread message numer data (convoIdtoUnreadMap sequence)
   // when receving new message
   updateConvoIdtoUnreadMap: (conversationId, value) => {
     const updatedConvoIdtoUnreadMap = get().convoIdtoUnreadMap;
