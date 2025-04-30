@@ -1,4 +1,5 @@
 import React from "react";
+import { MessageSquarePlus } from "lucide-react";
 import { MessagesSquare } from "lucide-react";
 
 const NoConversation = () => {
@@ -19,9 +20,23 @@ const NoConversation = () => {
 
         {/* Welcome Text */}
         <h2 className="text-2xl font-bold">Welcome to LetsChat!</h2>
-        <p className="text-base-content/60">
-          Select a conversation from the sidebar to start chatting
-        </p>
+        <div className="text-sm text-center text-base-content/60">
+          <span>
+            Start a conversation by{" "}
+            <a href="/newconnections" className="underline">
+              connecting a new friend
+            </a>{" "}
+            or{" "}
+            <button
+              className="btn btn-xs btn-outline rounded-full"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <MessageSquarePlus className="size-3" />
+              <span className="text-base-content">Create a group</span>
+            </button>{" "}
+            and invite your friend to group!
+          </span>
+        </div>
       </div>
     </div>
   );
