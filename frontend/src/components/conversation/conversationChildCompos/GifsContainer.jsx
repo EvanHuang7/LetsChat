@@ -137,7 +137,7 @@ const GifsContainer = ({ showGifPicker, setShowGifPicker, gifButtonRef }) => {
         >
           <h3 className="font-bold text-lg">Delete Sticker?</h3>
           <p className="py-4 text-zinc-600">
-            Are you sure you want to delete this Sticker?
+            Are you sure you want to delete this sticker?
           </p>
           <div className="modal-action">
             <form method="dialog" className="flex gap-3">

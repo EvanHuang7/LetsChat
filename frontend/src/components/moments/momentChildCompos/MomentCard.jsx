@@ -79,7 +79,7 @@ const MomentCard = ({ moment }) => {
             <div className={`flex items-center gap-2`}>
               <button
                 type="button"
-                className="btn btn-xs gap-2"
+                className="btn btn-xs gap-2 pr-0"
                 onClick={() => handleUpdateLikeStatus(moment)}
               >
                 <ThumbsUp
@@ -97,7 +97,7 @@ const MomentCard = ({ moment }) => {
             </div>
 
             {/* Comment button and comments number */}
-            <div className={`flex items-center gap-2`}>
+            <div className={`flex items-center gap-2 pb-0.25`}>
               {moment?.comments?.length > 0 && (
                 <p
                   className="hidden sm:block"
@@ -105,12 +105,13 @@ const MomentCard = ({ moment }) => {
                     display: window.innerWidth < 430 ? "none" : "block",
                   }}
                 >
-                  {moment?.comments?.length} comments
+                  {moment?.comments?.length}
+                  {moment?.comments?.length === 1 ? " comment" : " comments"}
                 </p>
               )}
               <button
                 type="button"
-                className="btn btn-xs gap-2"
+                className="btn btn-xs gap-2 pl-0"
                 onClick={() => setActiveCommentMomentId(moment._id)}
               >
                 <MessageSquare className="text-zinc-400" size={20} />

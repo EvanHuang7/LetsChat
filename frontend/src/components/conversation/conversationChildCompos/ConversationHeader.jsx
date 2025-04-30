@@ -63,7 +63,7 @@ const ConversationHeader = () => {
                 {/* TODO: update to say connected how many day, Connected button */}
                 <button className="btn btn-xs btn-outline gap-2 ml-1" disabled>
                   <UserCheck className="size-4" />
-                  <span className="hidden xl:inline">Connected</span>
+                  <span className="hidden lg:inline">Connected</span>
                 </button>
 
                 {/* View moments button */}
@@ -72,7 +72,7 @@ const ConversationHeader = () => {
                   className="btn btn-xs btn-outline gap-2"
                 >
                   <NotebookText className="size-4" />
-                  <span className="hidden xl:inline">moments</span>
+                  <span className="hidden lg:inline">moments</span>
                 </Link>
               </div>
             </div>

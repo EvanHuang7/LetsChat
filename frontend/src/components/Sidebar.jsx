@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Users, Contact } from "lucide-react";
+import { Users, Contact, MessageSquarePlus } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
@@ -53,12 +53,22 @@ const Sidebar = () => {
   return (
     <aside className="h-full w-20 lg:w-72 border-r border-base-300 flex flex-col transition-all duration-200">
       <div className="border-b border-base-300 w-full p-5">
+        {/* Title */}
         <div className="flex items-center gap-2">
-          <Contact className="size-6" />
+          <Contact className="size-7 hidden lg:block" />
           <span className="font-medium hidden lg:block">All conversations</span>
         </div>
-        {/* Online filter toggle */}
-        <div className="mt-3 hidden lg:flex items-center gap-2">
+
+        {/* Create group button */}
+        <div className="mt-4 flex items-center gap-2">
+          <button className="btn btn-xs btn-outline">
+            <MessageSquarePlus className="size-4" />
+          </button>
+          <span className="hidden lg:inline text-sm">Create a group</span>
+        </div>
+
+        {/* friends filter toggle */}
+        <div className="mt-4 hidden lg:flex items-center gap-2">
           <label className="cursor-pointer flex items-center gap-2">
             <input
               type="checkbox"
@@ -66,7 +76,7 @@ const Sidebar = () => {
               onChange={(e) => setShowOnlineOnly(e.target.checked)}
               className="checkbox checkbox-sm"
             />
-            <span className="text-sm">Show online only</span>
+            <span className="text-sm">Show friends only</span>
           </label>
           <span className="text-xs text-zinc-500">
             ({onlineUsers.length - 1} online)
