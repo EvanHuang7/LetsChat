@@ -124,7 +124,7 @@ const ConversationDetailsPanel = () => {
             {isEditingGroupName && (
               <button
                 onClick={handleGroupNameSave}
-                className="p-2 rounded-md bg-base-content text-base-200 hover:scale-105 transition"
+                className="btn btn-xs btn-outline rounded-md hover:scale-105 transition"
               >
                 <Save className="w-4 h-4" />
               </button>

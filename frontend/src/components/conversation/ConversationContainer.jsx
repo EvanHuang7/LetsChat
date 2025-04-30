@@ -45,7 +45,7 @@ const ConversationContainer = () => {
       {selectedConversation.isGroup && (
         <button
           onClick={() => setIsPanelCollapsed(!isPanelCollapsed)}
-          className="z-10 w-4 bg-base-300 hover:bg-base-400 shadow transition"
+          className="z-10 w-4 bg-base-300 hover:bg-base-400 shadow transition hidden lg:block"
         >
           {isPanelCollapsed ? (
             <ChevronLeft className="pr-2" size={24} />

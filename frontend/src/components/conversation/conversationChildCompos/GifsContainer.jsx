@@ -144,7 +144,7 @@ const GifsContainer = ({ showGifPicker, setShowGifPicker, gifButtonRef }) => {
               <button
                 type="button"
                 onClick={() => setGifToDelete(null)}
-                className="btn btn-sm bg-gray-200 hover:bg-gray-300 text-black"
+                className="btn btn-sm btn-outline"
               >
                 Cancel
               </button>
@@ -153,7 +153,7 @@ const GifsContainer = ({ showGifPicker, setShowGifPicker, gifButtonRef }) => {
                 onClick={() => {
                   confirmDeleteGif();
                 }}
-                className="btn btn-sm bg-red-500 hover:bg-red-600 text-white"
+                className="btn btn-sm btn-outline btn-error"
               >
                 Delete
               </button>

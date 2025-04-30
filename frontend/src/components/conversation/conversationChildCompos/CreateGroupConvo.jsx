@@ -63,7 +63,9 @@ const CreateGroupConvo = () => {
           className="modal-box max-w-xs sm:max-w-sm"
           onClick={(e) => e.stopPropagation()}
         >
-          <h3 className="font-bold text-lg">Create a group conversation</h3>
+          <h3 className="font-bold text-lg text-left">
+            Create a group conversation
+          </h3>
 
           {/* Group name input */}
           <input
@@ -83,7 +85,7 @@ const CreateGroupConvo = () => {
                   setGroupName(""); // reset input after cancel
                   setShowCreateGroupModal(false);
                 }}
-                className="btn btn-sm bg-gray-200 hover:bg-gray-300 text-black"
+                className="btn btn-sm btn-outline"
               >
                 Cancel
               </button>
@@ -93,7 +95,7 @@ const CreateGroupConvo = () => {
                   createGroupConversation(groupName);
                   setGroupName(""); // reset input after create
                 }}
-                className="btn btn-sm bg-blue-500 hover:bg-blue-600 text-white"
+                className="btn btn-sm btn-outline btn-success"
               >
                 Create
               </button>
