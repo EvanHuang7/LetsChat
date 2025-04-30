@@ -48,12 +48,12 @@ export const useMessageStore = create((set, get) => ({
       // Update front-end data (convosInfo sequence)
       useConversationStore
         .getState()
-        .updateConvosInfoMessageSequence(newMessage);
+        .updateConvosInfoWithNewMessage(newMessage);
 
       // Update front-end data (selectedConversation sequence)
       useConversationStore
         .getState()
-        .updateSelectedConversationMessageSequence(newMessage);
+        .updateSelectedConversationWithNewMessage(newMessage);
     } catch (error) {
       console.log("Error in sendMessage: ", error);
       toast.error(error.response.data.message);
@@ -80,12 +80,12 @@ export const useMessageStore = create((set, get) => ({
       // Update front-end data (convosInfo sequence)
       useConversationStore
         .getState()
-        .updateConvosInfoMessageSequence(newMessage);
+        .updateConvosInfoWithNewMessage(newMessage);
 
       // Update front-end data (selectedConversation sequence)
       useConversationStore
         .getState()
-        .updateSelectedConversationMessageSequence(newMessage);
+        .updateSelectedConversationWithNewMessage(newMessage);
 
       // Update front-end for read dot map (convoIdtoUnreadMap)
       // If the incoming new message is not sent from current selected conversation

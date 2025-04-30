@@ -68,6 +68,9 @@ export const useConversationStore = create((set, get) => ({
       get().updateConvosInfoWithUpdatedConvo(convoInfoOfUser);
       get().updateSelectedConvoWithUpdatedConvo(convoInfoOfUser.conversationId);
 
+      console.log("Test, updated convoInfoOfUser", get().convosInfo);
+      console.log("Test, updated selected convo", get().selectedConversation);
+
       if (updateGroupImage) {
         toast.success("Group image updated");
       } else {
@@ -188,7 +191,7 @@ export const useConversationStore = create((set, get) => ({
 
   // USAGE: Update front-end unread message numer data (selectedConversation sequence)
   // when receving new message or send new message
-  updateSelectedConversationMessageSequence: (newMessage) => {
+  updateSelectedConversationWithNewMessage: (newMessage) => {
     const selectedConversation = get().selectedConversation;
 
     if (
@@ -206,7 +209,7 @@ export const useConversationStore = create((set, get) => ({
 
   // USAGE: Update front-end unread message numer data (convosInfo sequence)
   // when receving new message or send new message
-  updateConvosInfoMessageSequence: (newMessage) =>
+  updateConvosInfoWithNewMessage: (newMessage) =>
     set((state) => {
       const updatedConvos = state.convosInfo.map((convo) => {
         if (
