@@ -15,7 +15,7 @@ const CommentsHistory = ({ comments }) => {
             }`}
           >
             <img
-              src={comment.posterId.profilePic}
+              src={comment.posterId.profilePic || "/avatar.png"}
               alt={comment.posterId.fullName}
               className="w-8 h-8 rounded-full object-cover border"
             />

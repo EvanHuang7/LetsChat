@@ -21,7 +21,7 @@ const ConversationHeader = () => {
             <div className="avatar">
               <div className="size-10 rounded-full relative">
                 <img
-                  src={selectedConversation.groupImageUrl || "/avatar.png"}
+                  src={selectedConversation.groupImageUrl || "/groupAvatar.png"}
                   alt={selectedConversation.groupName}
                 />
               </div>

@@ -186,7 +186,9 @@ const Sidebar = () => {
                   (convoInfo.conversationId.isGroup
                     ? convoInfo.conversationId.groupImageUrl
                     : convoInfo.conversationId.friend.profilePic) ||
-                  "/avatar.png"
+                  (convoInfo.conversationId.isGroup
+                    ? "/groupAvatar.png"
+                    : "/avatar.png")
                 }
                 alt={
                   convoInfo.conversationId.isGroup
