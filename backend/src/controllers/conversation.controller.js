@@ -57,7 +57,10 @@ export const createConversation = async (req, res) => {
 
     // Return the existing conversation if there is one
     if (existingConversation) {
-      return res.status(200).json(existingConversation);
+      return res.status(400).json({
+        existingConversation: existingConversation,
+        message: "Sorry, a conversation with same users already exist",
+      });
     }
 
     // If no existing conversation, create one
