@@ -13,9 +13,11 @@ const router = express.Router();
 // USAGE: Display a conversation in chat container
 router.get("/:id", protectRoute, getConversation);
 
-// Create a conversation
-// USAGE: Create a conversation when a friend connection accepted or
-// creating a new group conversation by a logged in user
+// Create a conversation with data passed in
+// FRONT-END USAGE: Only 1 place in front-end to call this API
+// to create a new Group conversation by a logged in user.
+// BACK-END USAGE: Back-end call service function to create a
+// friend conversation after a friend connection accepted status updated.
 router.post("/create", protectRoute, createConversation);
 
 // Update some fields of conversation

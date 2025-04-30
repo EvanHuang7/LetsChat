@@ -78,18 +78,21 @@ export const createConversationService = async ({
     if (!isGroup && userIds.length !== 2) {
       return {
         conversation: null,
+        convoInfoOfUser: null,
         error: "Private conversation should have two users",
       };
     }
     if (isGroup && userIds.length < 1) {
       return {
         conversation: null,
+        convoInfoOfUser: null,
         error: "Group conversation must have at least 1 user",
       };
     }
     if (isGroup && !groupCreaterId) {
       return {
         conversation: null,
+        convoInfoOfUser: null,
         error: "GroupCreaterId is required for group conversation",
       };
     }
@@ -108,20 +111,30 @@ export const createConversationService = async ({
         });
     await newConversation.save();
 
+    let convoInfoOfUser;
     // Create convoInfoOfUser records for all userIds asynchronously
-    userIds.forEach((userId) => {
-      createConvoInfoOfUserService({
-        userId,
-        conversationId: newConversation._id,
-      }).catch((err) => {
-        console.error(
-          "Error creating convoInfoOfUser asynchronously for userId:",
+    // If there are more than 1 userIds in conversation
+    if (userIds.length > 1) {
+      userIds.forEach((userId) => {
+        createConvoInfoOfUserService({
           userId,
-          "error:",
-          err.message
-        );
+          conversationId: newConversation._id,
+        }).catch((err) => {
+          console.error(
+            "Error creating convoInfoOfUser asynchronously for userId:",
+            userId,
+            "error:",
+            err.message
+          );
+        });
       });
-    });
+      // if there is only 1 userId in conversation, await and return it
+    } else {
+      convoInfoOfUser = await createConvoInfoOfUserService({
+        userId: userIds[0],
+        conversationId: newConversation._id,
+      });
+    }
 
     // Get hydrated new conversation with user information before returning it
     const hydratedConversation = await Conversation.findById(
@@ -129,11 +142,16 @@ export const createConversationService = async ({
     ).populate("userIds", "fullName profilePic");
 
     // Return the hydrated conversation
-    return { conversation: hydratedConversation, error: null };
+    return {
+      conversation: hydratedConversation,
+      convoInfoOfUser: convoInfoOfUser,
+      error: null,
+    };
   } catch (error) {
     // If an error occurs, return the error message
     return {
       conversation: null,
+      convoInfoOfUser: null,
       error:
         error.message || "An error occurred while creating the conversation",
     };

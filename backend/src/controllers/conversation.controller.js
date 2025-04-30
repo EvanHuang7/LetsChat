@@ -34,8 +34,10 @@ export const getConversation = async (req, res) => {
 };
 
 // Create a conversation with data passed in
-// USAGE: Create a conversation when a friend connection accepted or
-// creating a new group conversation by a logged in user
+// FRONT-END USAGE: Only 1 place in front-end to call this API
+// to create a new Group conversation by a logged in user.
+// BACK-END USAGE: Back-end call service function to create a
+// friend conversation after a friend connection accepted status updated.
 export const createConversation = async (req, res) => {
   try {
     // Get userIds, isGroup, groupName from reqest body
@@ -64,13 +66,16 @@ export const createConversation = async (req, res) => {
     }
 
     // If no existing conversation, create one
-    const { conversation: newConversation, error: createError } =
-      await createConversationService({
-        userIds,
-        isGroup,
-        groupCreaterId,
-        groupName,
-      });
+    const {
+      conversation: newConversation,
+      convoInfoOfUser,
+      error: createError,
+    } = await createConversationService({
+      userIds,
+      isGroup,
+      groupCreaterId,
+      groupName,
+    });
     if (createError) {
       return res.status(400).json({
         message: createError,
@@ -78,7 +83,7 @@ export const createConversation = async (req, res) => {
     }
 
     // Return the created conversation
-    return res.status(201).json(newConversation);
+    return res.status(201).json({ newConversation, convoInfoOfUser });
   } catch (error) {
     console.log("Error in createConversation controller", error.message);
     return res.status(500).json({
