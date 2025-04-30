@@ -130,10 +130,20 @@ export const createConversationService = async ({
       });
       // if there is only 1 userId in conversation, await and return it
     } else {
-      convoInfoOfUser = await createConvoInfoOfUserService({
-        userId: userIds[0],
-        conversationId: newConversation._id,
-      });
+      const { convoInfoOfUser: singleConvoInfoOfUser, error } =
+        await createConvoInfoOfUserService({
+          userId: userIds[0],
+          conversationId: newConversation._id,
+        });
+      if (error) {
+        return {
+          conversation: null,
+          convoInfoOfUser: null,
+          error,
+        };
+      }
+
+      convoInfoOfUser = singleConvoInfoOfUser;
     }
 
     // Get hydrated new conversation with user information before returning it
