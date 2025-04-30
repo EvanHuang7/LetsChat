@@ -64,6 +64,7 @@ const ConversationDetailsPanel = () => {
 
   return (
     <aside className="h-full w-72 border-l border-base-300 hidden lg:block overflow-auto">
+      {/* Add a collpase button to hide this panel component */}
       <div className="p-5 space-y-6">
         {/* Title */}
         <div className="text-center">
@@ -111,7 +112,7 @@ const ConversationDetailsPanel = () => {
 
         {/* Editable Group Name */}
         <div className="space-y-1.5">
-          <p className="text-sm text-zinc-400 font-medium">Group Name</p>
+          <p className="text-sm  font-medium">Group Name</p>
           <div className="flex items-center gap-2">
             <input
               type="text"
@@ -133,7 +134,7 @@ const ConversationDetailsPanel = () => {
 
         {/* Group members */}
         <div className="space-y-1.5">
-          <p className="text-sm text-zinc-400 font-medium">Members</p>
+          <p className="text-sm font-medium">Members</p>
           <div className="flex items-center flex-wrap gap-2">
             {displayUsers.map((user) => (
               <div key={user._id} className="relative">
@@ -161,7 +162,7 @@ const ConversationDetailsPanel = () => {
           {/* You may remove this if you use the input+icon only */}
           <button className="btn btn-sm w-full">
             <UserPlus className="size-4" />
-            Invite Users
+            Invite friends
           </button>
         </div>
       </div>

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Users, Contact, MessageSquarePlus } from "lucide-react";
+import { Users, Contact } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import toast from "react-hot-toast";
 
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
 
@@ -9,7 +8,7 @@ import { useAuthStore } from "../store/useAuthStore";
 import { useConversationStore } from "../store/useConversationStore";
 
 const Sidebar = () => {
-  const { authUser, onlineUsers } = useAuthStore();
+  const { onlineUsers } = useAuthStore();
   const {
     convosInfo,
     getConvosInfo,
@@ -17,12 +16,9 @@ const Sidebar = () => {
     setSelectedConversation,
     convoIdtoUnreadMap,
     isConvosInfoLoading,
-    createConversation,
   } = useConversationStore();
 
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
-  const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
-  const [groupName, setGroupName] = useState("");
 
   const navigate = useNavigate();
   // Grabs the conversationId from "/:conversationId" route
@@ -46,24 +42,6 @@ const Sidebar = () => {
     }
   }, [convosInfo, conversationId, setSelectedConversation]);
 
-  const createGroupConversation = (groupName) => {
-    // Check input
-    if (!groupName) {
-      console.log("Function errored because groupName is required");
-      toast.error("Please enter a group name");
-      return;
-    }
-    // Call createConversation api function
-    createConversation({
-      userIds: [authUser._id],
-      isGroup: true,
-      groupName: groupName,
-    });
-
-    // Close modal
-    setShowCreateGroupModal(false);
-  };
-
   // TODO: Fix it to filter oneline user conversations
   // const filteredUsers = showOnlineOnly
   //   ? users.filter((user) => onlineUsers.includes(user._id))
@@ -77,25 +55,11 @@ const Sidebar = () => {
       <div className="border-b border-base-300 w-full p-5">
         {/* Title */}
         <div className="flex items-center gap-2">
-          <Contact className="size-7 hidden lg:block" />
+          <Contact className="size-6 hidden lg:block" />
           <span className="font-medium hidden lg:block">All conversations</span>
         </div>
 
-        {/* Create group button */}
-        <div className="mt-4 flex items-center gap-2">
-          <button
-            className="btn btn-xs btn-outline"
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowCreateGroupModal(true);
-            }}
-          >
-            <MessageSquarePlus className="size-4" />
-          </button>
-          <span className="hidden lg:inline text-sm">Create a group</span>
-        </div>
-
-        {/* friends filter toggle */}
+        {/* TODO:remove it, friends filter toggle */}
         <div className="mt-4 hidden lg:flex items-center gap-2">
           <label className="cursor-pointer flex items-center gap-2">
             <input
@@ -111,54 +75,6 @@ const Sidebar = () => {
           </span>
         </div>
       </div>
-
-      <dialog
-        id="create_group_conversation_modal"
-        className="modal"
-        open={showCreateGroupModal}
-      >
-        <div
-          className="modal-box max-w-xs sm:max-w-sm"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <h3 className="font-bold text-lg">Create a group conversation</h3>
-
-          {/* Group name input */}
-          <input
-            type="text"
-            placeholder="Enter group name"
-            value={groupName}
-            onChange={(e) => setGroupName(e.target.value)}
-            className="input input-bordered w-full mt-4"
-          />
-
-          {/* Modal buttons */}
-          <div className="modal-action">
-            <form method="dialog" className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => {
-                  setGroupName(""); // reset input after cancel
-                  setShowCreateGroupModal(false);
-                }}
-                className="btn btn-sm bg-gray-200 hover:bg-gray-300 text-black"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  createGroupConversation(groupName);
-                  setGroupName(""); // reset input after create
-                }}
-                className="btn btn-sm bg-blue-500 hover:bg-blue-600 text-white"
-              >
-                Create
-              </button>
-            </form>
-          </div>
-        </div>
-      </dialog>
 
       {/* Display each conversation */}
       <div className="overflow-y-auto w-full py-3">
