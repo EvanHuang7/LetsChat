@@ -10,7 +10,8 @@ import {
 const router = express.Router();
 
 // Get a conversation with conversationId in url param
-// USAGE: Display a conversation in chat container
+// FRONT-END USAGE:
+// BACK-END USAGE:
 router.get("/:id", protectRoute, getConversation);
 
 // Create a conversation with data passed in
@@ -21,13 +22,15 @@ router.get("/:id", protectRoute, getConversation);
 router.post("/create", protectRoute, createConversation);
 
 // Update some fields of conversation
-// USAGE: Increase "latestSentMessageSequence" when a new message sent
+// FRONT-END USAGE:
+// BACK-END USAGE: Call service function to increase "latestSentMessageSequence"
 // or update "latestSentMessageId" when a new message sent
 router.post("/update", protectRoute, updateConversation);
 
 // Update group data of conversation
-// USAGE: Update "userIds" when adding new user to group or update "groupName"
-// or "groupImageUrl"
+// FRONT-END USAGE: Call tshi API to update "groupName" or "groupImageUrl".
+// BACK-END USAGE: Call service function to add a new user to "userIds"
+// list when a user accepts a group invite.
 router.post("/update-group", protectRoute, updateGroupConversation);
 
 export default router;

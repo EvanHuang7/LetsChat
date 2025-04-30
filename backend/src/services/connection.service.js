@@ -336,6 +336,7 @@ export const updateConnectionStatusService = async ({
         updateGroupConversationService({
           conversationId: updatedConnection.groupConversationId,
           userId: updatedConnection.receiverId,
+          addNewUser: true,
         }).catch((err) => {
           console.error(
             "Error adding logged in user to group conversation asynchronously:",

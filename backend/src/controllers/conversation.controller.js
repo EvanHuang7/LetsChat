@@ -8,7 +8,8 @@ import {
 } from "../services/conversation.service.js";
 
 // Get a conversation with conversationId in url param
-// USAGE: Display a conversation in chat container
+// FRONT-END USAGE:
+// BACK-END USAGE:
 export const getConversation = async (req, res) => {
   try {
     // Get conversationId from url query param
@@ -36,8 +37,8 @@ export const getConversation = async (req, res) => {
 // Create a conversation with data passed in
 // FRONT-END USAGE: Only 1 place in front-end to call this API
 // to create a new Group conversation by a logged in user.
-// BACK-END USAGE: Back-end call service function to create a
-// friend conversation after a friend connection accepted status updated.
+// BACK-END USAGE: Call service function to create a friend
+// conversation after a friend connection accepted status updated.
 export const createConversation = async (req, res) => {
   try {
     // Get userIds, isGroup, groupName from reqest body
@@ -82,7 +83,7 @@ export const createConversation = async (req, res) => {
       });
     }
 
-    // Return the created conversation
+    // Return the created conversation and new convoInfoOfUser record
     return res.status(201).json({ newConversation, convoInfoOfUser });
   } catch (error) {
     console.log("Error in createConversation controller", error.message);
@@ -93,7 +94,8 @@ export const createConversation = async (req, res) => {
 };
 
 // Update some fields of conversation
-// USAGE: Increase "latestSentMessageSequence" when a new message sent
+// FRONT-END USAGE:
+// BACK-END USAGE: Call service function to increase "latestSentMessageSequence"
 // or update "latestSentMessageId" when a new message sent
 export const updateConversation = async (req, res) => {
   try {
@@ -150,27 +152,33 @@ export const updateConversation = async (req, res) => {
 };
 
 // Update group data of conversation
-// USAGE: Update "userIds" when adding new user to group or update "groupName"
-// or "groupImageUrl"
+// FRONT-END USAGE: Call this API to update "groupName" or "groupImageUrl".
+// BACK-END USAGE: Call service function to add a new user to "userIds"
+// list when a new user accepts a group invite.
 export const updateGroupConversation = async (req, res) => {
   try {
     // Get userId, groupName, groupImage
-    const { conversationId, userId, groupName, groupImage } = req.body;
+    const { conversationId, groupName, groupImage } = req.body;
+    // Get current logged in userId as userId
+    const userId = req.user._id;
 
     // Call the service function to update the conversation
-    const { conversation, error } = await updateGroupConversationService({
-      conversationId,
-      userId,
-      groupName,
-      groupImage,
-    });
+    const { conversation, convoInfoOfUser, error } =
+      await updateGroupConversationService({
+        conversationId,
+        userId,
+        addNewUser: false,
+        groupName,
+        groupImage,
+      });
     if (error) {
       return res.status(400).json({
         message: error,
       });
     }
 
-    return res.status(200).json(conversation);
+    //Return updated conversation and updated convoInfoOfUser record
+    return res.status(200).json({ conversation, convoInfoOfUser });
   } catch (error) {
     console.log("Error in updateGroupConversation controller", error.message);
     return res.status(500).json({

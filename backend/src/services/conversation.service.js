@@ -1,6 +1,9 @@
 import Conversation from "../models/conversation.model.js";
 import cloudinary from "../lib/cloudinary.js";
-import { createConvoInfoOfUserService } from "../services/convoInfoOfUser.service.js";
+import {
+  createConvoInfoOfUserService,
+  getConvoInfoOfUserbyIdsService,
+} from "../services/convoInfoOfUser.service.js";
 
 // The service function to get a conversation
 export const getConversationService = async ({ conversationId }) => {
@@ -244,26 +247,36 @@ export const updateLatestSentMessageIdService = async ({
 export const updateGroupConversationService = async ({
   conversationId,
   userId,
+  addNewUser = false,
   groupName,
   groupImage,
 }) => {
   try {
     let createConvoInfoOfUserRecord = false;
 
-    // Validate if the conversationId exists
+    // Validate input
     if (!conversationId) {
       return {
         conversation: null,
+        convoInfoOfUser: null,
         error: "ConversationId is required",
       };
     }
 
-    // Validate if either userId, groupName, or groupImage is provided
-    if (!userId && !groupName && !groupImage) {
+    if (addNewUser && !userId) {
       return {
         conversation: null,
+        convoInfoOfUser: null,
+        error: "UserId is required when adding a neewe user",
+      };
+    }
+
+    if (!addNewUser && !groupName && !groupImage) {
+      return {
+        conversation: null,
+        convoInfoOfUser: null,
         error:
-          "At least one group data field (userId, groupName, or groupImage) is required",
+          "GroupName, or groupImage is required when not adding a new user",
       };
     }
 
@@ -272,6 +285,7 @@ export const updateGroupConversationService = async ({
     if (!conversation) {
       return {
         conversation: null,
+        convoInfoOfUser: null,
         error: "Conversation not found",
       };
     }
@@ -280,16 +294,18 @@ export const updateGroupConversationService = async ({
     if (!conversation.isGroup) {
       return {
         conversation: null,
+        convoInfoOfUser: null,
         error:
           "Cannot update private conversation for group data field (userId, groupName, or groupImage)",
       };
     }
 
     // Handle adding user
-    if (userId) {
+    if (addNewUser && userId) {
       if (conversation.userIds.length >= 100) {
         return {
           conversation: null,
+          convoInfoOfUser: null,
           error: "Cannot add more than 100 users to a group",
         };
       }
@@ -315,8 +331,9 @@ export const updateGroupConversationService = async ({
     // Save updated conversation
     const updatedConversation = await conversation.save();
 
-    if (createConvoInfoOfUserRecord) {
-      // Create convoInfoOfUser record for userId asynchronously
+    // Create convoInfoOfUser record for userId asynchronously
+    // if adding a new user to userIds list, called by back-end
+    if (addNewUser && createConvoInfoOfUserRecord) {
       createConvoInfoOfUserService({
         userId,
         conversationId: updatedConversation._id,
@@ -330,11 +347,36 @@ export const updateGroupConversationService = async ({
       });
     }
 
-    return { conversation: updatedConversation, error: null };
+    let convoInfoOfUser;
+    // Await to get updated convoInfoOfUser and return to front-end
+    // if update group name or group img, called by front-end
+    if (!addNewUser) {
+      const { convoInfoOfUser: singleConvoInfoOfUser, error } =
+        await getConvoInfoOfUserbyIdsService({
+          userId: userId,
+          conversationId: updatedConversation._id,
+        });
+      if (error) {
+        return {
+          conversation: null,
+          convoInfoOfUser: null,
+          error,
+        };
+      }
+
+      convoInfoOfUser = singleConvoInfoOfUser;
+    }
+
+    return {
+      conversation: updatedConversation,
+      convoInfoOfUser: convoInfoOfUser,
+      error: null,
+    };
   } catch (error) {
     // If an error occurs, return the error message
     return {
       conversation: null,
+      convoInfoOfUser: null,
       error:
         error.message || "An error occurred while updating group conversation",
     };
