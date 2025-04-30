@@ -11,8 +11,6 @@ export const useConversationStore = create((set, get) => ({
   selectedConversation: null,
   convoIdtoUnreadMap: null,
 
-  setConvosInfo: (value) => set({ convosInfo: value }),
-
   // USAGE: Get all conversations info in sidebar for logged in user
   getConvosInfo: async () => {
     try {
@@ -22,11 +20,8 @@ export const useConversationStore = create((set, get) => ({
       const res = await axiosInstance.get("/convoInfoOfUser/getAll");
       const convosInfo = res.data;
 
-      // Set convosInfo
-      set({ convosInfo: convosInfo });
-
-      // Build convoIdtoUnreadMap
-      get().buildConvoIdtoUnreadMap(convosInfo);
+      // Set convosInfo and build convoIdtoUnreadMap
+      get().setConvosInfo(convosInfo);
     } catch (error) {
       console.log("Error in getConvosInfo: ", error);
       toast.error(error.response.data.message);
@@ -35,16 +30,17 @@ export const useConversationStore = create((set, get) => ({
     }
   },
 
-  // USAGE: Create a conversation when logged in user creates a group conversation
+  // USAGE: Only 1 place in front-end to create a conversation.
+  // Logged in user creates a Group conversation from sidebar.
   createConversation: async (data) => {
     try {
       // Call endpoint
       const res = await axiosInstance.post("/conversation/create", data);
+      const newConvoInfo = res.data.convoInfoOfUser;
 
-      // TODO: Build a fake convoInfo object with new created conversation
-      // and add it to convosInfo
-
-      // set({ conversations: [res.data, ...get().conversations] });
+      // Add new newConvoInfo to existing convosInfo list
+      // and build convoIdtoUnreadMap again
+      get().addConvoInfo(newConvoInfo);
     } catch (error) {
       console.log("Error in createConversation: ", error);
       toast.error(error.response.data.message);
@@ -171,5 +167,20 @@ export const useConversationStore = create((set, get) => ({
     const updatedConvoIdtoUnreadMap = get().convoIdtoUnreadMap;
     updatedConvoIdtoUnreadMap[conversationId] = value;
     set({ convoIdtoUnreadMap: updatedConvoIdtoUnreadMap });
+  },
+
+  // USAGE: Set convosInfo and build convoIdtoUnreadMap after
+  // getting all convosInfo from getConvosInfo() call
+  setConvosInfo: (convosInfo) => {
+    set({ convosInfo: convosInfo });
+    get().buildConvoIdtoUnreadMap(convosInfo);
+  },
+
+  // USAGE: Add a new convosInfo to existing convosInfo list and
+  // build convoIdtoUnreadMap again after creating a new
+  // conversation from createConversation() call
+  addConvoInfo: (newConvoInfo) => {
+    set({ convosInfo: [newConvoInfo, ...get().convosInfo] });
+    get().buildConvoIdtoUnreadMap(get().convosInfo);
   },
 }));
