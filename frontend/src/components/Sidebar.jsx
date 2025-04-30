@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Users, Contact } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -17,8 +17,6 @@ const Sidebar = () => {
     convoIdtoUnreadMap,
     isConvosInfoLoading,
   } = useConversationStore();
-
-  const [showOnlineOnly, setShowOnlineOnly] = useState(false);
 
   const navigate = useNavigate();
   // Grabs the conversationId from "/:conversationId" route
@@ -42,11 +40,6 @@ const Sidebar = () => {
     }
   }, [convosInfo, conversationId, setSelectedConversation]);
 
-  // TODO: Fix it to filter oneline user conversations
-  // const filteredUsers = showOnlineOnly
-  //   ? users.filter((user) => onlineUsers.includes(user._id))
-  //   : users;
-
   // Display a loading state if conversations are loading
   if (isConvosInfoLoading) return <SidebarSkeleton />;
 
@@ -55,24 +48,8 @@ const Sidebar = () => {
       <div className="border-b border-base-300 w-full p-5">
         {/* Title */}
         <div className="flex items-center gap-2">
-          <Contact className="size-6 hidden lg:block" />
+          <Contact className="size-8 lg:size-6" />
           <span className="font-medium hidden lg:block">All conversations</span>
-        </div>
-
-        {/* TODO:remove it, friends filter toggle */}
-        <div className="mt-4 hidden lg:flex items-center gap-2">
-          <label className="cursor-pointer flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={showOnlineOnly}
-              onChange={(e) => setShowOnlineOnly(e.target.checked)}
-              className="checkbox checkbox-sm"
-            />
-            <span className="text-sm">Show friends only</span>
-          </label>
-          <span className="text-xs text-zinc-500">
-            ({onlineUsers.length - 1} online)
-          </span>
         </div>
       </div>
 
