@@ -5,11 +5,16 @@ import { Upload, Ellipsis, UserPlus, Save } from "lucide-react";
 import { useConversationStore } from "../../../store/useConversationStore";
 
 const ConversationDetailsPanel = () => {
-  const { selectedConversation } = useConversationStore();
+  const {
+    selectedConversation,
+    updateGroupConversation,
+    isGroupImgUploading,
+    isEditingGroupName,
+    setIsEditingGroupName,
+  } = useConversationStore();
+
   const [selectedImg, setSelectedImg] = useState(null);
-  const [isUploading, setIsUploading] = useState(false);
   const [groupName, setGroupName] = useState("");
-  const [isEditingGroupName, setIsEditingGroupName] = useState(false);
 
   if (!selectedConversation?.isGroup) return null;
 
@@ -41,30 +46,27 @@ const ConversationDetailsPanel = () => {
     reader.onload = async () => {
       const base64Image = reader.result;
       setSelectedImg(base64Image);
-      setIsUploading(true);
 
-      // Replace with actual update logic
-      // await updateGroup({ groupImageUrl: base64Image });
-      console.log("Uploading group image...", base64Image);
-
-      setTimeout(() => {
-        setIsUploading(false);
-        toast.success("Group image updated");
-      }, 1000);
+      // Call update group conversation api with base64 image data.
+      // Pass true to updateGroupImage by flagging different loadings
+      await updateGroupConversation(true, {
+        conversationId: selectedConversation._id,
+        groupImage: base64Image,
+      });
     };
   };
 
   const handleGroupNameSave = async () => {
-    // Replace with actual update logic
-    // await updateGroup({ groupName });
-    console.log("Saving group name...", groupName);
-    toast.success("Group name updated");
-    setIsEditingGroupName(false);
+    // Call update group conversation api with group name.
+    // Pass false to updateGroupImage by flagging different loadings
+    await updateGroupConversation(false, {
+      conversationId: selectedConversation._id,
+      groupName: groupName,
+    });
   };
 
   return (
     <aside className="h-full w-72 border-l border-base-300 hidden lg:block overflow-auto">
-      {/* Add a collpase button to hide this panel component */}
       <div className="p-5 space-y-6">
         {/* Title */}
         <div className="text-center">
@@ -72,7 +74,7 @@ const ConversationDetailsPanel = () => {
           <p className="text-sm text-zinc-400">Details and actions</p>
         </div>
 
-        {/* Avatar upload section */}
+        {/* Group avatar upload section */}
         <div className="flex flex-col items-center gap-4">
           <div className="relative">
             <img
@@ -91,7 +93,9 @@ const ConversationDetailsPanel = () => {
                 bg-base-content hover:scale-105
                 p-2 rounded-full cursor-pointer 
                 transition-all duration-200
-                ${isUploading ? "animate-pulse pointer-events-none" : ""}
+                ${
+                  isGroupImgUploading ? "animate-pulse pointer-events-none" : ""
+                }
               `}
             >
               <Upload className="size-3 text-base-200" />
@@ -101,12 +105,12 @@ const ConversationDetailsPanel = () => {
                 className="hidden"
                 accept="image/*"
                 onChange={handleImageUpload}
-                disabled={isUploading}
+                disabled={isGroupImgUploading}
               />
             </label>
           </div>
           <p className="text-sm text-zinc-400">
-            {isUploading && "Uploading..."}
+            {isGroupImgUploading && "Uploading..."}
           </p>
         </div>
 

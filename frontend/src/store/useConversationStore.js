@@ -11,6 +11,10 @@ export const useConversationStore = create((set, get) => ({
   selectedConversation: null,
   convoIdtoUnreadMap: null,
 
+  isGroupImgUploading: false,
+  isEditingGroupName: false,
+  setIsEditingGroupName: (value) => set({ isEditingGroupName: value }),
+
   // USAGE: Get all conversations info in sidebar for logged in user
   getConvosInfo: async () => {
     try {
@@ -47,8 +51,42 @@ export const useConversationStore = create((set, get) => ({
     }
   },
 
+  // USAGE: Only 1 place in front-end to update a conversation.
+  // Group creater to update a group conversation info.
+  updateGroupConversation: async (updateGroupImage, data) => {
+    try {
+      if (updateGroupImage) {
+        set({ isGroupImgUploading: true });
+      }
+
+      // Call endpoint
+      const res = await axiosInstance.post("/conversation/update-group", data);
+      const convoInfoOfUser = res.data.convoInfoOfUser;
+
+      // Replace updated ConvoInfo in existing convosInfo list
+      // and build convoIdtoUnreadMap again and update selectedConversation.
+      get().updateConvosInfoWithUpdatedConvo(convoInfoOfUser);
+      get().updateSelectedConvoWithUpdatedConvo(convoInfoOfUser.conversationId);
+
+      if (updateGroupImage) {
+        toast.success("Group image updated");
+      } else {
+        toast.success("Group name updated");
+      }
+    } catch (error) {
+      console.log("Error in updateGroupConversation: ", error);
+      toast.error(error.response.data.message);
+    } finally {
+      if (updateGroupImage) {
+        set({ isGroupImgUploading: false });
+      } else {
+        set({ isEditingGroupName: false });
+      }
+    }
+  },
+
   // USAGE: Update unread message number in DB when selecting or leaving conversation
-  updateConvoInfoOfUser: async (conversation) => {
+  callUpdateConvoInfoOfUserAPI: async (conversation) => {
     try {
       // Call endpoint
       await axiosInstance.post("/convoInfoOfUser/update", {
@@ -56,17 +94,18 @@ export const useConversationStore = create((set, get) => ({
         lastReadMessageSequence: conversation.latestSentMessageSequence,
       });
     } catch (error) {
-      console.log("Error in updateConvoInfoOfUser: ", error);
+      console.log("Error in callUpdateConvoInfoOfUserAPI: ", error);
       toast.error(error.response.data.message);
     }
   },
 
-  // Function to set a selected conversation
-  // USAGE: Udpate back-end unread message numer for user when when selecting or leaving conversation
+  // Function to set a selected conversation (trigged by user action)
+  // USAGE: Udpate back-end unread message number for logged in user
+  // when selecting or leaving conversation.
   setSelectedConversation: async (selectedConversation) => {
     const previousConversation = get().selectedConversation;
-    set({ selectedConversation });
 
+    set({ selectedConversation });
     // Build userIdToInfoMap of selecting a conversation
     get().buildUserIdToInfoMap(selectedConversation);
 
@@ -75,7 +114,7 @@ export const useConversationStore = create((set, get) => ({
     // clear unread message number for previousConversation
     if (previousConversation) {
       // Call endpoint to udpate back-end data
-      await get().updateConvoInfoOfUser(previousConversation);
+      await get().callUpdateConvoInfoOfUserAPI(previousConversation);
     }
 
     // If selecting a conversation from null or from previous conversation,
@@ -83,11 +122,38 @@ export const useConversationStore = create((set, get) => ({
     // and clear previous conversation unread message num in next If state
     if (selectedConversation) {
       // Call endpoint to udpate back-end data
-      await get().updateConvoInfoOfUser(selectedConversation);
+      await get().callUpdateConvoInfoOfUserAPI(selectedConversation);
 
       // Reset this conversation unread num in front-end to 0
       get().updateConvoIdtoUnreadMap(selectedConversation._id, 0);
     }
+  },
+
+  // USAGE: update convosInfo list after 1 convo udpated
+  // after group creater updated group conversation info.
+  updateConvosInfoWithUpdatedConvo: (updatedConvoInfoOfUser) =>
+    set((state) => {
+      const updatedConvos = state.convosInfo.map((convo) => {
+        if (
+          convo.conversationId._id === updatedConvoInfoOfUser.conversationId._id
+        ) {
+          return {
+            ...convo,
+            conversationId: updatedConvoInfoOfUser.conversationId,
+          };
+        }
+        return convo;
+      });
+
+      return { convosInfo: updatedConvos };
+    }),
+
+  // USAGE: update selected conversation after its info updated.
+  // after group creater updated group conversation info.
+  updateSelectedConvoWithUpdatedConvo: (updatedConversation) => {
+    set({ selectedConversation: updatedConversation });
+    // Build userIdToInfoMap again
+    get().buildUserIdToInfoMap(updatedConversation);
   },
 
   // USAGE: Build convoIdtoUnreadMap when getting all convosInfo in sidebar
