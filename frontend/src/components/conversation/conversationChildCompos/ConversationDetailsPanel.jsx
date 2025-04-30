@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { Upload, Ellipsis, UserPlus, Save } from "lucide-react";
+import { Upload, Ellipsis, UserPlus, Save, X } from "lucide-react";
 
 import { useConversationStore } from "../../../store/useConversationStore";
 
@@ -15,8 +15,7 @@ const ConversationDetailsPanel = () => {
 
   const [selectedImg, setSelectedImg] = useState(null);
   const [groupName, setGroupName] = useState("");
-
-  if (!selectedConversation?.isGroup) return null;
+  const [showAllMembersModal, setShowAllMembersModal] = useState(false);
 
   const users = selectedConversation.userIds || [];
   const MAX_DISPLAY = 2;
@@ -64,6 +63,8 @@ const ConversationDetailsPanel = () => {
       groupName: groupName,
     });
   };
+
+  if (!selectedConversation?.isGroup) return null;
 
   return (
     <aside className="h-full w-72 border-l border-base-300 hidden lg:block overflow-auto">
@@ -139,27 +140,64 @@ const ConversationDetailsPanel = () => {
         {/* Group members */}
         <div className="space-y-1.5">
           <p className="text-sm font-medium">Members</p>
-          <div className="flex items-center flex-wrap gap-2">
+          <div className="grid grid-cols-3 gap-4">
             {displayUsers.map((user) => (
-              <div key={user._id} className="relative">
+              <div key={user._id} className="flex flex-col items-center">
                 <img
                   src={user.profilePic || "/avatar.png"}
                   alt={user.fullName}
                   className="size-15 object-cover rounded-full border border-base-300"
                 />
+                <p className="text-xs text-center mt-1 truncate w-full">
+                  {user.fullName}
+                </p>
               </div>
             ))}
             {hasMoreUsers && (
               <button
-                className="size-15 rounded-full border border-base-300 flex items-center justify-center
-                  bg-base-200 hover:bg-base-300 transition"
+                onClick={() => setShowAllMembersModal(true)}
+                className="flex flex-col items-center justify-center size-15 rounded-full border border-base-300 bg-base-200 hover:bg-base-300 transition"
                 title="Show all members"
               >
-                <Ellipsis className="w-4 h-4 text-base-content" />
+                <Ellipsis className="w-5 h-5 text-base-content" />
+                <span className="text-xs mt-1">More</span>
               </button>
             )}
           </div>
         </div>
+
+        {showAllMembersModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <div className="bg-base-100 rounded-lg shadow-lg max-w-xl w-full p-5 relative max-h-[80vh] overflow-y-auto">
+              {/* Close button */}
+              <button
+                className="absolute top-2 right-2 text-base-content hover:text-error"
+                onClick={() => setShowAllMembersModal(false)}
+              >
+                <X />
+              </button>
+
+              <h3 className="text-lg font-semibold mb-4 text-center">
+                All Members
+              </h3>
+
+              <div className="grid grid-cols-5 gap-4">
+                {users.map((user) => (
+                  <div key={user._id} className="flex flex-col items-center">
+                    <img
+                      src={user.profilePic || "/avatar.png"}
+                      alt={user.fullName}
+                      className="size-15 object-cover rounded-full border border-base-300"
+                    />
+                    <p className="text-xs text-center mt-1 truncate w-full">
+                      {user.fullName}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Other Actions */}
         <div className="space-y-3">
