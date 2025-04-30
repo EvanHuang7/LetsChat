@@ -88,11 +88,20 @@ export const getConvoInfoOfUserbyIdsService = async ({
       userId,
       conversationId,
     })
-      .populate("userId", "fullName profilePic")
-      .populate(
-        "conversationId",
-        "latestSentMessageSequence isGroup groupName groupImageUrl"
-      );
+      .populate({
+        path: "conversationId",
+        populate: [
+          {
+            path: "userIds", // populate userIds inside conversation
+            select: "fullName profilePic",
+          },
+          {
+            path: "latestSentMessageId", // populate latestSentMessageId inside conversation
+            select: "senderId text image createdAt",
+          },
+        ],
+      })
+      .lean();
 
     return { convoInfoOfUser: convoInfoOfUser, error: null };
   } catch (error) {
@@ -138,11 +147,20 @@ export const createConvoInfoOfUserService = async ({
     const hydratedConvoInfoOfUser = await ConvoInfoOfUser.findById(
       newConvoInfoOfUser._id
     )
-      .populate("userId", "fullName profilePic")
-      .populate(
-        "conversationId",
-        "latestSentMessageSequence isGroup groupName groupImageUrl"
-      );
+      .populate({
+        path: "conversationId",
+        populate: [
+          {
+            path: "userIds", // populate userIds inside conversation
+            select: "fullName profilePic",
+          },
+          {
+            path: "latestSentMessageId", // populate latestSentMessageId inside conversation
+            select: "senderId text image createdAt",
+          },
+        ],
+      })
+      .lean();
 
     // Return the hydrated convoInfoOfUser
     return { convoInfoOfUser: hydratedConvoInfoOfUser, error: null };
@@ -197,11 +215,20 @@ export const updateConvoInfoOfUserService = async ({
       { lastReadMessageSequence: lastReadMessageSequence },
       { new: true }
     )
-      .populate("userId", "fullName profilePic")
-      .populate(
-        "conversationId",
-        "latestSentMessageSequence isGroup groupName groupImageUrl"
-      );
+      .populate({
+        path: "conversationId",
+        populate: [
+          {
+            path: "userIds", // populate userIds inside conversation
+            select: "fullName profilePic",
+          },
+          {
+            path: "latestSentMessageId", // populate latestSentMessageId inside conversation
+            select: "senderId text image createdAt",
+          },
+        ],
+      })
+      .lean();
 
     return { convoInfoOfUser: updatedConvoInfoOfUser, error: null };
   } catch (error) {
