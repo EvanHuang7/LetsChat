@@ -20,6 +20,7 @@ const NoConversation = () => {
 
         {/* Welcome Text */}
         <h2 className="text-2xl font-bold">Welcome to LetsChat!</h2>
+        {/* Connection friend link and create group button */}
         <div className="text-sm text-center text-base-content/60">
           <span>
             Start a conversation by{" "}
@@ -28,11 +29,11 @@ const NoConversation = () => {
             </a>{" "}
             or{" "}
             <button
-              className="btn btn-xs btn-outline rounded-full"
+              className="btn btn-xs rounded-full animate-pulse"
               onClick={(e) => e.stopPropagation()}
             >
               <MessageSquarePlus className="size-3" />
-              <span className="text-base-content">Create a group</span>
+              <span className="text-base-content/80">Create a group</span>
             </button>{" "}
             and invite your friend to group!
           </span>
