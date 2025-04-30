@@ -19,7 +19,7 @@ router.get("/getAll", protectRoute, getAllConvoInfoOfUser);
 // with userId and conversationId.
 // FRONT-END USAGE:
 // BACK-END USAGE: Call the service function to get a updated convoInfoOfUser
-// after group created updated a group conversation info.
+// after group's creater updated a group conversation info.
 router.post("/get", protectRoute, getConvoInfoOfUserbyIds);
 
 // Create a conversation information for logged in user.

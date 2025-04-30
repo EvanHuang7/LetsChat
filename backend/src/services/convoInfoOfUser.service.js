@@ -30,24 +30,7 @@ export const getAllConvoInfoOfUserService = async ({ userId }) => {
 
     // Find all friend type conversations, and add a "friend" object
     for (const convoInfo of allConvoInfoOfUser) {
-      const conversation = convoInfo.conversationId;
-
-      // Check if this is a friend/private conversation (not group)
-      if (conversation && !conversation.isGroup) {
-        // Find the other user (friend) by filtering out the logged in userId
-        const friendUser = conversation.userIds.find(
-          (user) => user._id.toString() !== userId.toString()
-        );
-
-        // Attach a new "friend" field into conversation object
-        if (friendUser) {
-          conversation.friend = {
-            _id: friendUser._id,
-            fullName: friendUser.fullName,
-            profilePic: friendUser.profilePic,
-          };
-        }
-      }
+      addFriendObjectIntoConversation(convoInfo.conversationId, userId);
     }
 
     return { allConvoInfoOfUser: allConvoInfoOfUser, error: null };
@@ -238,5 +221,25 @@ export const updateConvoInfoOfUserService = async ({
       error:
         error.message || "An error occurred while updating convoInfoOfUser",
     };
+  }
+};
+
+// Add friend object to conversation before return convoInfoOfUser
+const addFriendObjectIntoConversation = (conversation, userId) => {
+  // Check if this is a friend/private conversation (not group)
+  if (conversation && !conversation.isGroup) {
+    // Find the other user (friend) by filtering out the logged in userId
+    const friendUser = conversation.userIds.find(
+      (user) => user._id.toString() !== userId.toString()
+    );
+
+    // Attach a new "friend" field into conversation object
+    if (friendUser) {
+      conversation.friend = {
+        _id: friendUser._id,
+        fullName: friendUser.fullName,
+        profilePic: friendUser.profilePic,
+      };
+    }
   }
 };
