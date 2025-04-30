@@ -10,8 +10,9 @@ import {
 
 // Get all connection records (friends and groups)
 // for logged in user as receiver.
-// USAGE: display the connections data for logged in user
+// FRONT-END USAGE: display all connections data for logged in user
 // in New connection page.
+// BACK-END USAGE:
 export const getConnections = async (req, res) => {
   try {
     // Get current logged in userId as receiverId
@@ -37,7 +38,8 @@ export const getConnections = async (req, res) => {
 };
 
 // Get all users except for logged in user with connection status
-// USAGE: Display all app users in new connection page
+// FRONT-END USAGE: Display all app users in new connection page
+// BACK-END USAGE:
 export const getUsersForConnection = async (req, res) => {
   try {
     // Get current logged in userId
@@ -96,8 +98,8 @@ export const getUsersForConnection = async (req, res) => {
 
 // Get specified connections between logged in user
 // and selected user.
-// USAGE: display connection status between two users in Chat
-// box header when selecting a user from sidebar.
+// FRONT-END USAGE:
+// BACK-END USAGE:
 export const getSpecifiedConnection = async (req, res) => {
   try {
     // Get type, selectedUserId, groupConversationId from reqest body
@@ -128,8 +130,9 @@ export const getSpecifiedConnection = async (req, res) => {
   }
 };
 
-// Send a new friend connection or group invite from logged in user
-// USAGE: send out a friend connection request in Chat box header.
+// Send a new friend connection or group invite from logged in user.
+// FRONT-END USAGE: send out a friend connection request in all users section.
+// BACK-END USAGE:
 export const sendConnection = async (req, res) => {
   try {
     // Get type, selectedUserId, groupConversationId, message from reqest body
@@ -201,7 +204,8 @@ export const sendConnection = async (req, res) => {
 };
 
 // Update (accept or reject) a connection status for logged in user.
-// USAGE: Accept or reject a connection in new connection page.
+// FRONT-END USAGE: Accept or reject a connection in new connection page.
+// BACK-END USAGE:
 export const updateConnectionStatus = async (req, res) => {
   try {
     const { connectionId, status } = req.body;

@@ -9,7 +9,9 @@ import {
 import { emitNewMessageEventService } from "../services/socket.service.js";
 
 // Get all messages for a conversation with conversationId in url param
-// USAGE: Display all messages for a conversation in chat container
+// FRONT-END USAGE: Display all messages for a conversation
+// in chat container after user selected a conversation.
+// BACK-END USAGE:
 export const getMessages = async (req, res) => {
   try {
     // Get the conversationId from the url and rename this variable
@@ -37,7 +39,8 @@ export const getMessages = async (req, res) => {
 
 // Send a message (text or img) from logged in user
 // in conversationId from url param
-// USAGE: User sends a message in a conversation
+// FRONT-END USAGE: User sends a message in a conversation
+// BACK-END USAGE:
 export const sendMessage = async (req, res) => {
   try {
     // Get text or image from reqest body

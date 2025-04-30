@@ -6,8 +6,9 @@ import {
 } from "../services/convoInfoOfUser.service.js";
 
 // Get all conversation information for logged in user
-// USAGE: Display all conversations when logged in user views
-// friends + groups / all conversations list
+// FRONT-END USAGE: Display all conversations when logged in user views
+// friends + groups / all conversations list in sidebar
+// BACK-END USAGE:
 export const getAllConvoInfoOfUser = async (req, res) => {
   try {
     // Get current logged in userId as userId
@@ -33,8 +34,10 @@ export const getAllConvoInfoOfUser = async (req, res) => {
 };
 
 // Get a conversation information for logged in user
-// with conversationId
-// USAGE:
+// with userId and conversationId.
+// FRONT-END USAGE:
+// BACK-END USAGE: Call the service function to get a updated convoInfoOfUser
+// after group's creater updated a group conversation info.
 export const getConvoInfoOfUserbyIds = async (req, res) => {
   try {
     // Get  conversationId from reqest body
@@ -63,8 +66,11 @@ export const getConvoInfoOfUserbyIds = async (req, res) => {
   }
 };
 
-// Create a conversation information for logged in user
-// USAGE:
+// Create a conversation information for logged in user.
+// FRONT-END USAGE:
+// BACK-END USAGE: Call the service function to create a convoInfoOfUser
+// after a new group conversation created or a new user accepted group invite.
+// Create 2 convoInfoOfUser records after a user accepted friend connection.
 export const createConvoInfoOfUser = async (req, res) => {
   try {
     // Get conversationId from reqest body
@@ -113,8 +119,9 @@ export const createConvoInfoOfUser = async (req, res) => {
 };
 
 // Update a conversation information for logged in user
-// USAGE: Update "lastReadMessageSequence" field when a user clicks
-// and views conversation
+// FRONT-END USAGE: Update "lastReadMessageSequence" field when a user clicked
+// and viewed a conversation or, left a conversation.
+// BACK-END USAGE:
 export const updateConvoInfoOfUser = async (req, res) => {
   try {
     // Get conversationId, and lastReadMessageSequence from reqest body

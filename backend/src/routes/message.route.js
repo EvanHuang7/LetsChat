@@ -11,12 +11,15 @@ const router = express.Router();
 // another APIs, such as "/users" (getUsersForSidebar) API.
 
 // Get all messages for a conversation with conversationId in url param
-// USAGE: Display all messages for a conversation in chat container
+// FRONT-END USAGE: Display all messages for a conversation
+// in chat container after user selected a conversation.
+// BACK-END USAGE:
 router.get("/:id", protectRoute, getMessages);
 
 // Send a message (text or img) from logged in user
-// in conversationId from url param
-// USAGE: User sends a message in a conversation
+// in conversationId from url param.
+// FRONT-END USAGE: User sends a message in a conversation
+// BACK-END USAGE:
 router.post("/send/:id", protectRoute, sendMessage);
 
 export default router;
