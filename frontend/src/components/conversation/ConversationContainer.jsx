@@ -4,6 +4,7 @@ import ConversationHeader from "./conversationChildCompos/ConversationHeader";
 import MessagesHistory from "./conversationChildCompos/MessagesHistory";
 import MessageInput from "./conversationChildCompos/MessageInput";
 import MessageSkeleton from "../skeletons/MessageSkeleton";
+import ConversationDetailsPanel from "./conversationChildCompos/ConversationDetailsPanel";
 
 import { useConversationStore } from "../../store/useConversationStore";
 import { useMessageStore } from "../../store/useMessageStore";
@@ -21,22 +22,24 @@ const ConversationContainer = () => {
     // Effect will only activate if the values in the list change.
   }, [selectedConversation._id, getMessages]);
 
-  // Display a loading state if messages are loading
-  if (isMessagesLoading) {
-    return (
-      <div className="flex-1 flex flex-col overflow-auto">
+  return (
+    <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-col flex-1 overflow-auto">
         <ConversationHeader />
-        <MessageSkeleton />
+        {isMessagesLoading ? (
+          <>
+            <MessageSkeleton />
+          </>
+        ) : (
+          <>
+            <MessagesHistory />
+          </>
+        )}
         <MessageInput />
       </div>
-    );
-  }
 
-  return (
-    <div className="flex-1 flex flex-col overflow-auto">
-      <ConversationHeader />
-      <MessagesHistory />
-      <MessageInput />
+      {/* Right side panel for group conversation */}
+      {selectedConversation.isGroup && <ConversationDetailsPanel />}
     </div>
   );
 };
