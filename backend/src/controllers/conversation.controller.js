@@ -40,6 +40,8 @@ export const createConversation = async (req, res) => {
   try {
     // Get userIds, isGroup, groupName from reqest body
     const { userIds, isGroup, groupName } = req.body;
+    // Get current logged in userId as groupCreaterId
+    const groupCreaterId = isGroup ? req.user._id : "";
 
     // Try to get an existing conversation first
     const { conversation: existingConversation, error: getError } =
@@ -63,6 +65,7 @@ export const createConversation = async (req, res) => {
       await createConversationService({
         userIds,
         isGroup,
+        groupCreaterId,
         groupName,
       });
     if (createError) {

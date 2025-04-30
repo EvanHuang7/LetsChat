@@ -36,6 +36,10 @@ const conversationSchema = new mongoose.Schema(
       type: Boolean,
       required: true,
     },
+    groupCreaterId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
     groupName: {
       type: String,
       default: "",

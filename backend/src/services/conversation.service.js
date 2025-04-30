@@ -70,6 +70,7 @@ export const getConversationByUserIdsService = async ({ userIds, isGroup }) => {
 export const createConversationService = async ({
   userIds,
   isGroup,
+  groupCreaterId = "",
   groupName = "",
 }) => {
   try {
@@ -86,13 +87,25 @@ export const createConversationService = async ({
         error: "Group conversation must have at least 1 user",
       };
     }
+    if (isGroup && !groupCreaterId) {
+      return {
+        conversation: null,
+        error: "GroupCreaterId is required for group conversation",
+      };
+    }
 
     // Create the new conversation and save it to the database
-    const newConversation = new Conversation({
-      userIds,
-      isGroup,
-      groupName,
-    });
+    const newConversation = isGroup
+      ? new Conversation({
+          userIds,
+          isGroup,
+          groupCreaterId,
+          groupName,
+        })
+      : new Conversation({
+          userIds,
+          isGroup,
+        });
     await newConversation.save();
 
     // Create convoInfoOfUser records for all userIds asynchronously
