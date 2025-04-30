@@ -11,7 +11,8 @@ const router = express.Router();
 
 // Get a conversation with conversationId in url param
 // FRONT-END USAGE:
-// BACK-END USAGE:
+// BACK-END USAGE: Call service function to get conversation users
+// and filterting them out for displaying friends to invite to group
 router.get("/:id", protectRoute, getConversation);
 
 // Create a conversation with data passed in

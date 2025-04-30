@@ -9,7 +9,8 @@ import {
 
 // Get a conversation with conversationId in url param
 // FRONT-END USAGE:
-// BACK-END USAGE:
+// BACK-END USAGE: Call service function to get conversation users
+// and filterting them out for displaying friends to invite to group
 export const getConversation = async (req, res) => {
   try {
     // Get conversationId from url query param

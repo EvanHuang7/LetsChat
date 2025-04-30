@@ -6,6 +6,7 @@ import {
   getSpecifiedConnection,
   sendConnection,
   updateConnectionStatus,
+  getAllFriendUsers,
 } from "../controllers/connection.controller.js";
 
 const router = express.Router();
@@ -21,6 +22,11 @@ router.get("/get", protectRoute, getConnections);
 // FRONT-END USAGE: Display all app users in new connection page
 // BACK-END USAGE:
 router.get("/users", protectRoute, getUsersForConnection);
+
+// Get all friend users or filtered friend users
+// FRONT-END USAGE: Display friend users to invite them into a group
+// BACK-END USAGE:
+router.get("/friend-users", protectRoute, getAllFriendUsers);
 
 // Get specified connections between logged in user
 // and selected user.

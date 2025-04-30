@@ -6,7 +6,8 @@ import {
   updateGroupConversationService,
 } from "./conversation.service.js";
 
-// The service function to all connections for logged in user as receiver
+// The service function to get all connections for logged in user
+// as receiver to display them in the new connection page
 export const getConnectionsService = async ({ loggedInUserId }) => {
   try {
     // Validate if the loggedInUserId exists
@@ -62,8 +63,8 @@ export const getUsersForConnPageService = async ({ loggedInUserId }) => {
   }
 };
 
-// The service function to all friend connection for logged in user
-// as sender or receiver
+// The service function to get all friend connection WITHOUT populating
+// users info for logged in user as sender or receiver
 export const getAllFriendConnectionsService = async ({ loggedInUserId }) => {
   try {
     // Validate input
@@ -91,6 +92,44 @@ export const getAllFriendConnectionsService = async ({ loggedInUserId }) => {
       error:
         error.message ||
         "An error occurred while getting all friend connections service",
+    };
+  }
+};
+
+// The service function to get all ACCEPTED friend connections WITH
+// poplulating users info for logged in user as sender or receiver
+export const getAllAcceptedFriendConnectionsService = async ({
+  loggedInUserId,
+}) => {
+  try {
+    // Validate input
+    if (!loggedInUserId) {
+      return {
+        connections: null,
+        error: "LoggedInUserId is required",
+      };
+    }
+
+    const query = {
+      type: "friend",
+      status: "accepted",
+      $or: [{ senderId: loggedInUserId }, { receiverId: loggedInUserId }],
+    };
+
+    // Fetch any matched friend connections
+    const connections = await Connection.find(query)
+      .populate("senderId", "fullName profilePic")
+      .populate("receiverId", "fullName profilePic")
+      .lean();
+
+    return { connections: connections, error: null };
+  } catch (error) {
+    // If an error occurs, return the error message
+    return {
+      connections: null,
+      error:
+        error.message ||
+        "An error occurred while getting all accepted friend connections service",
     };
   }
 };
