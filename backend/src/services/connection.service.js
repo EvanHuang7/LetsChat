@@ -183,6 +183,39 @@ export const getAllGroupInvitationForUserIdsService = async ({
   }
 };
 
+// The service function to reset a batch of rejected group invitation
+// to pending status
+export const resetBatchRejectedGroupInvitaionToPendingService = async ({
+  rejectedConnections,
+}) => {
+  try {
+    // Validate input
+    if (!rejectedConnections || rejectedConnections.length < 1) {
+      return {
+        connections: null,
+        error: "At least 1 rejectedConnection is required",
+      };
+    }
+
+    // Update all rejectedConnections' status to "pending"
+    const updatedConnections = await Promise.all(
+      rejectedConnections.map(async (conn) => {
+        conn.status = "pending";
+        return await conn.save();
+      })
+    );
+
+    return { connections: updatedConnections, error: null };
+  } catch (error) {
+    return {
+      connections: null,
+      error:
+        error.message ||
+        "An error occurred while setting batch rejected group invitation to pending",
+    };
+  }
+};
+
 // The service function to get specified connections between logged in user
 // and selected user
 export const getSpecifiedConnectionService = async ({
