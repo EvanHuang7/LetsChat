@@ -3,6 +3,8 @@ import toast from "react-hot-toast";
 
 import { axiosInstance } from "../lib/axios.js";
 
+import { useAuthStore } from "./useAuthStore.js";
+
 export const useConnectionStore = create((set, get) => ({
   users: [],
   isUsersLoading: false,
@@ -142,6 +144,45 @@ export const useConnectionStore = create((set, get) => ({
       console.log("Error in sendBatchGroupInvitation: ", error);
       toast.error(error.response.data.message);
     }
+  },
+
+  // USAGE: Set socket client to listen to "newConnection" event from
+  // socket server in navbar component for auth user
+  subscribeToConnections: () => {
+    const socket = useAuthStore.getState().socket;
+
+    // Listen to "newConnection" event
+    socket.on("newConnection", (newConnection) => {
+      console.log("Test, newConnection:", newConnection);
+      // Udpate existing connection if change existing rejected to pending
+      // or add newConnection to connections list
+      const existing = get().connections.find(
+        (connection) => connection._id === newConnection._id
+      );
+
+      if (existing) {
+        // Replace the existing connection
+        set((state) => ({
+          connections: state.connections.map((connection) =>
+            connection._id === newConnection._id ? newConnection : connection
+          ),
+        }));
+      } else {
+        // Add to the top of the list
+        set((state) => ({
+          connections: [newConnection, ...state.connections],
+        }));
+      }
+      // Set pendingConnections, and respondedConnections
+      set({ pendingConnections: get().getPendingConnections() });
+      set({ respondedConnections: get().getRespondedConnections() });
+    });
+  },
+
+  // USAGE: Unsubscribe from "newConnection" event when navbar component destroyed
+  unsubscribeFromConnections: () => {
+    const socket = useAuthStore.getState().socket;
+    socket.off("newConnection");
   },
 
   // USAGE:

@@ -20,7 +20,12 @@ import { useMessageStore } from "../store/useMessageStore";
 const Navbar = () => {
   // Get the needed variables and function from useAuthStore
   const { authUser, logout } = useAuthStore();
-  const { getConnections, pendingConnections } = useConnectionStore();
+  const {
+    getConnections,
+    pendingConnections,
+    subscribeToConnections,
+    unsubscribeFromConnections,
+  } = useConnectionStore();
   const { setSelectedConversation } = useConversationStore();
   const {
     unreadNumInHomeIcon,
@@ -39,16 +44,21 @@ const Navbar = () => {
   useEffect(() => {
     // If user auth granted or a user logged in,
     if (authUser) {
-      // Call subscribeToMessages() to start listening to newMessage event
-      // for displaying unread message number in home button of navbar
+      // Start listening to newMessage event for displaying unread message
+      // number in home button of navbar
       subscribeToMessages();
-      // Call getConnections() to get the pending connection number
-      // for displaying it in the New connection button of navbar
+      // Get the pending connection number for displaying it in the New
+      // connection button of navbar
       getConnections();
+      // Start listening to newConnection event
+      subscribeToConnections();
 
       // Define a cleanup function. It will be run before the component is
       // removed (unmounted) or before the effect re-runs (if dependencies change)
-      return () => unsubscribeFromMessages();
+      return () => {
+        unsubscribeFromMessages();
+        unsubscribeFromConnections();
+      };
     }
   }, [authUser]);
 
