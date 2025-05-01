@@ -69,8 +69,9 @@ const Navbar = () => {
     const isNowDifferentPage =
       location.pathname !== "/" &&
       !location.pathname.startsWith("/conversation/");
+    const isLogOutAction = location.pathname === "/login";
 
-    if (wasHomeOrConversationPage && isNowDifferentPage) {
+    if (wasHomeOrConversationPage && isNowDifferentPage && !isLogOutAction) {
       setUnreadNumInHomeIcon(0);
       // Set selectedConversation to null to update unread message num
       setSelectedConversation(null);
