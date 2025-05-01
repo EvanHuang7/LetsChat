@@ -34,6 +34,33 @@ export const getConnectionsService = async ({ loggedInUserId }) => {
   }
 };
 
+export const getConnectionsByIdsService = async ({ connectionIds }) => {
+  try {
+    // Validate if the connectionIds exists
+    if (!connectionIds || connectionIds.length === 0) {
+      return {
+        connections: null,
+        error: "ConnectionIds is required",
+      };
+    }
+
+    // Get all connections with populated info of by passing connectionIds
+    const connections = await Connection.find({ _id: { $in: connectionIds } })
+      .populate("senderId", "fullName profilePic")
+      .populate("groupConversationId", "groupName groupImageUrl")
+      .sort({ createdAt: -1 });
+
+    return { connections: connections, error: null };
+  } catch (error) {
+    // If an error occurs, return the error message
+    return {
+      connections: null,
+      error:
+        error.message || "An error occurred while getting connection by ids",
+    };
+  }
+};
+
 // The service function to get all users for new connection page
 export const getUsersForConnPageService = async ({ loggedInUserId }) => {
   try {
