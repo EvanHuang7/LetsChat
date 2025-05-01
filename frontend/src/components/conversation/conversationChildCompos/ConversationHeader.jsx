@@ -31,7 +31,7 @@ const ConversationHeader = () => {
             <div className="flex items-center gap-2">
               <Users className="size-5" />
               <h3 className="font-medium">{selectedConversation.groupName}</h3>
-              <h3 className="font-medium">
+              <h3 className="font-medium hidden sm:block">
                 {"( "}
                 {selectedConversation.userIds.length} members )
               </h3>

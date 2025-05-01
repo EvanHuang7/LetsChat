@@ -1,13 +1,34 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import Sidebar from "../components/Sidebar";
 import NoConversation from "../components/conversation/NoConversation";
 import ConversationContainer from "../components/conversation/ConversationContainer";
 
+import { useAuthStore } from "../store/useAuthStore";
 import { useConversationStore } from "../store/useConversationStore";
 
 const HomePage = () => {
-  const { selectedConversation } = useConversationStore();
+  const { authUser } = useAuthStore();
+  const {
+    selectedConversation,
+    subscribeToNewAcceptedConnection,
+    unsubscribeFromNewAcceptedConnection,
+  } = useConversationStore();
+
+  useEffect(() => {
+    // If user auth granted or a user logged in,
+    if (authUser) {
+      // Start listening to "newAcceptedFriend" and "newGroupMember"
+      // for updating conversations list and selected conversation real time
+      subscribeToNewAcceptedConnection();
+
+      // Define a cleanup function. It will be run before the component is
+      // removed (unmounted) or before the effect re-runs (if dependencies change)
+      return () => {
+        unsubscribeFromNewAcceptedConnection();
+      };
+    }
+  }, [authUser]);
 
   return (
     <div className="h-screen bg-base-200">

@@ -3,6 +3,8 @@ import toast from "react-hot-toast";
 
 import { axiosInstance } from "../lib/axios.js";
 
+import { useAuthStore } from "./useAuthStore.js";
+
 export const useConversationStore = create((set, get) => ({
   // This is an array of "convoInfoOfUser" object
   convosInfo: [],
@@ -68,9 +70,6 @@ export const useConversationStore = create((set, get) => ({
       get().updateConvosInfoWithUpdatedConvo(convoInfoOfUser);
       get().updateSelectedConvoWithUpdatedConvo(convoInfoOfUser.conversationId);
 
-      console.log("Test, updated convoInfoOfUser", get().convosInfo);
-      console.log("Test, updated selected convo", get().selectedConversation);
-
       if (updateGroupImage) {
         toast.success("Group image updated");
       } else {
@@ -132,6 +131,39 @@ export const useConversationStore = create((set, get) => ({
     }
   },
 
+  // USAGE: Set socket client to listen to "newAcceptedFriend" and
+  // "newGroupMember" events from socket server in home component.
+  subscribeToNewAcceptedConnection: () => {
+    const socket = useAuthStore.getState().socket;
+
+    // Listen to "newAcceptedFriend" event and add newConvoInfoOfUser to
+    // existing convosInfo list
+    socket.on("newAcceptedFriend", (newConvoInfoOfUser) => {
+      get().addConvoInfo(newConvoInfoOfUser);
+    });
+
+    // Listen to "newGroupMember" event and update newConvoInfoOfUser of
+    // new group member in existing convosInfo list and selected converstion
+    socket.on("newGroupMember", (newConvoInfoOfUser) => {
+      // Update convosInfo list with only conversation info of newConvoInfoOfUser
+      // because the userId and lastReadMessageSequence fields are new group member
+      get().updateConvosInfoWithUpdatedConvo(newConvoInfoOfUser);
+
+      // Update selected conversation if they have same conversatonId
+      get().updateSelectedConvoWithUpdatedConvo(
+        newConvoInfoOfUser.conversationId
+      );
+    });
+  },
+
+  // USAGE: Unsubscribe from "newAcceptedFriend" and "newGroupMember"
+  // events when home component destroyed
+  unsubscribeFromNewAcceptedConnection: () => {
+    const socket = useAuthStore.getState().socket;
+    socket.off("newAcceptedFriend");
+    socket.off("newGroupMember");
+  },
+
   // USAGE: update convosInfo list after 1 convo udpated
   // after group creater updated group conversation info.
   updateConvosInfoWithUpdatedConvo: (updatedConvoInfoOfUser) =>
@@ -154,9 +186,12 @@ export const useConversationStore = create((set, get) => ({
   // USAGE: update selected conversation after its info updated.
   // after group creater updated group conversation info.
   updateSelectedConvoWithUpdatedConvo: (updatedConversation) => {
-    set({ selectedConversation: updatedConversation });
-    // Build userIdToInfoMap again
-    get().buildUserIdToInfoMap(updatedConversation);
+    // Only update selected conversation if they are same id
+    if (get().selectedConversation._id === updatedConversation._id) {
+      set({ selectedConversation: updatedConversation });
+      // Build userIdToInfoMap again
+      get().buildUserIdToInfoMap(updatedConversation);
+    }
   },
 
   // USAGE: Build convoIdtoUnreadMap when getting all convosInfo in sidebar

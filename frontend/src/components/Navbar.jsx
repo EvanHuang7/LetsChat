@@ -100,7 +100,7 @@ const Navbar = () => {
                     className="absolute -top-1 -right-1 min-w-[1rem] h-4 px-1 text-[10px] sm:text-xs font-semibold 
                 text-white bg-red-500 rounded-full flex items-center justify-center shadow-md"
                   >
-                    <MessageSquareDot className="size-3 animate-bounce" />
+                    <MessageSquareDot className="size-3 animate-pulse" />
                   </span>
                 )}
               </div>

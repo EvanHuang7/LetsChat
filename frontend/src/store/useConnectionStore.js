@@ -153,7 +153,6 @@ export const useConnectionStore = create((set, get) => ({
 
     // Listen to "newConnection" event
     socket.on("newConnection", (newConnection) => {
-      console.log("Test, newConnection:", newConnection);
       // Udpate existing connection if change existing rejected to pending
       // or add newConnection to connections list
       const existing = get().connections.find(
