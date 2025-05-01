@@ -216,6 +216,57 @@ export const resetBatchRejectedGroupInvitaionToPendingService = async ({
   }
 };
 
+// The service function to send a batch of group invitations to all
+// users for a group conversation
+export const sendBatchGroupInvitationService = async ({
+  loggedInUserId,
+  userIds,
+  groupConversationId,
+}) => {
+  try {
+    // Validate input
+    if (!loggedInUserId) {
+      return {
+        newConnections: null,
+        error: "LoggedInUserId is required",
+      };
+    }
+    if (!userIds || userIds.length === 0) {
+      return {
+        newConnections: null,
+        error: "At least one userId is required",
+      };
+    }
+    if (!groupConversationId) {
+      return {
+        newConnections: null,
+        error: "groupConversationId is required when sending a group invite",
+      };
+    }
+
+    // Build connection objects
+    const newConnections = userIds.map((receiverId) => ({
+      type: "group",
+      status: "pending",
+      senderId: loggedInUserId,
+      receiverId,
+      groupConversationId,
+    }));
+
+    // Insert all connections into DB at once
+    const insertedConnections = await Connection.insertMany(newConnections);
+
+    return { newConnections: insertedConnections, error: null };
+  } catch (error) {
+    return {
+      newConnections: null,
+      error:
+        error.message ||
+        "An error occurred while sending batch group invitation",
+    };
+  }
+};
+
 // The service function to get specified connections between logged in user
 // and selected user
 export const getSpecifiedConnectionService = async ({
