@@ -14,11 +14,11 @@ const ConversationHeader = () => {
 
   return (
     <div className="p-2.5 border-b border-base-300">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between w-full">
         {selectedConversation.isGroup ? (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 min-w-0 flex-1">
             {/* group avatar */}
-            <div className="avatar">
+            <div className="avatar shrink-0">
               <div className="size-10 rounded-full relative">
                 <img
                   src={selectedConversation.groupImageUrl || "/groupAvatar.png"}
@@ -28,19 +28,22 @@ const ConversationHeader = () => {
             </div>
 
             {/* group name */}
-            <div className="flex items-center gap-2">
-              <Users className="size-5" />
-              <h3 className="font-medium">{selectedConversation.groupName}</h3>
-              <h3 className="font-medium hidden sm:block">
-                {"( "}
-                {selectedConversation.userIds.length} members )
-              </h3>
+            <div className="flex items-center gap-2 min-w-0 overflow-hidden">
+              <Users className="size-5 shrink-0" />
+              <div className="flex gap-1 truncate min-w-0">
+                <h3 className="font-medium truncate">
+                  {selectedConversation.groupName}
+                </h3>
+                <h3 className="font-medium truncate hidden sm:inline">
+                  ({selectedConversation.userIds.length} members)
+                </h3>
+              </div>
             </div>
           </div>
         ) : (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-1">
             {/* friend avatar */}
-            <div className="avatar">
+            <div className="avatar shrink-0">
               <div className="size-10 rounded-full relative">
                 <img
                   src={selectedConversation.friend.profilePic || "/avatar.png"}
@@ -50,9 +53,9 @@ const ConversationHeader = () => {
             </div>
 
             {/* friend info */}
-            <div>
+            <div className="min-w-0">
               {/* friend name */}
-              <h3 className="font-medium">
+              <h3 className="font-medium truncate">
                 {selectedConversation.friend.fullName}
               </h3>
               {/* friend status and buttons */}
@@ -89,6 +92,7 @@ const ConversationHeader = () => {
             setSelectedConversation(null);
             navigate(`/`);
           }}
+          className="shrink-0 ml-2"
         >
           <X />
         </button>
