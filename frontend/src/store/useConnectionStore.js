@@ -55,7 +55,9 @@ export const useConnectionStore = create((set, get) => ({
     try {
       // Call the update-status endpoint
       const res = await axiosInstance.post(`/connection/update-status`, data);
-      const updateConnection = res.data;
+      const updateConnection = res.data.updatedConnection;
+
+      // We can handle res.data.convoInfoOfUser here, but it's not needed now
 
       // Replace the updated connection in connections list
       set((state) => ({

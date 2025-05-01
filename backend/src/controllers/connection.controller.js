@@ -12,6 +12,10 @@ import {
   sendBatchGroupInvitationService,
 } from "../services/connection.service.js";
 import { getConversationService } from "../services/conversation.service.js";
+import {
+  emitNewAcceptedFriendEventService,
+  emitNewGroupMemberEventService,
+} from "../services/socket.service.js";
 
 // Get all connection records (friends and groups)
 // for logged in user as receiver.
@@ -360,17 +364,48 @@ export const updateConnectionStatus = async (req, res) => {
   try {
     const { connectionId, status } = req.body;
 
-    const { updatedConnection, error } = await updateConnectionStatusService({
-      connectionId,
-      status,
-    });
+    const { updatedConnection, convoInfoOfUser, error } =
+      await updateConnectionStatusService({
+        connectionId,
+        status,
+      });
     if (error) {
       return res.status(400).json({
         message: error,
       });
     }
 
-    return res.status(200).json(updatedConnection);
+    // Only event when friend connection or group invitation accepted
+    if (updatedConnection.status === "accepted") {
+      if (updatedConnection.type === "friend") {
+        // Emit the new connection sender convoInfoOfUser if friend
+        // conversation is accepted
+        const { error: emitEventError } =
+          await emitNewAcceptedFriendEventService({
+            connectionSenderId: updatedConnection.senderId._id,
+            newConvoInfoOfUser: convoInfoOfUser,
+          });
+        if (emitEventError) {
+          return res.status(400).json({
+            message: emitEventError,
+          });
+        }
+      } else {
+        // Emit new group member created convoInfoOfUser to all oneline group members
+        const { error: emitEventError } = await emitNewGroupMemberEventService({
+          userIds: convoInfoOfUser.conversationId.userIds,
+          newGroupMemberId: convoInfoOfUser.userId,
+          newConvoInfoOfUser: convoInfoOfUser,
+        });
+        if (emitEventError) {
+          return res.status(400).json({
+            message: emitEventError,
+          });
+        }
+      }
+    }
+
+    return res.status(200).json({ updatedConnection, convoInfoOfUser });
   } catch (error) {
     console.log("Error in updateConnectionStatus controller", error.message);
     return res.status(500).json({

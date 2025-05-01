@@ -38,6 +38,8 @@ export const getAllConvoInfoOfUser = async (req, res) => {
 // FRONT-END USAGE:
 // BACK-END USAGE: Call the service function to get a updated convoInfoOfUser
 // after group's creater updated a group conversation info.
+// Also, call the service function to check if having an existing convoInfoOfUser
+// before creating one in createConvoInfoOfUser API
 export const getConvoInfoOfUserbyIds = async (req, res) => {
   try {
     // Get  conversationId from reqest body
