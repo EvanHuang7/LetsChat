@@ -134,7 +134,56 @@ export const getAllAcceptedFriendConnectionsService = async ({
   }
 };
 
-// The service function to specified connections between logged in user
+// The service function to get all group invitation sent by logged in user
+// and received by selectedUserIds in a group Conversation
+export const getAllGroupInvitationForUserIdsService = async ({
+  loggedInUserId,
+  selectedUserIds,
+  groupConversationId,
+}) => {
+  try {
+    // Validate input
+    if (!loggedInUserId) {
+      return {
+        connections: null,
+        error: "LoggedInUserId is required",
+      };
+    }
+    if (!selectedUserIds || selectedUserIds.length < 1) {
+      return {
+        connections: null,
+        error: "At least 1 selected user is required",
+      };
+    }
+    if (!groupConversationId) {
+      return {
+        connections: null,
+        error: "groupConversationId is required",
+      };
+    }
+
+    // Fetch any group invitations sent by logged in user and received by
+    // selectedUserIds in this group conversation
+    const connections = await Connection.find({
+      type: "group",
+      senderId: loggedInUserId,
+      receiverId: { $in: selectedUserIds },
+      groupConversationId: groupConversationId,
+    });
+
+    return { connections: connections, error: null };
+  } catch (error) {
+    // If an error occurs, return the error message
+    return {
+      connections: null,
+      error:
+        error.message ||
+        "An error occurred while getting all group invitation for userIds",
+    };
+  }
+};
+
+// The service function to get specified connections between logged in user
 // and selected user
 export const getSpecifiedConnectionService = async ({
   type,

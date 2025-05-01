@@ -31,6 +31,10 @@ const ConversationHeader = () => {
             <div className="flex items-center gap-2">
               <Users className="size-5" />
               <h3 className="font-medium">{selectedConversation.groupName}</h3>
+              <h3 className="font-medium">
+                {"( "}
+                {selectedConversation.userIds.length} members )
+              </h3>
             </div>
           </div>
         ) : (
