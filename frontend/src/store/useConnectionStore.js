@@ -2,14 +2,18 @@ import { create } from "zustand";
 import toast from "react-hot-toast";
 
 import { axiosInstance } from "../lib/axios.js";
-import { useMessageStore } from "./useMessageStore";
 
 export const useConnectionStore = create((set, get) => ({
   users: [],
+  isUsersLoading: false,
+
   connections: [],
   pendingConnections: [],
   respondedConnections: [],
   isConnectionsLoading: false,
+
+  friends: [],
+  isFriendsLoading: false,
 
   // USAGE: Get all connections for logged in user in sidebar component to
   // display the pending conversaton numeber and display all connections
@@ -105,6 +109,23 @@ export const useConnectionStore = create((set, get) => ({
     } catch (error) {
       console.log("Error in sendConnection: ", error);
       toast.error(error.response.data.message);
+    }
+  },
+
+  // USAGE: Display a list of friend users to invite them into a group
+  getAllFriendUsersExcludeGroupMemebers: async (data) => {
+    try {
+      set({ isFriendsLoading: true });
+      // Call api to get all friends
+      const res = await axiosInstance.post(`/connection/friend-users`, data);
+
+      // Set friends
+      set({ friends: res.data });
+    } catch (error) {
+      console.log("Error in getAllFriendUsersExcludeGroupMemebers: ", error);
+      toast.error(error.response.data.message);
+    } finally {
+      set({ isFriendsLoading: false });
     }
   },
 

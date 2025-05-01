@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import { Upload, Ellipsis, UserPlus, Save, X } from "lucide-react";
 
 import { useConversationStore } from "../../../store/useConversationStore";
+import { useConnectionStore } from "../../../store/useConnectionStore";
 
 const ConversationDetailsPanel = () => {
   const {
@@ -12,10 +13,14 @@ const ConversationDetailsPanel = () => {
     isEditingGroupName,
     setIsEditingGroupName,
   } = useConversationStore();
+  const { friends, isFriendsLoading, getAllFriendUsersExcludeGroupMemebers } =
+    useConnectionStore();
 
   const [selectedImg, setSelectedImg] = useState(null);
   const [groupName, setGroupName] = useState("");
   const [showAllMembersModal, setShowAllMembersModal] = useState(false);
+  const [showInviteModal, setShowInviteModal] = useState(false);
+  const [selectedFriends, setSelectedFriends] = useState([]);
 
   const users = selectedConversation.userIds || [];
   const MAX_DISPLAY = 2;
@@ -30,6 +35,15 @@ const ConversationDetailsPanel = () => {
 
     // Effect will only activate if the values in the list change.
   }, [selectedConversation._id, setGroupName]);
+
+  useEffect(() => {
+    if (showInviteModal && selectedConversation._id) {
+      getAllFriendUsersExcludeGroupMemebers({
+        filterUsersFromConvo: selectedConversation.userIds,
+        groupConversationId: selectedConversation._id,
+      });
+    }
+  }, [showInviteModal, selectedConversation._id]);
 
   const handleImageUpload = async (event) => {
     const file = event.target.files[0];
@@ -62,6 +76,14 @@ const ConversationDetailsPanel = () => {
       conversationId: selectedConversation._id,
       groupName: groupName,
     });
+  };
+
+  const toggleFriendSelection = (friendId) => {
+    setSelectedFriends((prev) =>
+      prev.includes(friendId)
+        ? prev.filter((id) => id !== friendId)
+        : [...prev, friendId]
+    );
   };
 
   if (!selectedConversation?.isGroup) return null;
@@ -202,11 +224,82 @@ const ConversationDetailsPanel = () => {
         {/* Other Actions */}
         <div className="space-y-3">
           {/* You may remove this if you use the input+icon only */}
-          <button className="btn btn-sm w-full">
+          <button
+            className="btn btn-sm w-full"
+            onClick={() => setShowInviteModal(true)}
+          >
             <UserPlus className="size-4" />
             Invite friends
           </button>
         </div>
+
+        {showInviteModal && (
+          <dialog open className="modal">
+            <div
+              className="modal-box max-w-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">Invite Friends</h3>
+                <button
+                  className="btn btn-sm btn-circle"
+                  onClick={() => setShowInviteModal(false)}
+                >
+                  ✕
+                </button>
+              </div>
+              <div className="grid grid-cols-5 gap-x-2 gap-y-4 max-h-[50vh] overflow-y-auto px-2">
+                {isFriendsLoading ? (
+                  <p className="col-span-5 text-center text-sm text-zinc-400">
+                    Loading friends...
+                  </p>
+                ) : friends.length === 0 ? (
+                  <p className="col-span-5 text-center text-sm text-zinc-400">
+                    No friends available to invite.
+                  </p>
+                ) : (
+                  friends.map((friend, idx) => (
+                    <div
+                      key={friend._id}
+                      onClick={() => toggleFriendSelection(friend._id)}
+                      className={`flex flex-col items-center cursor-pointer ${
+                        selectedFriends.includes(friend._id)
+                          ? "border-2 border-primary rounded-lg"
+                          : ""
+                      } ${idx % 5 === 0 ? "ml-1" : ""} ${
+                        idx % 5 === 4 ? "mr-1" : ""
+                      }`}
+                    >
+                      <img
+                        src={friend.profilePic || "/avatar.png"}
+                        alt={friend.fullName}
+                        className="size-16 rounded-full object-cover border border-base-300"
+                      />
+                      <p className="text-xs mt-1 text-center">
+                        {friend.fullName}
+                      </p>
+                    </div>
+                  ))
+                )}
+              </div>
+              <div className="mt-6 flex justify-end">
+                <button
+                  className="btn btn-sm btn-primary"
+                  onClick={() => {
+                    toast.success(
+                      `Invited: ${selectedFriends.length} friend(s)`
+                    );
+                    setSelectedFriends([]);
+                    setShowInviteModal(false);
+                    // Add actual invite API call here
+                  }}
+                >
+                  Invite
+                </button>
+              </div>
+            </div>
+          </dialog>
+        )}
       </div>
     </aside>
   );
