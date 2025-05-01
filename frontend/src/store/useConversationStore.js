@@ -246,21 +246,30 @@ export const useConversationStore = create((set, get) => ({
   // when receving new message or send new message
   updateConvosInfoWithNewMessage: (newMessage) =>
     set((state) => {
-      const updatedConvos = state.convosInfo.map((convo) => {
+      const updatedConvos = [];
+      let updatedConvo = null;
+
+      for (const convo of state.convosInfo) {
         if (
           convo.conversationId._id === newMessage.conversationId &&
           newMessage.sequence > convo.conversationId.latestSentMessageSequence
         ) {
-          return {
+          updatedConvo = {
             ...convo,
             conversationId: {
               ...convo.conversationId,
               latestSentMessageSequence: newMessage.sequence,
             },
           };
+        } else {
+          updatedConvos.push(convo);
         }
-        return convo;
-      });
+      }
+
+      if (updatedConvo) {
+        // Put updated convo with new message at start
+        updatedConvos.unshift(updatedConvo);
+      }
 
       return { convosInfo: updatedConvos };
     }),

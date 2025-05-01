@@ -28,6 +28,17 @@ export const getAllConvoInfoOfUserService = async ({ userId }) => {
       })
       .lean();
 
+    // Sort it by latest messege sent time
+    allConvoInfoOfUser.sort((a, b) => {
+      const aDate = a.conversationId?.latestSentMessageId?.createdAt;
+      const bDate = b.conversationId?.latestSentMessageId?.createdAt;
+
+      if (!aDate) return 1; // If a is missing a date, push it later
+      if (!bDate) return -1; // If b is missing a date, push it earlier
+
+      return new Date(bDate) - new Date(aDate); // Sort by newest date first
+    });
+
     // Find all friend type conversations, and add a "friend" object
     for (const convoInfo of allConvoInfoOfUser) {
       addFriendObjectIntoConversation(convoInfo.conversationId, userId);
