@@ -7,6 +7,7 @@ import {
   sendConnection,
   updateConnectionStatus,
   getAllFriendUsers,
+  sendBatchGroupInvitation,
 } from "../controllers/connection.controller.js";
 
 const router = express.Router();
@@ -23,10 +24,15 @@ router.get("/get", protectRoute, getConnections);
 // BACK-END USAGE:
 router.get("/users", protectRoute, getUsersForConnection);
 
-// Get all friend users or filtered friend users
+// Get all friend users or filtered friend users for logged in user
 // FRONT-END USAGE: Display friend users to invite them into a group
 // BACK-END USAGE:
-router.get("/friend-users", protectRoute, getAllFriendUsers);
+router.post("/friend-users", protectRoute, getAllFriendUsers);
+
+// Send a batch of group invitations to a user list
+// FRONT-END USAGE: Invite a list of friends to join a group
+// BACK-END USAGE:
+router.post("/send-batch-group", protectRoute, sendBatchGroupInvitation);
 
 // Get specified connections between logged in user
 // and selected user.

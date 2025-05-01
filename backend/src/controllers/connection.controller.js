@@ -7,6 +7,9 @@ import {
   setRejectedConnectionToPendingService,
   updateConnectionStatusService,
   getAllAcceptedFriendConnectionsService,
+  getAllGroupInvitationForUserIdsService,
+  resetBatchRejectedGroupInvitaionToPendingService,
+  sendBatchGroupInvitationService,
 } from "../services/connection.service.js";
 import { getConversationService } from "../services/conversation.service.js";
 
@@ -98,13 +101,21 @@ export const getUsersForConnection = async (req, res) => {
   }
 };
 
-// Get all friend users or filtered friend users
+// Get all friend users or filtered friend users for logged in user
 // FRONT-END USAGE: Display friend users to invite them into a group
 // BACK-END USAGE:
 export const getAllFriendUsers = async (req, res) => {
   try {
     const { filterUsersFromConvo, groupConversationId } = req.body;
     const loggedInUserId = req.user._id;
+
+    // Valid input
+    if (filterUsersFromConvo && !groupConversationId) {
+      return res.status(400).json({
+        message:
+          "GroupConversationId is required to get all frined users filtered by conversation group members",
+      });
+    }
 
     // Fetch accepted friend connections
     const { connections, error: getUsersError } =
@@ -131,7 +142,7 @@ export const getAllFriendUsers = async (req, res) => {
 
     // Filter out users already in the conversation
     const { conversation, error: getConversationError } =
-      await getConversationService({ groupConversationId });
+      await getConversationService({ conversationId: groupConversationId });
     if (getConversationError) {
       return res.status(400).json({ message: getConversationError });
     }
@@ -254,6 +265,90 @@ export const sendConnection = async (req, res) => {
     console.log("Error in sendConnection controller", error.message);
     return res.status(500).json({
       message: "Interal server error",
+    });
+  }
+};
+
+// Send a batch of group invitations to a user list
+// FRONT-END USAGE: Invite a list of friends to join a group
+// BACK-END USAGE:
+export const sendBatchGroupInvitation = async (req, res) => {
+  try {
+    // Get selectedUserIds, groupConversationId from reqest body
+    const { selectedUserIds, groupConversationId } = req.body;
+    // Get current logged in userId as loggedInUserId
+    const loggedInUserId = req.user._id;
+
+    // Try to fetch any existing group invitations first
+    const { connections: existingConnections, error: getError } =
+      await getAllGroupInvitationForUserIdsService({
+        loggedInUserId,
+        selectedUserIds,
+        groupConversationId,
+      });
+    if (getError) {
+      return res.status(400).json({
+        message: getError,
+        connection: existingConnections,
+      });
+    }
+
+    // Categorize users
+    const alreadyInvitedUserIds = new Set();
+    const rejectedConnections = [];
+
+    for (const conn of existingConnections) {
+      alreadyInvitedUserIds.add(conn.receiverId.toString());
+
+      if (conn.status === "rejected") {
+        rejectedConnections.push(conn);
+      }
+    }
+
+    let updatedConnections = [];
+    // Set rejected connections to pending status
+    if (rejectedConnections.length > 0) {
+      const { connections, error: setExistingError } =
+        await resetBatchRejectedGroupInvitaionToPendingService({
+          rejectedConnections,
+        });
+      if (setExistingError) {
+        return res.status(400).json({
+          message: setExistingError,
+        });
+      }
+
+      updatedConnections = connections;
+    }
+
+    // Filter new users to invite (not in existingConnections)
+    const newUserIdsToInvite = selectedUserIds.filter(
+      (id) => !alreadyInvitedUserIds.has(id)
+    );
+
+    let createdConnections = [];
+    // Send batch of group invitations
+    if (newUserIdsToInvite.length > 0) {
+      const { newConnections, error: createError } =
+        await sendBatchGroupInvitationService({
+          loggedInUserId,
+          userIds: newUserIdsToInvite,
+          groupConversationId,
+        });
+      if (createError) {
+        return res.status(400).json({
+          message: createError,
+        });
+      }
+
+      createdConnections = newConnections;
+    }
+
+    return res.status(201).json([...updatedConnections, ...createdConnections]);
+  } catch (error) {
+    console.log("Error in sendBatchGroupInvitation controller", error.message);
+    return res.status(500).json({
+      message: "Internal server error",
     });
   }
 };
