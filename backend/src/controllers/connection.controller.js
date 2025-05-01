@@ -10,6 +10,7 @@ import {
   getAllGroupInvitationForUserIdsService,
   resetBatchRejectedGroupInvitaionToPendingService,
   sendBatchGroupInvitationService,
+  getConnectionsByIdsAndEmitEvent,
 } from "../services/connection.service.js";
 import { getConversationService } from "../services/conversation.service.js";
 import {
@@ -27,7 +28,7 @@ export const getConnections = async (req, res) => {
     // Get current logged in userId as receiverId
     const loggedInUserId = req.user._id;
 
-    // Call the service function to get all connections
+    // Call the service function to get all populated info connections
     const { connections, error } = await getConnectionsService({
       loggedInUserId,
     });
@@ -245,7 +246,18 @@ export const sendConnection = async (req, res) => {
             message: setExistingError,
           });
         }
-        return res.status(200).json(updatedConnection);
+
+        const { hydratedConnections, error: getAndEmitError } =
+          await getConnectionsByIdsAndEmitEvent({
+            connectionIds: [updatedConnection._id],
+          });
+        if (getAndEmitError) {
+          return res.status(400).json({
+            message: getAndEmitError,
+          });
+        }
+
+        return res.status(200).json(hydratedConnections[0]);
       }
     }
 
@@ -264,7 +276,19 @@ export const sendConnection = async (req, res) => {
       });
     }
 
-    return res.status(201).json(newConnection);
+    // Get new connection with populdated sender info and group conversation name
+    // Get all populdated connections and emit event to connection receiver
+    const { hydratedConnections, error: getAndEmitError } =
+      await getConnectionsByIdsAndEmitEvent({
+        connectionIds: [newConnection._id],
+      });
+    if (getAndEmitError) {
+      return res.status(400).json({
+        message: getAndEmitError,
+      });
+    }
+
+    return res.status(201).json(hydratedConnections[0]);
   } catch (error) {
     console.log("Error in sendConnection controller", error.message);
     return res.status(500).json({
@@ -348,7 +372,25 @@ export const sendBatchGroupInvitation = async (req, res) => {
       createdConnections = newConnections;
     }
 
-    return res.status(201).json([...updatedConnections, ...createdConnections]);
+    // Get all Ids of allConnections
+    const allConnections = [...updatedConnections, ...createdConnections];
+    const allConnectionIds = [];
+    for (const conn of allConnections) {
+      allConnectionIds.push(conn._id.toString());
+    }
+
+    // Get all populdated connections and emit event to connection receiver
+    const { hydratedConnections, error } =
+      await getConnectionsByIdsAndEmitEvent({
+        connectionIds: allConnectionIds,
+      });
+    if (error) {
+      return res.status(400).json({
+        message: error,
+      });
+    }
+
+    return res.status(201).json(hydratedConnections);
   } catch (error) {
     console.log("Error in sendBatchGroupInvitation controller", error.message);
     return res.status(500).json({

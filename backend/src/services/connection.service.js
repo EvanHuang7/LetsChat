@@ -5,6 +5,7 @@ import {
   createConversationService,
   updateGroupConversationService,
 } from "./conversation.service.js";
+import { emitNewConnectionEventService } from "./socket.service.js";
 
 // The service function to get all connections for logged in user
 // as receiver to display them in the new connection page
@@ -34,6 +35,7 @@ export const getConnectionsService = async ({ loggedInUserId }) => {
   }
 };
 
+// The service function to get all connections with Ids
 export const getConnectionsByIdsService = async ({ connectionIds }) => {
   try {
     // Validate if the connectionIds exists
@@ -572,6 +574,51 @@ export const updateConnectionStatusService = async ({
       convoInfoOfUser: null,
       error:
         error.message || "An error occurred while updating connection status",
+    };
+  }
+};
+
+// Call getConnectionsByIdsService() and emitNewConnectionEventService()
+export const getConnectionsByIdsAndEmitEvent = async ({ connectionIds }) => {
+  try {
+    // Validate if the connectionIds exists
+    if (!connectionIds || connectionIds.length === 0) {
+      return {
+        hydratedConnections: null,
+        error: "ConnectionIds is required",
+      };
+    }
+
+    // Get all connections with populdated sender info and group conversation name
+    const { connections: hydratedConnections, error } =
+      await getConnectionsByIdsService({
+        connectionIds,
+      });
+    if (error) {
+      return {
+        hydratedConnections: null,
+        error: error,
+      };
+    }
+
+    // Emit new connections to all oneline connectionn receiver
+    const { error: emitEventError } = await emitNewConnectionEventService({
+      newConnections: hydratedConnections,
+    });
+    if (emitEventError) {
+      return {
+        hydratedConnections: null,
+        error: emitEventError,
+      };
+    }
+
+    return { hydratedConnections, error: null };
+  } catch (error) {
+    // If an error occurs, return the error message
+    return {
+      hydratedConnections: null,
+      error:
+        error.message || "An error occurred while getting connection by ids",
     };
   }
 };
