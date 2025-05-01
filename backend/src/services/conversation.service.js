@@ -115,23 +115,35 @@ export const createConversationService = async ({
     await newConversation.save();
 
     let convoInfoOfUser;
-    // Create convoInfoOfUser records for all userIds asynchronously
+    // Create convoInfoOfUser records for all userIds
     // If there are more than 1 userIds in conversation
+    // This is create friend conversation case now, so return the
+    // connection sender's convoInfo for socket to emit it
     if (userIds.length > 1) {
-      userIds.forEach((userId) => {
-        createConvoInfoOfUserService({
-          userId,
-          conversationId: newConversation._id,
-        }).catch((err) => {
-          console.error(
-            "Error creating convoInfoOfUser asynchronously for userId:",
+      for (const userId of userIds) {
+        const { convoInfoOfUser: singleConvoInfoOfUser, error } =
+          await createConvoInfoOfUserService({
             userId,
-            "error:",
-            err.message
-          );
-        });
-      });
-      // if there is only 1 userId in conversation, await and return it
+            conversationId: newConversation._id,
+          });
+        if (error) {
+          return {
+            conversation: null,
+            convoInfoOfUser: null,
+            error,
+          };
+        }
+
+        // Return the connection sender convoInfo, sender is hard coded
+        // to first element in updateConnectionStatusService()
+        if (userId === userIds[0]) {
+          convoInfoOfUser = singleConvoInfoOfUser;
+        }
+      }
+
+      // If there is only 1 userId in conversation, await and return it
+      // This is for creat group conversation in front-end case, so
+      // return the group creator's convoInfoOfUser to api
     } else {
       const { convoInfoOfUser: singleConvoInfoOfUser, error } =
         await createConvoInfoOfUserService({
@@ -331,25 +343,29 @@ export const updateGroupConversationService = async ({
     // Save updated conversation
     const updatedConversation = await conversation.save();
 
-    // Create convoInfoOfUser record for userId asynchronously
-    // if adding a new user to userIds list, called by back-end
+    let convoInfoOfUser;
+    // Create convoInfoOfUser record for userId and return it for socket
+    // to emit to all group memebers if adding a new user to userIds
+    // list in group conversation, called by back-end
     if (addNewUser && createConvoInfoOfUserRecord) {
-      createConvoInfoOfUserService({
-        userId,
-        conversationId: updatedConversation._id,
-      }).catch((err) => {
-        console.error(
-          "Error creating convoInfoOfUser asynchronously for userId:",
+      const { convoInfoOfUser: singleConvoInfoOfUser, error } =
+        await createConvoInfoOfUserService({
           userId,
-          "error:",
-          err.message
-        );
-      });
+          conversationId: updatedConversation._id,
+        });
+      if (error) {
+        return {
+          conversation: null,
+          convoInfoOfUser: null,
+          error,
+        };
+      }
+
+      convoInfoOfUser = singleConvoInfoOfUser;
     }
 
-    let convoInfoOfUser;
-    // Await to get updated convoInfoOfUser and return to front-end
-    // if update group name or group img, called by front-end
+    // Await to get updated convoInfoOfUser and return logged in user's
+    // convoInfo to front-end if update group name or img, called by front-end
     if (!addNewUser) {
       const { convoInfoOfUser: singleConvoInfoOfUser, error } =
         await getConvoInfoOfUserbyIdsService({
