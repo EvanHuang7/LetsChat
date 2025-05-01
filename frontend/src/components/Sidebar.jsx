@@ -111,6 +111,7 @@ const Sidebar = () => {
                 )}
             </div>
 
+            {/* name and subtext */}
             <div className="hidden lg:block text-left min-w-0 w-full">
               {convoInfo.conversationId.isGroup ? (
                 <>

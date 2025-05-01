@@ -16,7 +16,7 @@ const ConversationHeader = () => {
     <div className="p-2.5 border-b border-base-300">
       <div className="flex items-center justify-between w-full">
         {selectedConversation.isGroup ? (
-          <div className="flex items-center gap-3 min-w-0 flex-1">
+          <div className="flex items-center gap-3 flex-1 min-w-0">
             {/* group avatar */}
             <div className="avatar shrink-0">
               <div className="size-12 rounded-full relative">
@@ -27,16 +27,21 @@ const ConversationHeader = () => {
               </div>
             </div>
 
-            {/* group name */}
-            <div className="flex items-center gap-2 min-w-0 overflow-hidden">
-              <Users className="size-5 shrink-0" />
-              <div className="flex gap-1 truncate min-w-0">
+            {/* group info */}
+            <div className="min-w-0">
+              {/* group name with icon */}
+              <div className="flex items-center gap-2 truncate">
+                <Users className="size-4 shrink-0" />
                 <h3 className="font-medium truncate">
                   {selectedConversation.groupName}
                 </h3>
-                <h3 className="font-medium truncate hidden sm:inline">
-                  ({selectedConversation.userIds.length} members)
-                </h3>
+              </div>
+
+              {/* group member count and buttons */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <p className="text-sm text-base-content/70">
+                  {selectedConversation.userIds.length} members
+                </p>
               </div>
             </div>
           </div>
