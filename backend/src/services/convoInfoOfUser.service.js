@@ -86,6 +86,9 @@ export const getConvoInfoOfUserbyIdsService = async ({
       })
       .lean();
 
+    // If it is friend type conversations, add a "friend" object
+    addFriendObjectIntoConversation(convoInfoOfUser.conversationId, userId);
+
     return { convoInfoOfUser: convoInfoOfUser, error: null };
   } catch (error) {
     // If an error occurs, return the error message
@@ -144,6 +147,12 @@ export const createConvoInfoOfUserService = async ({
         ],
       })
       .lean();
+
+    // If it is friend type conversations, add a "friend" object
+    addFriendObjectIntoConversation(
+      hydratedConvoInfoOfUser.conversationId,
+      userId
+    );
 
     // Return the hydrated convoInfoOfUser
     return { convoInfoOfUser: hydratedConvoInfoOfUser, error: null };
@@ -213,6 +222,12 @@ export const updateConvoInfoOfUserService = async ({
       })
       .lean();
 
+    // If it is friend type conversations, add a "friend" object
+    addFriendObjectIntoConversation(
+      updatedConvoInfoOfUser.conversationId,
+      userId
+    );
+
     return { convoInfoOfUser: updatedConvoInfoOfUser, error: null };
   } catch (error) {
     // If an error occurs, return the error message
@@ -224,7 +239,7 @@ export const updateConvoInfoOfUserService = async ({
   }
 };
 
-// Add friend object to conversation before return convoInfoOfUser
+// Add friend object to friend conversation before return friend convoInfoOfUser
 const addFriendObjectIntoConversation = (conversation, userId) => {
   // Check if this is a friend/private conversation (not group)
   if (conversation && !conversation.isGroup) {
