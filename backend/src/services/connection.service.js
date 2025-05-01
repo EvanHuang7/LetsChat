@@ -21,6 +21,7 @@ export const getConnectionsService = async ({ loggedInUserId }) => {
     // Get all connections of receiver is logged in user
     const connections = await Connection.find({ receiverId: loggedInUserId })
       .populate("senderId", "fullName profilePic")
+      .populate("groupConversationId", "groupName groupImageUrl")
       .sort({ createdAt: -1 });
 
     return { connections: connections, error: null };
