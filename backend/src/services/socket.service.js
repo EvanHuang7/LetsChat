@@ -148,3 +148,39 @@ export const emitNewGroupMemberEventService = async ({
     };
   }
 };
+
+// The service function to emit new connection event to each online
+// connection receiver (including friend connection and group invitation)
+export const emitNewConnectionEventService = async ({
+  // it's a populated objects array when passed in
+  newConnections,
+}) => {
+  try {
+    // Validate if the input
+    if (!newConnections || newConnections.length === 0) {
+      return {
+        error: "NewConnections are required",
+      };
+    }
+
+    // Get each connection reciever and emit newConnection event
+    // to all their sockets if online
+    const promises = newConnections.map((newConnection) => {
+      const receiverSocketId = getSocketIdByUserId(newConnection.receiverId);
+      if (receiverSocketId) {
+        return io.to(receiverSocketId).emit("newConnection", newConnection);
+      }
+    });
+
+    // Emit events at once
+    await Promise.all(promises);
+
+    return { error: null };
+  } catch (error) {
+    // If an error occurs, return the error message
+    return {
+      error:
+        error.message || "An error occurred while emiting new connection event",
+    };
+  }
+};
