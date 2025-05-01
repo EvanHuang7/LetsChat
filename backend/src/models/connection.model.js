@@ -20,10 +20,6 @@ const connectionSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    // TODO: depcrate it in both front and back end
-    groupName: {
-      type: String,
-    },
     // It's not required because we don't have conversationId yet when
     // 2 users are not friend
     groupConversationId: {

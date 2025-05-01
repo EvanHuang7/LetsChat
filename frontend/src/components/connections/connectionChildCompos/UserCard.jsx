@@ -54,10 +54,6 @@ const UserCard = ({ user }) => {
     sendConnection({
       type: "friend",
       selectedUserId: selectedUserId,
-      // Keep groupName field to always to NULL instead of empty string
-      // for friend type connection. If using empty string, the back-end
-      // query can not find exisitng connections with filter properly
-      groupName: null,
       // TODO: update it after adding a send greeting message composer
       message: "",
     });
