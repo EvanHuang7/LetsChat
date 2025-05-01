@@ -472,12 +472,14 @@ export const updateConnectionStatusService = async ({
     if (!connectionId) {
       return {
         updatedConnection: null,
+        convoInfoOfUser: null,
         error: "ConnectionId is required",
       };
     }
     if (!status) {
       return {
         updatedConnection: null,
+        convoInfoOfUser: null,
         error: "Status is required",
       };
     }
@@ -489,41 +491,58 @@ export const updateConnectionStatusService = async ({
       { new: true }
     ).populate("senderId", "fullName profilePic");
 
-    // If accepted, create or update conversation asynchronously
-    // NOTE: It's best to run them in a workflow, so that it can
-    // retry if any asynchronous update action fails.
+    let convoInfoOfUser;
+    // If accepted, create or update conversation
     if (updatedConnection.status === "accepted") {
       // Create a private conversation
       if (updatedConnection.type === "friend") {
-        createConversationService({
+        const {
+          conversation: newConversation,
+          convoInfoOfUser: singleConvoInfoOfUser,
+          error: createError,
+        } = await createConversationService({
           userIds: [updatedConnection.senderId, updatedConnection.receiverId],
           isGroup: false,
-        }).catch((err) => {
-          console.error(
-            "Error creating private conversation asynchronously:",
-            err.message
-          );
         });
+        if (createError) {
+          return {
+            updatedConnection: null,
+            error: createError,
+          };
+        }
+        convoInfoOfUser = singleConvoInfoOfUser;
+
         // Add receiverId to group conversation
       } else {
-        updateGroupConversationService({
+        const {
+          conversation: updatedConversation,
+          convoInfoOfUser: singleConvoInfoOfUser,
+          error: updateError,
+        } = await updateGroupConversationService({
           conversationId: updatedConnection.groupConversationId,
           userId: updatedConnection.receiverId,
           addNewUser: true,
-        }).catch((err) => {
-          console.error(
-            "Error adding logged in user to group conversation asynchronously:",
-            err.message
-          );
         });
+        if (updateError) {
+          return {
+            updatedConnection: null,
+            error: updateError,
+          };
+        }
+        convoInfoOfUser = singleConvoInfoOfUser;
       }
     }
 
-    return { updatedConnection: updatedConnection, error: null };
+    return {
+      updatedConnection: updatedConnection,
+      convoInfoOfUser: convoInfoOfUser,
+      error: null,
+    };
   } catch (error) {
     // If an error occurs, return the error message
     return {
       updatedConnection: null,
+      convoInfoOfUser: null,
       error:
         error.message || "An error occurred while updating connection status",
     };
