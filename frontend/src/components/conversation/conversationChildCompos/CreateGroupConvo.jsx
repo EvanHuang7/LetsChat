@@ -49,7 +49,7 @@ const CreateGroupConvo = () => {
             <MessageSquarePlus className="size-3" />
             <span className="text-base-content/80">Create a group</span>
           </button>{" "}
-          and invite your friend to group!
+          and invite your friends to group!
         </span>
       </div>
 

@@ -72,8 +72,8 @@ const Sidebar = () => {
               }
             `}
           >
-            <div className="relative mx-auto lg:mx-0">
-              {/* conversation profile picture and name */}
+            {/* conversation avator and green, red dots */}
+            <div className="relative size-12 shrink-0">
               <img
                 src={
                   (convoInfo.conversationId.isGroup
@@ -88,7 +88,7 @@ const Sidebar = () => {
                     ? convoInfo.conversationId.groupName
                     : convoInfo.conversationId.friend.fullName
                 }
-                className="size-12 object-cover rounded-full"
+                className="w-full h-full object-cover rounded-full"
               />
 
               {/* 🔴 Conversation unread message badge */}
@@ -111,17 +111,22 @@ const Sidebar = () => {
                 )}
             </div>
 
-            <div className="hidden lg:block text-left min-w-0">
+            <div className="hidden lg:block text-left min-w-0 w-full">
               {convoInfo.conversationId.isGroup ? (
-                <div className="flex items-center gap-2">
-                  <Users className="size-5" />
-                  <span className="font-medium truncate">
-                    {convoInfo.conversationId.groupName}
-                  </span>
-                </div>
+                <>
+                  <div className="flex items-center gap-2 min-w-0">
+                    <Users className="size-4 shrink-0" />
+                    <span className="font-medium truncate block overflow-hidden whitespace-nowrap">
+                      {convoInfo.conversationId.groupName}
+                    </span>
+                  </div>
+                  <div className="text-sm text-zinc-400">
+                    {convoInfo.conversationId.userIds.length} members
+                  </div>
+                </>
               ) : (
                 <>
-                  <div className="font-medium truncate">
+                  <div className="font-medium truncate block overflow-hidden whitespace-nowrap">
                     {convoInfo.conversationId.friend.fullName}
                   </div>
                   <div className="text-sm text-zinc-400">

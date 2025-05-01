@@ -19,7 +19,7 @@ const ConversationHeader = () => {
           <div className="flex items-center gap-3 min-w-0 flex-1">
             {/* group avatar */}
             <div className="avatar shrink-0">
-              <div className="size-10 rounded-full relative">
+              <div className="size-12 rounded-full relative">
                 <img
                   src={selectedConversation.groupImageUrl || "/groupAvatar.png"}
                   alt={selectedConversation.groupName}
@@ -44,7 +44,7 @@ const ConversationHeader = () => {
           <div className="flex items-center gap-3 flex-1">
             {/* friend avatar */}
             <div className="avatar shrink-0">
-              <div className="size-10 rounded-full relative">
+              <div className="size-12 rounded-full relative">
                 <img
                   src={selectedConversation.friend.profilePic || "/avatar.png"}
                   alt={selectedConversation.friend.fullName}
