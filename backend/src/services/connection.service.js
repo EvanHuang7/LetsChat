@@ -518,7 +518,7 @@ export const updateConnectionStatusService = async ({
       connectionId,
       { status: status },
       { new: true }
-    ).populate("senderId", "fullName profilePic");
+    );
 
     let convoInfoOfUser;
     // If accepted, create or update conversation
