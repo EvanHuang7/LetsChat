@@ -231,7 +231,7 @@ export const useConversationStore = create((set, get) => ({
 
     if (
       newMessage.conversationId === selectedConversation?._id &&
-      newMessage.sequence > selectedConversation.latestSentMessageSequence
+      newMessage.sequence > selectedConversation?.latestSentMessageSequence
     ) {
       const updatedSelectedConversation = {
         ...get().selectedConversation,

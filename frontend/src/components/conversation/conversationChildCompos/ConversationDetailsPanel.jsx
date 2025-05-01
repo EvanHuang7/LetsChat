@@ -14,7 +14,7 @@ import { useConversationStore } from "../../../store/useConversationStore";
 import { useConnectionStore } from "../../../store/useConnectionStore";
 
 const ConversationDetailsPanel = () => {
-  const { authUser } = useAuthStore();
+  const { authUser, onlineUsers } = useAuthStore();
   const {
     selectedConversation,
     updateGroupConversation,
@@ -201,8 +201,14 @@ const ConversationDetailsPanel = () => {
                   <img
                     src={user.profilePic || "/avatar.png"}
                     alt={user.fullName}
-                    className="size-15 object-cover rounded-full border border-base-300"
+                    className="size-12 object-cover rounded-full border border-base-300"
                   />
+                  {onlineUsers.includes(user._id) && (
+                    <span
+                      className="absolute bottom-0 right-0 size-3 bg-green-500 
+                    rounded-full ring-2 ring-zinc-900"
+                    />
+                  )}
                 </div>
                 <p className="text-xs text-center mt-1 truncate w-full">
                   {user.fullName}
@@ -212,10 +218,10 @@ const ConversationDetailsPanel = () => {
             {hasMoreUsers && (
               <button
                 onClick={() => setShowAllMembersModal(true)}
-                className="flex flex-col items-center justify-center size-15 rounded-full border border-base-300 bg-base-200 hover:bg-base-300 transition"
+                className="flex flex-col items-center justify-center size-13 rounded-full border border-base-300 bg-base-200 hover:bg-base-300 transition"
                 title="Show all members"
               >
-                <Ellipsis className="w-5 h-5 text-base-content" />
+                <Ellipsis className="w-4 h-4 text-base-content" />
                 <span className="text-xs mt-1">More</span>
               </button>
             )}
@@ -238,7 +244,7 @@ const ConversationDetailsPanel = () => {
                 All Members
               </h3>
 
-              <div className="grid grid-cols-5 gap-4">
+              <div className="grid grid-cols-6 gap-4">
                 {users.map((user) => (
                   <div key={user._id} className="flex flex-col items-center">
                     <div className="relative">
@@ -248,8 +254,14 @@ const ConversationDetailsPanel = () => {
                       <img
                         src={user.profilePic || "/avatar.png"}
                         alt={user.fullName}
-                        className="size-15 object-cover rounded-full border border-base-300"
+                        className="size-12 object-cover rounded-full border border-base-300"
                       />
+                      {onlineUsers.includes(user._id) && (
+                        <span
+                          className="absolute bottom-0 right-0 size-3 bg-green-500 
+                    rounded-full ring-2 ring-zinc-900"
+                        />
+                      )}
                     </div>
                     <p className="text-xs text-center mt-1 truncate w-full">
                       {user.fullName}
@@ -290,7 +302,7 @@ const ConversationDetailsPanel = () => {
                   ✕
                 </button>
               </div>
-              <div className="grid grid-cols-5 gap-x-2 gap-y-4 max-h-[50vh] overflow-y-auto px-2">
+              <div className="grid grid-cols-6 gap-x-2 gap-y-4 max-h-[50vh] overflow-y-auto px-2">
                 {isFriendsLoading ? (
                   <p className="col-span-5 text-center text-sm text-zinc-400">
                     Loading friends...
@@ -315,7 +327,7 @@ const ConversationDetailsPanel = () => {
                       <img
                         src={friend.profilePic || "/avatar.png"}
                         alt={friend.fullName}
-                        className="size-16 rounded-full object-cover border border-base-300"
+                        className="size-12 rounded-full object-cover border border-base-300"
                       />
                       <p className="text-xs mt-1 text-center">
                         {friend.fullName}
