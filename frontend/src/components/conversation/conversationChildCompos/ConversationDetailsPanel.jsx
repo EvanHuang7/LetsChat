@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { Upload, Ellipsis, UserPlus, Save, X, Crown } from "lucide-react";
+import {
+  Upload,
+  Ellipsis,
+  UserPlus,
+  Save,
+  X,
+  Crown as CrownSolid,
+} from "lucide-react";
 
 import { useAuthStore } from "../../../store/useAuthStore";
 import { useConversationStore } from "../../../store/useConversationStore";
@@ -187,11 +194,16 @@ const ConversationDetailsPanel = () => {
           <div className="grid grid-cols-3 gap-4">
             {displayUsers.map((user) => (
               <div key={user._id} className="flex flex-col items-center">
-                <img
-                  src={user.profilePic || "/avatar.png"}
-                  alt={user.fullName}
-                  className="size-15 object-cover rounded-full border border-base-300"
-                />
+                <div className="relative">
+                  {user._id === selectedConversation?.groupCreaterId && (
+                    <CrownSolid className="size-5 absolute -top-2 right-0 text-yellow-500 bg-base-100 rounded-full p-0.5 shadow-md" />
+                  )}
+                  <img
+                    src={user.profilePic || "/avatar.png"}
+                    alt={user.fullName}
+                    className="size-15 object-cover rounded-full border border-base-300"
+                  />
+                </div>
                 <p className="text-xs text-center mt-1 truncate w-full">
                   {user.fullName}
                 </p>
@@ -210,6 +222,7 @@ const ConversationDetailsPanel = () => {
           </div>
         </div>
 
+        {/* Show all members modal */}
         {showAllMembersModal && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
             <div className="bg-base-100 rounded-lg shadow-lg max-w-xl w-full p-5 relative max-h-[80vh] overflow-y-auto">
@@ -228,11 +241,16 @@ const ConversationDetailsPanel = () => {
               <div className="grid grid-cols-5 gap-4">
                 {users.map((user) => (
                   <div key={user._id} className="flex flex-col items-center">
-                    <img
-                      src={user.profilePic || "/avatar.png"}
-                      alt={user.fullName}
-                      className="size-15 object-cover rounded-full border border-base-300"
-                    />
+                    <div className="relative">
+                      {user._id === selectedConversation?.groupCreaterId && (
+                        <CrownSolid className="size-5 absolute -top-2 right-0 text-yellow-500 bg-base-100 rounded-full p-0.5 shadow-md" />
+                      )}
+                      <img
+                        src={user.profilePic || "/avatar.png"}
+                        alt={user.fullName}
+                        className="size-15 object-cover rounded-full border border-base-300"
+                      />
+                    </div>
                     <p className="text-xs text-center mt-1 truncate w-full">
                       {user.fullName}
                     </p>
@@ -256,6 +274,7 @@ const ConversationDetailsPanel = () => {
           </div>
         )}
 
+        {/* Invite friends modal */}
         {showInviteModal && (
           <dialog open className="modal">
             <div
