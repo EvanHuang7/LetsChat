@@ -57,7 +57,7 @@ const ConnectionCard = ({ connection }) => {
                 ) : (
                   <>
                     <Users size={15} /> Group Invite from:{" "}
-                    {connection.groupConversationId.groupName}
+                    {connection?.groupConversationId?.groupName}
                   </>
                 )}
               </p>

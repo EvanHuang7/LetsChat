@@ -71,6 +71,10 @@ const MomentCard = ({ moment }) => {
               src={moment.image}
               alt={moment._id}
               className="rounded-lg max-h-64 object-contain mb-5"
+              onError={(e) => {
+                e.target.onerror = null; // prevent infinite loop
+                e.target.src = "/fallback-image.png"; // fallback image
+              }}
             />
           )}
           {/* Like and comments section */}

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { Upload, Ellipsis, UserPlus, Save, X } from "lucide-react";
+import { Upload, Ellipsis, UserPlus, Save, X, Crown } from "lucide-react";
 
+import { useAuthStore } from "../../../store/useAuthStore";
 import { useConversationStore } from "../../../store/useConversationStore";
 import { useConnectionStore } from "../../../store/useConnectionStore";
 
 const ConversationDetailsPanel = () => {
+  const { authUser } = useAuthStore();
   const {
     selectedConversation,
     updateGroupConversation,
@@ -20,6 +22,7 @@ const ConversationDetailsPanel = () => {
     sendBatchGroupInvitation,
   } = useConnectionStore();
 
+  const [isGroupAdmin, setIsGroupAdmin] = useState(false);
   const [selectedImg, setSelectedImg] = useState(null);
   const [groupName, setGroupName] = useState("");
   const [showAllMembersModal, setShowAllMembersModal] = useState(false);
@@ -35,6 +38,7 @@ const ConversationDetailsPanel = () => {
     // Call functions
     if (selectedConversation.isGroup) {
       setGroupName(selectedConversation.groupName);
+      setIsGroupAdmin(selectedConversation?.groupCreaterId === authUser._id);
     }
 
     // Effect will only activate if the values in the list change.
@@ -124,9 +128,10 @@ const ConversationDetailsPanel = () => {
               alt="Group"
               className="size-25 rounded-full object-cover border-4"
             />
-            <label
-              htmlFor="avatar-upload"
-              className={`
+            {isGroupAdmin && (
+              <label
+                htmlFor="avatar-upload"
+                className={`
                 absolute bottom-0 right-0 
                 bg-base-content hover:scale-105
                 p-2 rounded-full cursor-pointer 
@@ -135,17 +140,18 @@ const ConversationDetailsPanel = () => {
                   isGroupImgUploading ? "animate-pulse pointer-events-none" : ""
                 }
               `}
-            >
-              <Upload className="size-3 text-base-200" />
-              <input
-                type="file"
-                id="avatar-upload"
-                className="hidden"
-                accept="image/*"
-                onChange={handleImageUpload}
-                disabled={isGroupImgUploading}
-              />
-            </label>
+              >
+                <Upload className="size-3 text-base-200" />
+                <input
+                  type="file"
+                  id="avatar-upload"
+                  className="hidden"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  disabled={isGroupImgUploading}
+                />
+              </label>
+            )}
           </div>
           <p className="text-sm text-zinc-400">
             {isGroupImgUploading && "Uploading..."}
@@ -162,8 +168,9 @@ const ConversationDetailsPanel = () => {
               onChange={(e) => setGroupName(e.target.value)}
               onFocus={() => setIsEditingGroupName(true)}
               className="flex-1 px-3 py-2 bg-base-200 border border-base-300 rounded-lg text-sm"
+              disabled={!isGroupAdmin}
             />
-            {isEditingGroupName && (
+            {isGroupAdmin && isEditingGroupName && (
               <button
                 onClick={handleGroupNameSave}
                 className="btn btn-xs btn-outline rounded-md hover:scale-105 transition"
@@ -236,17 +243,18 @@ const ConversationDetailsPanel = () => {
           </div>
         )}
 
-        {/* Other Actions */}
-        <div className="space-y-3">
-          {/* You may remove this if you use the input+icon only */}
-          <button
-            className="btn btn-sm w-full"
-            onClick={() => setShowInviteModal(true)}
-          >
-            <UserPlus className="size-4" />
-            Invite friends
-          </button>
-        </div>
+        {/* Invite friends button */}
+        {isGroupAdmin && (
+          <div className="space-y-3">
+            <button
+              className="btn btn-sm w-full"
+              onClick={() => setShowInviteModal(true)}
+            >
+              <UserPlus className="size-4" />
+              Invite friends
+            </button>
+          </div>
+        )}
 
         {showInviteModal && (
           <dialog open className="modal">
