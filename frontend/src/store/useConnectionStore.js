@@ -129,6 +129,19 @@ export const useConnectionStore = create((set, get) => ({
     }
   },
 
+  // USAGE: Send group invitations to a list of friend users
+  sendBatchGroupInvitation: async (data) => {
+    try {
+      // Call api to seend batch group invitations
+      await axiosInstance.post(`/connection/send-batch-group`, data);
+
+      toast.success(`Invited: ${data.selectedUserIds.length} friend(s)`);
+    } catch (error) {
+      console.log("Error in sendBatchGroupInvitation: ", error);
+      toast.error(error.response.data.message);
+    }
+  },
+
   // USAGE:
   // Get specified connections between two users for logged in user as connection sender
   getSpecifiedConnections: async (data) => {

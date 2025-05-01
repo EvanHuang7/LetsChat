@@ -13,8 +13,12 @@ const ConversationDetailsPanel = () => {
     isEditingGroupName,
     setIsEditingGroupName,
   } = useConversationStore();
-  const { friends, isFriendsLoading, getAllFriendUsersExcludeGroupMemebers } =
-    useConnectionStore();
+  const {
+    friends,
+    isFriendsLoading,
+    getAllFriendUsersExcludeGroupMemebers,
+    sendBatchGroupInvitation,
+  } = useConnectionStore();
 
   const [selectedImg, setSelectedImg] = useState(null);
   const [groupName, setGroupName] = useState("");
@@ -39,7 +43,7 @@ const ConversationDetailsPanel = () => {
   useEffect(() => {
     if (showInviteModal && selectedConversation._id) {
       getAllFriendUsersExcludeGroupMemebers({
-        filterUsersFromConvo: selectedConversation.userIds,
+        filterUsersFromConvo: true,
         groupConversationId: selectedConversation._id,
       });
     }
@@ -76,6 +80,17 @@ const ConversationDetailsPanel = () => {
       conversationId: selectedConversation._id,
       groupName: groupName,
     });
+  };
+
+  const handleInviteFriends = async () => {
+    await sendBatchGroupInvitation({
+      selectedUserIds: selectedFriends,
+      groupConversationId: selectedConversation._id,
+    });
+
+    // Clear selected friends and hide invite firends modal
+    setSelectedFriends([]);
+    setShowInviteModal(false);
   };
 
   const toggleFriendSelection = (friendId) => {
@@ -285,14 +300,8 @@ const ConversationDetailsPanel = () => {
               <div className="mt-6 flex justify-end">
                 <button
                   className="btn btn-sm btn-primary"
-                  onClick={() => {
-                    toast.success(
-                      `Invited: ${selectedFriends.length} friend(s)`
-                    );
-                    setSelectedFriends([]);
-                    setShowInviteModal(false);
-                    // Add actual invite API call here
-                  }}
+                  onClick={() => handleInviteFriends()}
+                  disabled={selectedFriends.length === 0}
                 >
                   Invite
                 </button>
