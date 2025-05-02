@@ -39,7 +39,7 @@ const CallPage = () => {
   });
 
   const initCall = async () => {
-    if (!userStreamTokenData.token || !authUser || !callId) return;
+    if (!authUser || !userStreamTokenData?.token || !callId) return;
 
     try {
       const user = {
@@ -99,14 +99,14 @@ const CallPage = () => {
   );
 };
 
-const CallContent = (callId) => {
+const CallContent = ({ callId }) => {
   const { useCallCallingState } = useCallStateHooks();
   const callingState = useCallCallingState();
 
   const navigate = useNavigate();
 
   if (callingState === CallingState.LEFT)
-    return navigate(`/conversation/:${callId}`);
+    return navigate(`/conversation/${callId}`);
 
   return (
     <StreamTheme>
