@@ -90,7 +90,11 @@ const Navbar = () => {
 
   // Display the new message toast
   useEffect(() => {
-    if (authUser.messageNotificationEnabled && newMessageForToast) {
+    if (
+      authUser &&
+      authUser?.messageNotificationEnabled &&
+      newMessageForToast
+    ) {
       showLimitedToast(
         (t) => (
           <NewMessageToast t={t} newMessageForToast={newMessageForToast} />
@@ -100,7 +104,7 @@ const Navbar = () => {
         }
       );
     }
-  }, [newMessageForToast]);
+  }, [authUser, newMessageForToast]);
 
   const handleToggleMessageNotification = () => {
     // Call toggleMessageNotification api function

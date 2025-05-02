@@ -100,7 +100,7 @@ export const checkAuth = (req, res) => {
 
 // Get Stream token for logged in user
 // USAGE: get user stream token for video call
-export async function getStreamToken(req, res) {
+export const getStreamToken = async (req, res) => {
   try {
     const token = generateStreamToken(req.user.id);
 
@@ -109,7 +109,7 @@ export async function getStreamToken(req, res) {
     console.log("Error in getStreamToken controller:", error.message);
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 // Update profile for logged in user
 // USAGE: update user profile picture in Profile page.
