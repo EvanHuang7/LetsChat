@@ -4,6 +4,7 @@ import { Loader } from "lucide-react";
 import { Toaster } from "react-hot-toast";
 
 import HomePage from "./pages/HomePage";
+import CallPage from "./pages/CallPage";
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import SettingsPage from "./pages/SettingsPage";
@@ -50,7 +51,10 @@ const App = () => {
           path="/conversation/:conversationId"
           element={authUser ? <HomePage /> : <Navigate to="/login" />}
         />
-
+        <Route
+          path="/call/:conversationId"
+          element={authUser ? <CallPage /> : <Navigate to="/login" />}
+        />
         <Route
           path="/moments/:id"
           element={authUser ? <MomentsPage /> : <Navigate to="/login" />}
