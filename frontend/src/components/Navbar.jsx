@@ -45,6 +45,7 @@ const Navbar = () => {
   // Check if user currently is in home or conversation page
   const isHomeOrConversationPage =
     location.pathname === "/" || location.pathname.startsWith("/conversation/");
+  const isCallPage = location.pathname.startsWith("/call/");
 
   // Subscribe socket events
   useEffect(() => {
@@ -121,111 +122,148 @@ const Navbar = () => {
       <div className="container mx-auto px-4 h-16">
         <div className="flex items-center justify-between h-full">
           <NewMessageToast />
+
           {/* Left part, logo */}
-          <div className="flex items-center gap-8">
-            <Link
-              to="/"
-              className="flex items-center gap-2.5 hover:opacity-80 transition-all"
-              onClick={() => setUnreadNumInHomeIcon(0)}
-            >
-              <div className="relative size-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                <House className="w-5 h-5 text-primary" />
-
-                {/* 🔴 unread message badge */}
-                {unreadNumInHomeIcon > 0 && !isHomeOrConversationPage && (
-                  <span
-                    className="absolute -top-1 -right-1 min-w-[1rem] h-4 px-1 text-[10px] sm:text-xs font-semibold 
-                text-white bg-red-500 rounded-full flex items-center justify-center shadow-md animate-pulse"
-                  >
-                    {unreadNumInHomeIcon}
-                  </span>
-                )}
-              </div>
-              <h1
-                className="text-lg font-bold hidden sm:block"
-                style={{ display: window.innerWidth < 430 ? "none" : "block" }}
+          <div
+            className={`relative group ${
+              isCallPage ? "pointer-events-none opacity-50" : ""
+            }`}
+          >
+            <div className="flex items-center gap-8">
+              <Link
+                to="/"
+                className="flex items-center gap-2.5 hover:opacity-80 transition-all"
+                onClick={() => setUnreadNumInHomeIcon(0)}
               >
-                LetsChat
-              </h1>
-            </Link>
-          </div>
+                <div className="relative size-9 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <House className="w-5 h-5 text-primary" />
 
-          {/* Right part */}
-          <div className="flex items-center gap-2">
-            {/* Moments, connection and profile button links */}
-            {authUser && (
-              <div className="flex items-center justify-center gap-2">
-                <Link to={"/moments/all"} className={`btn btn-sm gap-2`}>
-                  <Notebook className="size-5" />
-                  <span className="hidden lg:inline">Moments</span>
-                </Link>
-
-                {/* New Connections Button with 🔴 pending connection number badge */}
-                <div className="relative">
-                  <Link to={"/newconnections"} className="btn btn-sm gap-2">
-                    <UserPlus className="size-5" />
-                    <span className="hidden lg:inline">New Connections</span>
-                  </Link>
-                  {pendingConnections.length > 0 && (
+                  {/* 🔴 unread message badge */}
+                  {unreadNumInHomeIcon > 0 && !isHomeOrConversationPage && (
                     <span
                       className="absolute -top-1 -right-1 min-w-[1rem] h-4 px-1 text-[10px] sm:text-xs font-semibold 
-    text-white bg-red-500 rounded-full flex items-center justify-center shadow-md"
+                text-white bg-red-500 rounded-full flex items-center justify-center shadow-md animate-pulse"
                     >
-                      {pendingConnections.length}
+                      {unreadNumInHomeIcon}
                     </span>
                   )}
                 </div>
-
-                <Link to={"/profile"} className={`btn btn-sm gap-2`}>
-                  <UserPen className="size-5" />
-                  <span className="hidden lg:inline">Profile</span>
-                </Link>
+                <h1
+                  className="text-lg font-bold hidden sm:block"
+                  style={{
+                    display: window.innerWidth < 430 ? "none" : "block",
+                  }}
+                >
+                  LetsChat
+                </h1>
+              </Link>
+            </div>
+            {isCallPage && (
+              <div
+                className="absolute top-full mt-2 left-1/2 -translate-x-1/2 
+                              bg-neutral text-white text-xs px-3 py-1 rounded shadow
+                              z-50 whitespace-nowrap hidden group-hover:block"
+              >
+                Leave the call to use the navbar
               </div>
             )}
+          </div>
 
-            {/* Settings and logout*/}
-            <Link
-              to={"/settings"}
-              className={`
+          {/* Right part */}
+          <div
+            className={`relative group ${
+              isCallPage ? "pointer-events-none opacity-50" : ""
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              {/* Moments, connection and profile button links */}
+              {authUser && (
+                <div className="flex items-center justify-center gap-2">
+                  <Link to={"/moments/all"} className={`btn btn-sm gap-2`}>
+                    <Notebook className="size-5" />
+                    <span className="hidden lg:inline">Moments</span>
+                  </Link>
+
+                  {/* New Connections Button with 🔴 pending connection number badge */}
+                  <div className="relative">
+                    <Link to={"/newconnections"} className="btn btn-sm gap-2">
+                      <UserPlus className="size-5" />
+                      <span className="hidden lg:inline">New Connections</span>
+                    </Link>
+                    {pendingConnections.length > 0 && (
+                      <span
+                        className="absolute -top-1 -right-1 min-w-[1rem] h-4 px-1 text-[10px] 
+                      sm:text-xs font-semiboldtext-white bg-red-500 rounded-full 
+                      flex items-center justify-center shadow-md"
+                      >
+                        {pendingConnections.length}
+                      </span>
+                    )}
+                  </div>
+
+                  <Link to={"/profile"} className={`btn btn-sm gap-2`}>
+                    <UserPen className="size-5" />
+                    <span className="hidden lg:inline">Profile</span>
+                  </Link>
+                </div>
+              )}
+
+              {/* Settings and logout*/}
+              <Link
+                to={"/settings"}
+                className={`
               btn btn-sm gap-2 transition-colors
               
               `}
-            >
-              <Settings className="w-4 h-4" />
-              <span className="hidden lg:inline">Settings</span>
-            </Link>
-            {authUser && (
-              <div className="relative group">
-                <button
-                  className="btn btn-sm gap-2"
-                  onClick={handleToggleMessageNotification}
-                >
-                  {authUser.messageNotificationEnabled ? (
-                    <Bell className="size-5" />
-                  ) : (
-                    <BellOff className="size-5" />
-                  )}
-                </button>
+              >
+                <Settings className="w-4 h-4" />
+                <span className="hidden lg:inline">Settings</span>
+              </Link>
+              {authUser && (
+                <div className="relative group">
+                  <button
+                    className="btn btn-sm gap-2"
+                    onClick={handleToggleMessageNotification}
+                  >
+                    {authUser.messageNotificationEnabled ? (
+                      <Bell className="size-5" />
+                    ) : (
+                      <BellOff className="size-5" />
+                    )}
+                  </button>
 
-                {/* Responsive tooltip with text split on small screens */}
-                <div
-                  className="absolute top-full left-1/2 -translate-x-1/2 mt-2
+                  {/* Responsive tooltip with text split on small screens */}
+                  <div
+                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2
                            w-max max-w-xs px-4 py-2 rounded-xl bg-neutral text-neutral-content text-sm
                            opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100
                            transition-all duration-200 z-20 shadow-lg text-center hidden sm:inline"
-                >
-                  <span className="block lg:inline">Message notification</span>{" "}
-                  <span className="block lg:inline">
-                    is {authUser.messageNotificationEnabled ? "ON" : "OFF"} now
-                  </span>
+                  >
+                    <span className="block lg:inline">
+                      Message notification
+                    </span>{" "}
+                    <span className="block lg:inline">
+                      is {authUser.messageNotificationEnabled ? "ON" : "OFF"}{" "}
+                      now
+                    </span>
+                  </div>
                 </div>
+              )}
+              {authUser && (
+                <button className="flex gap-2 items-center" onClick={logout}>
+                  <LogOut className="size-5" />
+                  <span className="hidden lg:inline">Logout</span>
+                </button>
+              )}
+            </div>
+            {isCallPage && (
+              <div
+                className="absolute top-full mt-2 left-1/2 -translate-x-1/2 
+                            bg-neutral text-white text-xs px-3 py-1 rounded shadow
+                            z-50 whitespace-nowrap hidden group-hover:block"
+              >
+                Leave the call to use the navbar
               </div>
-            )}
-            {authUser && (
-              <button className="flex gap-2 items-center" onClick={logout}>
-                <LogOut className="size-5" />
-                <span className="hidden lg:inline">Logout</span>
-              </button>
             )}
           </div>
         </div>

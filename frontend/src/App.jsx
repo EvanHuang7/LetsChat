@@ -18,7 +18,7 @@ import { useThemeStore } from "./store/useThemeStore";
 
 const App = () => {
   // Get the needed variables and function from useAuthStore
-  const { authUser, checkAuth, isCheckingAuth, currentPath } = useAuthStore();
+  const { authUser, checkAuth, isCheckingAuth } = useAuthStore();
   const { theme } = useThemeStore();
 
   // Do something when application starts
@@ -40,7 +40,7 @@ const App = () => {
 
   return (
     <div>
-      {!currentPath.startsWith("/call/") && <Navbar />}
+      <Navbar />
 
       <Routes>
         <Route
