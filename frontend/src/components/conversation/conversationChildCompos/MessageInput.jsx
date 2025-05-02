@@ -1,13 +1,15 @@
 import React, { useState, useRef } from "react";
-import { Image, Send, X, Smile, Trash } from "lucide-react";
+import { Image, Send, X, Smile, Video } from "lucide-react";
 import toast from "react-hot-toast";
 
 import GifsContainer from "./GifsContainer";
 
 import { useMessageStore } from "../../../store/useMessageStore";
+import { useConversationStore } from "../../../store/useConversationStore";
 
 const MessageInput = () => {
   const { sendMessage } = useMessageStore();
+  const { selectedConversation } = useConversationStore();
 
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
@@ -63,6 +65,18 @@ const MessageInput = () => {
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
+  const handleVideoCall = () => {
+    if (selectedConversation) {
+      const callUrl = `${window.location.origin}/call/${selectedConversation._id}`;
+
+      sendMessage({
+        text: `I've started a video call. Join me here: ${callUrl}`,
+      });
+
+      // toast.success("Video call link sent successfully!");
+    }
+  };
+
   return (
     <div className="p-4 w-full relative">
       {/* GIF container */}
@@ -101,6 +115,15 @@ const MessageInput = () => {
           className="btn btn-sm btn-circle text-zinc-500 hover:text-primary"
         >
           <Smile size={20} />
+        </button>
+
+        {/* Video call Button */}
+        <button
+          type="button"
+          onClick={() => handleVideoCall()}
+          className="btn btn-sm btn-circle text-zinc-500 hover:text-primary"
+        >
+          <Video size={20} />
         </button>
 
         {/* input composer */}

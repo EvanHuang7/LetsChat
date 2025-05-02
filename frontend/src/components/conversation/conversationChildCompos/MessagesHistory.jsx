@@ -42,6 +42,26 @@ const MessagesHistory = () => {
     });
   };
 
+  // Utility to detect and linkify URLs in plain text
+  const linkifyText = (text) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.split(urlRegex).map((part, i) =>
+      urlRegex.test(part) ? (
+        <a
+          key={i}
+          href={part}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 hover:underline break-all"
+        >
+          {part}
+        </a>
+      ) : (
+        <span key={i}>{part}</span>
+      )
+    );
+  };
+
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-4">
       {messages.map((message) => (
@@ -95,7 +115,7 @@ const MessagesHistory = () => {
                 }}
               />
             )}
-            {message.text && <p>{message.text}</p>}
+            {message.text && <p>{linkifyText(message.text)}</p>}
           </div>
           {/* Add to sticker button with tooltip */}
           {message.image && !message.text && (
