@@ -8,10 +8,10 @@ import {
   Notebook,
   UserPlus,
 } from "lucide-react";
-import toast from "react-hot-toast";
 
 import NewMessageToast from "./conversation/conversationChildCompos/NewMessageToast";
 import { usePrevious } from "../lib/utils";
+import { showLimitedToast } from "../lib/toastStackManager";
 
 import { useAuthStore } from "../store/useAuthStore";
 import { useConnectionStore } from "../store/useConnectionStore";
@@ -88,9 +88,14 @@ const Navbar = () => {
   // Display the new message toast
   useEffect(() => {
     if (newMessageForToast) {
-      toast.custom((t) => (
-        <NewMessageToast t={t} newMessageForToast={newMessageForToast} />
-      ));
+      showLimitedToast(
+        (t) => (
+          <NewMessageToast t={t} newMessageForToast={newMessageForToast} />
+        ),
+        {
+          duration: 4000,
+        }
+      );
     }
   }, [newMessageForToast]);
 

@@ -37,14 +37,6 @@ const NewMessageToast = ({ t, newMessageForToast }) => {
             </div>
           </div>
         </div>
-        <div className="flex border-l border-base-300">
-          <button
-            onClick={() => toast.dismiss(t.id)}
-            className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium text-primary hover:text-primary-focus focus:outline-none"
-          >
-            Close
-          </button>
-        </div>
       </div>
     )
   );
