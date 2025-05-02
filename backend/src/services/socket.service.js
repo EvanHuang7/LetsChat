@@ -8,6 +8,7 @@ export const emitNewMessageEventService = async ({
   // it's a id string when passed in
   senderId,
   newMessage,
+  hydratedMessage,
 }) => {
   try {
     // Validate if the input
@@ -16,26 +17,32 @@ export const emitNewMessageEventService = async ({
         error: "UserIds is required",
       };
     }
-
     if (!senderId) {
       return {
         error: "SenderId is required",
       };
     }
-
     if (!newMessage) {
       return {
         error: "NewMessage is required",
       };
     }
-
-    // Get all users except sender and emit newMessage to all their sockets if online
+    if (!hydratedMessage) {
+      return {
+        error: "HydratedMessage is required",
+      };
+    }
+    const newMessageInfo = {
+      newMessage,
+      hydratedMessage,
+    };
+    // Get all users except sender and emit newMessageInfo to all their sockets if online
     const promises = userIds
       .filter((user) => user._id.toString() !== senderId.toString())
       .map((user) => {
         const receiverSocketId = getSocketIdByUserId(user._id);
         if (receiverSocketId) {
-          return io.to(receiverSocketId).emit("newMessage", newMessage);
+          return io.to(receiverSocketId).emit("newMessage", newMessageInfo);
         }
       });
 

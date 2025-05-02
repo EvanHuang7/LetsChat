@@ -1,6 +1,7 @@
 import {
   getMessagesService,
   createMessageService,
+  getMessageByIdService,
 } from "../services/message.service.js";
 import {
   increaselatestSentMessageSequenceService,
@@ -88,11 +89,22 @@ export const sendMessage = async (req, res) => {
       });
     }
 
+    // Get new message with populated info
+    const { hydratedMessage, getMessageError } = await getMessageByIdService({
+      messageId: newMessage._id,
+    });
+    if (getMessageError) {
+      return res.status(400).json({
+        message: getMessageError,
+      });
+    }
+
     // Emit newMessage to users of updatedConversation
     const { error: emitEventError } = await emitNewMessageEventService({
       userIds: updatedConversation.userIds,
       senderId,
       newMessage,
+      hydratedMessage,
     });
     if (emitEventError) {
       return res.status(400).json({

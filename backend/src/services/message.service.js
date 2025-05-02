@@ -33,20 +33,21 @@ export const getMessageByIdService = async ({ messageId }) => {
     // Validate if the messageId exists
     if (!messageId) {
       return {
-        message: null,
+        hydratedMessage: null,
         error: "MessageId is required",
       };
     }
 
-    // Run query to get all messages
-    // TODO: add populaet
-    const message = await Message.findById(messageId);
+    // Run query to get message with populated info
+    const hydratedMessage = await Message.findById(messageId)
+      .populate("conversationId", "isGroup groupName groupImageUrl")
+      .populate("senderId", "fullName profilePic");
 
-    return { message: message, error: null };
+    return { hydratedMessage: hydratedMessage, error: null };
   } catch (error) {
     // If an error occurs, return the error message
     return {
-      message: null,
+      hydratedMessage: null,
       error: error.message || "An error occurred while getting messages by Id",
     };
   }
