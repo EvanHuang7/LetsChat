@@ -21,7 +21,7 @@ const CommentWriter = ({
       console.log(
         "Function errored because either activeCommentMomentId or text is empty"
       );
-      toast.error("Sorry, an error occurs");
+      toast.error("Please add a text");
       return;
     }
 

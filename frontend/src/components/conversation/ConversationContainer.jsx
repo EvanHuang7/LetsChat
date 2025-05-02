@@ -55,9 +55,17 @@ const ConversationContainer = () => {
         </button>
       )}
 
-      {/* Right side panel for group conversation */}
-      {selectedConversation.isGroup && !isPanelCollapsed && (
-        <ConversationDetailsPanel />
+      {/* Animated right panel */}
+      {selectedConversation.isGroup && (
+        <div
+          className={`
+      transition-all duration-300 ease-in-out
+      overflow-hidden border-l border-base-300
+      ${isPanelCollapsed ? "w-0 opacity-0" : "w-[280px] opacity-100"}
+    `}
+        >
+          <ConversationDetailsPanel />
+        </div>
       )}
     </div>
   );

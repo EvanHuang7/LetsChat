@@ -126,14 +126,23 @@ const MomentCard = ({ moment }) => {
       </div>
 
       {/* Comment Writer */}
-      {activeCommentMomentId === moment._id && (
+      <div
+        className={`
+        transition-all duration-300 ease-in-out overflow-hidden
+        ${
+          activeCommentMomentId === moment._id
+            ? "max-h-96 opacity-100"
+            : "max-h-0 opacity-0"
+        }
+      `}
+      >
         <CommentWriter
           commentText={commentText}
           setCommentText={setCommentText}
           activeCommentMomentId={activeCommentMomentId}
           setActiveCommentMomentId={setActiveCommentMomentId}
         />
-      )}
+      </div>
 
       {/* Existing comments */}
       {moment?.comments?.length > 0 && (
