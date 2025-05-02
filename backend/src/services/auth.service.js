@@ -61,17 +61,21 @@ export const signupService = async ({ fullName, email, password, res }) => {
       // Save this user to database
       await newUser.save();
 
+      // TODO: Comment this logic out aviod creating a stream user now
+      // to test if Stream will create a stream user when front-end user
+      // connects to Stream, but Stream does not have that user record
+
       // Create a stream user for video call usage
-      try {
-        await upsertStreamUser({
-          id: newUser._id.toString(),
-          name: newUser.fullName,
-          image: newUser.profilePic || "",
-        });
-        console.log(`Stream user created for ${newUser.fullName}`);
-      } catch (error) {
-        console.log("Error creating Stream user:", error);
-      }
+      // try {
+      //   await upsertStreamUser({
+      //     id: newUser._id.toString(),
+      //     name: newUser.fullName,
+      //     image: newUser.profilePic || "",
+      //   });
+      //   console.log(`Stream user created for ${newUser.fullName}`);
+      // } catch (error) {
+      //   console.log("Error creating Stream user:", error);
+      // }
 
       // Return the newUser
       return { newUser: newUser, error: null };
