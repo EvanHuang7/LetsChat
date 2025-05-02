@@ -1,6 +1,7 @@
 import {
   loginService,
   signupService,
+  toggleMessageNotificationService,
   updateProfileService,
   updateStickersService,
 } from "../services/auth.service.js";
@@ -148,6 +149,32 @@ export const updateStickers = async (req, res) => {
     return res.status(200).json(updatedUser);
   } catch (error) {
     console.log("Error in updateStickers controller", error.message);
+    return res.status(500).json({
+      message: "Interal server error",
+    });
+  }
+};
+
+// Toggle message notification for logged in user
+// USAGE: toggle user's message notification.
+export const toggleMessageNotification = async (req, res) => {
+  try {
+    const { messageNotificationState } = req.body;
+    const userId = req.user._id;
+
+    const { updatedUser, error } = await toggleMessageNotificationService({
+      userId,
+      messageNotificationState,
+    });
+    if (error) {
+      return res.status(400).json({
+        message: error,
+      });
+    }
+
+    return res.status(200).json(updatedUser);
+  } catch (error) {
+    console.log("Error in toggleMessageNotification controller", error.message);
     return res.status(500).json({
       message: "Interal server error",
     });

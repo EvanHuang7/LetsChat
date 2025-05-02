@@ -233,3 +233,35 @@ export const updateStickersService = async ({
     };
   }
 };
+
+// The service function to toggle message notification for logged in user
+export const toggleMessageNotificationService = async ({
+  userId,
+  messageNotificationState,
+}) => {
+  try {
+    // check all feilds in are empty or not
+    if (!userId) {
+      return {
+        updatedUser: null,
+        error: "UserId is required",
+      };
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { messageNotificationEnabled: messageNotificationState },
+      { new: true }
+    ).select("-password");
+
+    return { updatedUser: updatedUser, error: null };
+  } catch (error) {
+    // If an error occurs, return the error message
+    return {
+      updatedUser: null,
+      error:
+        error.message ||
+        "An error occurred while updating user's message notification",
+    };
+  }
+};

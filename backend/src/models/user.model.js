@@ -32,6 +32,10 @@ const userSchema = new mongoose.Schema(
         message: "A user can only has up to 8 stickers.",
       },
     },
+    messageNotificationEnabled: {
+      type: Boolean,
+      default: true,
+    },
   },
   // It will create all timestamps fields, such as createdAt, UpdatedAt
   { timestamps: true }
