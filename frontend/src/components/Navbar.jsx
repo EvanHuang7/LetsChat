@@ -19,7 +19,7 @@ import { useMessageStore } from "../store/useMessageStore";
 
 const Navbar = () => {
   // Get the needed variables and function from useAuthStore
-  const { authUser, logout } = useAuthStore();
+  const { authUser, setCurrentPath, logout } = useAuthStore();
   const {
     getConnections,
     pendingConnections,
@@ -72,11 +72,15 @@ const Navbar = () => {
     const isLogOutAction = location.pathname === "/login";
 
     if (wasHomeOrConversationPage && isNowDifferentPage && !isLogOutAction) {
-      setUnreadNumInHomeIcon(0);
       // Set selectedConversation to null to update unread message num
       setSelectedConversation(null);
     }
   }, [location.pathname, prevPath]);
+
+  // Update the current path
+  useEffect(() => {
+    setCurrentPath(location.pathname);
+  }, [location.pathname]);
 
   return (
     <header

@@ -77,6 +77,12 @@ export const useMessageStore = create((set, get) => ({
       const selectedConversation =
         useConversationStore.getState().selectedConversation;
 
+      const currentPath = useAuthStore.getState().currentPath;
+      const isOnHomeOrConversationPage =
+        currentPath === "/" || currentPath.startsWith("/conversation/");
+      const isSameConversation =
+        newMessage.conversationId === selectedConversation?._id;
+
       // Update front-end data (convosInfo sequence)
       useConversationStore
         .getState()
@@ -88,11 +94,12 @@ export const useMessageStore = create((set, get) => ({
         .updateSelectedConversationWithNewMessage(newMessage);
 
       // Update front-end for read dot map (convoIdtoUnreadMap)
-      // If the incoming new message is not sent from current selected conversation
-      // or no conversation selected yet, update unreadMessagesNumberMap
-      if (newMessage.conversationId !== selectedConversation?._id) {
-        // Set unread badge in home icon
-        get().setUnreadNumInHomeIcon(get().unreadNumInHomeIcon + 1);
+      // Only update unread count if new message is from a different conversation
+      if (!isSameConversation) {
+        if (!isOnHomeOrConversationPage) {
+          // Increment unread count only when user is not on home/convo page
+          get().setUnreadNumInHomeIcon(get().unreadNumInHomeIcon + 1);
+        }
 
         useConversationStore
           .getState()
@@ -100,12 +107,12 @@ export const useMessageStore = create((set, get) => ({
             newMessage.conversationId,
             convoIdtoUnreadMap?.[newMessage.conversationId] + 1 || 1
           );
+
         return;
       }
 
-      // We will append this new incoming message to current
-      // messages list to display in current chat history window,
-      // only if the new message sender is currented select conversation
+      // Append message to the current messages if it belongs to the
+      // selected conversation
       set({
         messages: [...get().messages, newMessage],
       });

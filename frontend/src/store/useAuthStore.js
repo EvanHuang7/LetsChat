@@ -14,6 +14,10 @@ export const useAuthStore = create((set, get) => ({
   authUser: null,
   onlineUsers: [],
   socket: null,
+
+  currentPath: "/",
+  setCurrentPath: (path) => set({ currentPath: path }),
+
   // Flags variables to control different spinners
   isCheckingAuth: true,
   isSigningUp: false,
