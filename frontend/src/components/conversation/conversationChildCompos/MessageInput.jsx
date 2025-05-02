@@ -73,7 +73,7 @@ const MessageInput = () => {
         text: `I've started a video call. Join me here: ${callUrl}`,
       });
 
-      // toast.success("Video call link sent successfully!");
+      toast.success("A video call link is sent successfully!");
     }
   };
 
@@ -117,15 +117,6 @@ const MessageInput = () => {
           <Smile size={20} />
         </button>
 
-        {/* Video call Button */}
-        <button
-          type="button"
-          onClick={() => handleVideoCall()}
-          className="btn btn-sm btn-circle text-zinc-500 hover:text-primary"
-        >
-          <Video size={20} />
-        </button>
-
         {/* input composer */}
         <div className="flex-1 flex gap-2">
           <input
@@ -142,6 +133,14 @@ const MessageInput = () => {
             ref={fileInputRef}
             onChange={handleImageChange}
           />
+          {/* Video call Button */}
+          <button
+            type="button"
+            onClick={() => handleVideoCall()}
+            className="btn btn-md btn-circle text-zinc-500 hover:text-primary"
+          >
+            <Video size={20} />
+          </button>
           {/* Upload image Button */}
           <button
             type="button"

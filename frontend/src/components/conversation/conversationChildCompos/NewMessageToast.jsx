@@ -30,7 +30,10 @@ const NewMessageToast = ({ t, newMessageForToast }) => {
                   </span>
                 )}
               </p>
-              <p className="mt-1 text-sm line-clamp-1 text-base-content/80">
+              <p className="mt-1 text-sm line-clamp-1 text-base-content/90">
+                <span className="text-base-content/70 font-semibold ">
+                  {"Said: "}
+                </span>
                 {text}
               </p>
             </div>
