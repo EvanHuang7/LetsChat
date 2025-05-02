@@ -11,29 +11,28 @@ const NewMessageToast = ({ t, newMessageForToast }) => {
       <div
         className={`${
           t.visible ? "animate-enter" : "animate-leave"
-        } max-w-md w-full bg-base-100 text-base-content shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-base-300`}
+        } max-w-sm w-full bg-base-100 text-base-content shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-base-300`}
       >
-        <div className="flex-1 w-0 p-4">
-          <div className="flex items-start">
-            <div className="flex-shrink-0 pt-0.5">
-              <img
-                className="h-10 w-10 rounded-full object-cover border"
-                src={sender?.profilePic || "/avatar.png"}
-                alt={sender?.fullName || "User"}
-              />
-            </div>
-            <div className="ml-3 flex-1">
-              <p className="text-sm font-medium">
+        <div className="flex-1 w-0 p-3">
+          <div className="flex items-start gap-3">
+            <img
+              className="h-8 w-8 rounded-full object-cover border"
+              src={sender?.profilePic || "/avatar.png"}
+              alt={sender?.fullName || "User"}
+            />
+            <div className="flex-1 overflow-hidden">
+              <p className="text-sm font-medium truncate">
                 {sender?.fullName}
                 {conversation?.isGroup && (
-                  <>
-                    <span className="text-base-content/70 font-semibold">
-                      {" from "} {conversation.groupName}
-                    </span>
-                  </>
+                  <span className="text-base-content/70 font-semibold truncate">
+                    {" from "}
+                    {conversation.groupName}
+                  </span>
                 )}
               </p>
-              <p className="mt-1 text-sm">{text}</p>
+              <p className="mt-1 text-sm line-clamp-1 text-base-content/80">
+                {text}
+              </p>
             </div>
           </div>
         </div>
