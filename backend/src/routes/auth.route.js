@@ -7,6 +7,7 @@ import {
   updateStickers,
   checkAuth,
   toggleMessageNotification,
+  getStreamToken,
 } from "../controllers/auth.controller.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
 
@@ -18,6 +19,10 @@ router.post("/logout", logout);
 
 // Check if user is authenticated
 router.get("/check", protectRoute, checkAuth);
+
+// Get Stream token for logged in user
+// USAGE: get user stream token for video call
+router.get("/stream-token", protectRoute, getStreamToken);
 
 // Update profile for logged in user
 // USAGE: update user profile picture in Profile page.

@@ -5,6 +5,7 @@ import {
   updateProfileService,
   updateStickersService,
 } from "../services/auth.service.js";
+import { generateStreamToken } from "../lib/stream.js";
 
 export const signup = async (req, res) => {
   try {
@@ -96,6 +97,19 @@ export const checkAuth = (req, res) => {
     });
   }
 };
+
+// Get Stream token for logged in user
+// USAGE: get user stream token for video call
+export async function getStreamToken(req, res) {
+  try {
+    const token = generateStreamToken(req.user.id);
+
+    res.status(200).json({ token });
+  } catch (error) {
+    console.log("Error in getStreamToken controller:", error.message);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
 
 // Update profile for logged in user
 // USAGE: update user profile picture in Profile page.
