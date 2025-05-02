@@ -7,7 +7,6 @@ import {
   UserPen,
   Notebook,
   UserPlus,
-  MessageSquareDot,
 } from "lucide-react";
 
 import { usePrevious } from "../lib/utils";
@@ -103,9 +102,9 @@ const Navbar = () => {
                 {unreadNumInHomeIcon > 0 && !isHomeOrConversationPage && (
                   <span
                     className="absolute -top-1 -right-1 min-w-[1rem] h-4 px-1 text-[10px] sm:text-xs font-semibold 
-                text-white bg-red-500 rounded-full flex items-center justify-center shadow-md"
+                text-white bg-red-500 rounded-full flex items-center justify-center shadow-md animate-pulse"
                   >
-                    <MessageSquareDot className="size-3 animate-pulse" />
+                    {unreadNumInHomeIcon}
                   </span>
                 )}
               </div>

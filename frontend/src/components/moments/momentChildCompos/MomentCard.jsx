@@ -83,7 +83,7 @@ const MomentCard = ({ moment }) => {
             <div className={`flex items-center gap-2`}>
               <button
                 type="button"
-                className="btn btn-xs gap-2 pr-0"
+                className="btn btn-xs gap-2"
                 onClick={() => handleUpdateLikeStatus(moment)}
               >
                 <ThumbsUp
@@ -115,7 +115,7 @@ const MomentCard = ({ moment }) => {
               )}
               <button
                 type="button"
-                className="btn btn-xs gap-2 pl-0"
+                className="btn btn-xs gap-2"
                 onClick={() => setActiveCommentMomentId(moment._id)}
               >
                 <MessageSquare className="text-zinc-400" size={20} />
