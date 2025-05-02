@@ -191,16 +191,31 @@ const Navbar = () => {
               <span className="hidden lg:inline">Settings</span>
             </Link>
             {authUser && (
-              <button
-                className="btn btn-sm gap-2"
-                onClick={() => handleToggleMessageNotification()}
-              >
-                {authUser.messageNotificationEnabled ? (
-                  <Bell className="size-5" />
-                ) : (
-                  <BellOff className="size-5" />
-                )}
-              </button>
+              <div className="relative group">
+                <button
+                  className="btn btn-sm gap-2"
+                  onClick={handleToggleMessageNotification}
+                >
+                  {authUser.messageNotificationEnabled ? (
+                    <Bell className="size-5" />
+                  ) : (
+                    <BellOff className="size-5" />
+                  )}
+                </button>
+
+                {/* Responsive tooltip with text split on small screens */}
+                <div
+                  className="absolute top-full left-1/2 -translate-x-1/2 mt-2
+                           w-max max-w-xs px-4 py-2 rounded-xl bg-neutral text-neutral-content text-sm
+                           opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100
+                           transition-all duration-200 z-20 shadow-lg text-center hidden sm:inline"
+                >
+                  <span className="block lg:inline">Message notification</span>{" "}
+                  <span className="block lg:inline">
+                    is {authUser.messageNotificationEnabled ? "ON" : "OFF"} now
+                  </span>
+                </div>
+              </div>
             )}
             {authUser && (
               <button className="flex gap-2 items-center" onClick={logout}>
