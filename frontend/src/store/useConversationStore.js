@@ -278,8 +278,11 @@ export const useConversationStore = create((set, get) => ({
   // when receving new message
   updateConvoIdtoUnreadMap: (conversationId, value) => {
     const updatedConvoIdtoUnreadMap = get().convoIdtoUnreadMap;
-    updatedConvoIdtoUnreadMap[conversationId] = value;
-    set({ convoIdtoUnreadMap: updatedConvoIdtoUnreadMap });
+
+    if (updatedConvoIdtoUnreadMap) {
+      updatedConvoIdtoUnreadMap[conversationId] = value;
+      set({ convoIdtoUnreadMap: updatedConvoIdtoUnreadMap });
+    }
   },
 
   // USAGE: Set convosInfo and build convoIdtoUnreadMap after
