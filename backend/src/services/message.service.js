@@ -27,6 +27,31 @@ export const getMessagesService = async ({ conversationId }) => {
   }
 };
 
+// The service function to a message with populated info by id
+export const getMessageByIdService = async ({ messageId }) => {
+  try {
+    // Validate if the messageId exists
+    if (!messageId) {
+      return {
+        message: null,
+        error: "MessageId is required",
+      };
+    }
+
+    // Run query to get all messages
+    // TODO: add populaet
+    const message = await Message.findById(messageId);
+
+    return { message: message, error: null };
+  } catch (error) {
+    // If an error occurs, return the error message
+    return {
+      message: null,
+      error: error.message || "An error occurred while getting messages by Id",
+    };
+  }
+};
+
 // The service function to create a message in a conversation
 export const createMessageService = async ({
   conversationId,
