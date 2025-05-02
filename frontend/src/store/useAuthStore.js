@@ -136,6 +136,26 @@ export const useAuthStore = create((set, get) => ({
     }
   },
 
+  // USAGE: Toggle user message notification
+  toggleMessageNotification: async (data) => {
+    try {
+      const res = await axiosInstance.put(
+        "/auth/toggle-message-notification",
+        data
+      );
+      set({ authUser: res.data });
+
+      if (data.messageNotificationState) {
+        toast.success("Message notification is ON now");
+      } else {
+        toast.success("Message notification is OFF now");
+      }
+    } catch (error) {
+      console.log("Error in toggleMessageNotification: ", error);
+      toast.error(error.response.data.message);
+    }
+  },
+
   // USAGE: Create socket io client and start connection to socket io server
   // after checkAuth, signup or login succeed and listen to the "getOnlineUsers" event
   connectSocket: () => {

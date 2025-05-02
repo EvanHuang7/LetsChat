@@ -7,6 +7,8 @@ import {
   UserPen,
   Notebook,
   UserPlus,
+  Bell,
+  BellOff,
 } from "lucide-react";
 
 import NewMessageToast from "./conversation/conversationChildCompos/NewMessageToast";
@@ -20,7 +22,8 @@ import { useMessageStore } from "../store/useMessageStore";
 
 const Navbar = () => {
   // Get the needed variables and function from useAuthStore
-  const { authUser, setCurrentPath, logout } = useAuthStore();
+  const { authUser, setCurrentPath, toggleMessageNotification, logout } =
+    useAuthStore();
   const {
     getConnections,
     pendingConnections,
@@ -87,7 +90,7 @@ const Navbar = () => {
 
   // Display the new message toast
   useEffect(() => {
-    if (newMessageForToast) {
+    if (authUser.messageNotificationEnabled && newMessageForToast) {
       showLimitedToast(
         (t) => (
           <NewMessageToast t={t} newMessageForToast={newMessageForToast} />
@@ -98,6 +101,13 @@ const Navbar = () => {
       );
     }
   }, [newMessageForToast]);
+
+  const handleToggleMessageNotification = () => {
+    // Call toggleMessageNotification api function
+    toggleMessageNotification({
+      messageNotificationState: !authUser.messageNotificationEnabled,
+    });
+  };
 
   return (
     <header
@@ -143,14 +153,14 @@ const Navbar = () => {
               <div className="flex items-center justify-center gap-2">
                 <Link to={"/moments/all"} className={`btn btn-sm gap-2`}>
                   <Notebook className="size-5" />
-                  <span className="hidden md:inline">Moments</span>
+                  <span className="hidden lg:inline">Moments</span>
                 </Link>
 
                 {/* New Connections Button with 🔴 pending connection number badge */}
                 <div className="relative">
                   <Link to={"/newconnections"} className="btn btn-sm gap-2">
                     <UserPlus className="size-5" />
-                    <span className="hidden md:inline">New Connections</span>
+                    <span className="hidden lg:inline">New Connections</span>
                   </Link>
                   {pendingConnections.length > 0 && (
                     <span
@@ -164,7 +174,7 @@ const Navbar = () => {
 
                 <Link to={"/profile"} className={`btn btn-sm gap-2`}>
                   <UserPen className="size-5" />
-                  <span className="hidden md:inline">Profile</span>
+                  <span className="hidden lg:inline">Profile</span>
                 </Link>
               </div>
             )}
@@ -178,12 +188,24 @@ const Navbar = () => {
               `}
             >
               <Settings className="w-4 h-4" />
-              <span className="hidden md:inline">Settings</span>
+              <span className="hidden lg:inline">Settings</span>
             </Link>
+            {authUser && (
+              <button
+                className="btn btn-sm gap-2"
+                onClick={() => handleToggleMessageNotification()}
+              >
+                {authUser.messageNotificationEnabled ? (
+                  <Bell className="size-5" />
+                ) : (
+                  <BellOff className="size-5" />
+                )}
+              </button>
+            )}
             {authUser && (
               <button className="flex gap-2 items-center" onClick={logout}>
                 <LogOut className="size-5" />
-                <span className="hidden md:inline">Logout</span>
+                <span className="hidden lg:inline">Logout</span>
               </button>
             )}
           </div>
