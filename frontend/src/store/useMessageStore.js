@@ -11,6 +11,8 @@ export const useMessageStore = create((set, get) => ({
   messages: [],
   isMessagesLoading: false,
 
+  newMessageForToast: null,
+
   unreadNumInHomeIcon: 0,
   setUnreadNumInHomeIcon: (value) => set({ unreadNumInHomeIcon: value }),
 
@@ -67,7 +69,9 @@ export const useMessageStore = create((set, get) => ({
 
     // Listen to "newMessage" event and update messages list
     // whenever receicing newMessage from socket io server
-    socket.on("newMessage", (newMessage) => {
+    socket.on("newMessage", async (newMessageInfo) => {
+      const newMessage = newMessageInfo.newMessage;
+      const hydratedMessage = newMessageInfo.hydratedMessage;
       // We need to put these state variables inside socket.on() to get the
       // newest value of these states when a newMessage event triggered.
       // If we put them outside socket.on(), they will keep using the old value
@@ -93,7 +97,6 @@ export const useMessageStore = create((set, get) => ({
         .getState()
         .updateSelectedConversationWithNewMessage(newMessage);
 
-      // Update front-end for read dot map (convoIdtoUnreadMap)
       // Only update unread count if new message is from a different conversation
       if (!isSameConversation) {
         if (!isOnHomeOrConversationPage) {
@@ -101,12 +104,16 @@ export const useMessageStore = create((set, get) => ({
           get().setUnreadNumInHomeIcon(get().unreadNumInHomeIcon + 1);
         }
 
+        // Update front-end data for unread map (convoIdtoUnreadMap)
         useConversationStore
           .getState()
           .updateConvoIdtoUnreadMap(
             newMessage.conversationId,
             convoIdtoUnreadMap?.[newMessage.conversationId] + 1 || 1
           );
+
+        // Show new message toast
+        set({ newMessageForToast: hydratedMessage });
 
         return;
       }

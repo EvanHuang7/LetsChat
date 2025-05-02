@@ -8,7 +8,9 @@ import {
   Notebook,
   UserPlus,
 } from "lucide-react";
+import toast from "react-hot-toast";
 
+import NewMessageToast from "./conversation/conversationChildCompos/NewMessageToast";
 import { usePrevious } from "../lib/utils";
 
 import { useAuthStore } from "../store/useAuthStore";
@@ -31,6 +33,7 @@ const Navbar = () => {
     setUnreadNumInHomeIcon,
     subscribeToMessages,
     unsubscribeFromMessages,
+    newMessageForToast,
   } = useMessageStore();
 
   const location = useLocation();
@@ -40,6 +43,7 @@ const Navbar = () => {
   const isHomeOrConversationPage =
     location.pathname === "/" || location.pathname.startsWith("/conversation/");
 
+  // Subscribe socket events
   useEffect(() => {
     // If user auth granted or a user logged in,
     if (authUser) {
@@ -81,6 +85,15 @@ const Navbar = () => {
     setCurrentPath(location.pathname);
   }, [location.pathname]);
 
+  // Display the new message toast
+  useEffect(() => {
+    if (newMessageForToast) {
+      toast.custom((t) => (
+        <NewMessageToast t={t} newMessageForToast={newMessageForToast} />
+      ));
+    }
+  }, [newMessageForToast]);
+
   return (
     <header
       className="bg-base-100 border-b border-base-300 fixed w-full top-0 z-40 
@@ -88,6 +101,7 @@ const Navbar = () => {
     >
       <div className="container mx-auto px-4 h-16">
         <div className="flex items-center justify-between h-full">
+          <NewMessageToast />
           {/* Left part, logo */}
           <div className="flex items-center gap-8">
             <Link

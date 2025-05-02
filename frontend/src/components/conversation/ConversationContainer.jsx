@@ -59,10 +59,10 @@ const ConversationContainer = () => {
       {selectedConversation.isGroup && (
         <div
           className={`
-      transition-all duration-300 ease-in-out
-      overflow-hidden border-l border-base-300
-      ${isPanelCollapsed ? "w-0 opacity-0" : "w-[280px] opacity-100"}
-    `}
+          transition-all duration-300 ease-in-out
+          overflow-hidden border-l border-base-300 hidden lg:block
+          ${isPanelCollapsed ? "w-0 opacity-0" : "w-[280px] opacity-100"}
+        `}
         >
           <ConversationDetailsPanel />
         </div>
