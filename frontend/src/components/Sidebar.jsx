@@ -142,7 +142,9 @@ const Sidebar = () => {
         ))}
         {/* No conversatons state */}
         {convosInfo.length === 0 && (
-          <div className="text-center text-zinc-500 py-4">No conversations</div>
+          <div className="text-center text-zinc-500 py-4 hidden lg:block">
+            No conversations
+          </div>
         )}
       </div>
     </aside>

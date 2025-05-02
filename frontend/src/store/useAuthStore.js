@@ -4,6 +4,8 @@ import { io } from "socket.io-client";
 
 import { axiosInstance } from "../lib/axios.js";
 
+import { useConversationStore } from "./useConversationStore.js";
+
 // Backend server base url
 const BACK_END_BASE_URL = "http://localhost:5001";
 
@@ -88,6 +90,10 @@ export const useAuthStore = create((set, get) => ({
   // USAGE: Logout a user
   logout: async () => {
     try {
+      // Set potential existing selected conversaton to null before loggout
+      // for updating unread message number for this user in this convo
+      await useConversationStore.getState().setSelectedConversation(null);
+
       // Call the logout endpoint
       await axiosInstance.post("/auth/logout");
       set({ authUser: null });
