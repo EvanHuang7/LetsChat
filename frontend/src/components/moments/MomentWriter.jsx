@@ -120,7 +120,7 @@ const MomentWriter = () => {
         >
           <button
             type="button"
-            className={`btn btn-circle
+            className={`btn btn-circle hidden sm:flex
                         ${imagePreview ? "text-emerald-500" : "text-zinc-500"}`}
             onClick={() => fileInputRef.current?.click()}
           >

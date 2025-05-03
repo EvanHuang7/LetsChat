@@ -17,7 +17,7 @@ const UserCard = ({ user }) => {
           disabled
         >
           <UserCheck className="size-4" />
-          <span className="hidden sm:inline">Connected</span>
+          <span className="inline">Connected</span>
         </button>
       );
     }
@@ -29,7 +29,7 @@ const UserCard = ({ user }) => {
           disabled
         >
           <UserPlus className="size-4" />
-          <span className="hidden sm:inline">Pending</span>
+          <span className="inline">Pending</span>
         </button>
       );
     }
@@ -41,7 +41,7 @@ const UserCard = ({ user }) => {
         className="btn btn-xs btn-outline gap-2 w-full min-h-[30px]"
       >
         <UserPlus className="size-4" />
-        <span className="hidden sm:inline">Connect</span>
+        <span className="inline">Connect</span>
       </button>
     );
   };
@@ -69,23 +69,21 @@ const UserCard = ({ user }) => {
         <img
           src={user.profilePic || "/avatar.png"}
           alt={user.fullName}
-          className="md:size-30 size-25 rounded-full object-cover"
+          className="size-32 lg:size-30 rounded-full object-cover"
         />
       </figure>
       <div className="card-body items-center text-center">
         <h2 className="card-title">{user.fullName}</h2>
         <div className="card-actions justify-center items-stretch gap-2">
           {/* connection status button */}
-          <div className="w-[40px] sm:w-[120px]">
-            {renderConnectButton(user)}
-          </div>
+          <div className="w-[120px]">{renderConnectButton(user)}</div>
           {/* View moments button */}
           <Link
             to={`/moments/${user._id}`}
-            className="btn btn-xs btn-outline gap-2 w-[40px] sm:w-[120px] min-h-[30px] justify-center"
+            className="btn btn-xs btn-outline gap-2 w-[120px] min-h-[30px] justify-center"
           >
             <NotebookText className="size-4" />
-            <span className="hidden sm:inline">moments</span>
+            <span className="inline">moments</span>
           </Link>
         </div>
       </div>

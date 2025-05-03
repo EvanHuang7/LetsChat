@@ -58,19 +58,21 @@ const MomentCard = ({ moment }) => {
             {new Date(moment.createdAt).toLocaleString()}
           </div>
           {/* Moment text and image */}
-          <div className="text-sm leading-relaxed break-words mb-5">
-            {moment.text.split("\n").map((line, i) => (
-              <React.Fragment key={i}>
-                {line}
-                <br />
-              </React.Fragment>
-            ))}
-          </div>
+          {moment.text && (
+            <div className="text-sm leading-relaxed break-words mb-2">
+              {moment.text.split("\n").map((line, i) => (
+                <React.Fragment key={i}>
+                  {line}
+                  <br />
+                </React.Fragment>
+              ))}
+            </div>
+          )}
           {moment.image && (
             <img
               src={moment.image}
               alt={moment._id}
-              className="rounded-lg max-h-64 object-contain mb-5"
+              className="rounded-lg max-h-40 sm:max-h-64 object-contain mb-3"
               onError={(e) => {
                 e.target.onerror = null; // prevent infinite loop
                 e.target.src = "/fallback-image.png"; // fallback image
