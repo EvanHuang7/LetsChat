@@ -70,37 +70,37 @@ const ConnectionCard = ({ connection }) => {
               )}
             </div>
           </div>
-
-          {/* Connection action buttons or connection status */}
-          <div className="flex gap-2">
-            {status === "pending" ? (
-              <>
-                <button
-                  onClick={(e) => handleUpdateConnectionStatus(e, "rejected")}
-                  className="btn btn-sm btn-outline btn-error"
-                >
-                  <X size={15} />
-                </button>
-                <button
-                  onClick={(e) => handleUpdateConnectionStatus(e, "accepted")}
-                  className="btn btn-sm btn-outline btn-info"
-                >
-                  <Check size={15} />
-                </button>
-              </>
-            ) : (
-              <span
-                className={`text-sm font-medium ${
-                  connection.status === "accepted"
-                    ? "text-green-500"
-                    : "text-red-500"
-                }`}
-              >
-                {connection.status}
-              </span>
-            )}
-          </div>
         </div>
+      </div>
+
+      {/* Connection action buttons or connection status */}
+      <div className="flex gap-2 justify-end mb-2">
+        {status === "pending" ? (
+          <>
+            <button
+              onClick={(e) => handleUpdateConnectionStatus(e, "rejected")}
+              className="btn btn-sm btn-outline btn-error"
+            >
+              <X size={15} />
+            </button>
+            <button
+              onClick={(e) => handleUpdateConnectionStatus(e, "accepted")}
+              className="btn btn-sm btn-outline btn-info"
+            >
+              <Check size={15} />
+            </button>
+          </>
+        ) : (
+          <span
+            className={`text-sm font-medium ${
+              connection.status === "accepted"
+                ? "text-green-500"
+                : "text-red-500"
+            }`}
+          >
+            {connection.status}
+          </span>
+        )}
       </div>
 
       {/* Connection created timestamp */}
