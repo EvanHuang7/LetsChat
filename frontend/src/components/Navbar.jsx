@@ -171,7 +171,7 @@ const Navbar = () => {
           </div>
 
           {/* Right part */}
-          <div className="relative">
+          <div className={isCallPage ? "relative group" : "relative"}>
             <div
               className={`flex items-center gap-2 ${
                 isCallPage ? "pointer-events-none opacity-50" : ""
@@ -224,7 +224,7 @@ const Navbar = () => {
 
               {/* Bell button */}
               {authUser && (
-                <div className="relative group">
+                <div className={isCallPage ? "relative" : "relative group"}>
                   <button
                     className="btn btn-sm gap-2"
                     onClick={handleToggleMessageNotification}
@@ -237,20 +237,22 @@ const Navbar = () => {
                   </button>
 
                   {/* Responsive tooltip with text split on small screens */}
-                  <div
-                    className="absolute top-full left-1/2 -translate-x-1/2 mt-2
+                  {!isCallPage && (
+                    <div
+                      className="absolute top-full left-1/2 -translate-x-1/2 mt-2
                            w-max max-w-xs px-4 py-2 rounded-xl bg-neutral text-neutral-content text-sm
                            opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100
                            transition-all duration-200 z-20 shadow-lg text-center hidden sm:inline"
-                  >
-                    <span className="block lg:inline">
-                      Message notification
-                    </span>{" "}
-                    <span className="block lg:inline">
-                      is {authUser.messageNotificationEnabled ? "ON" : "OFF"}{" "}
-                      now
-                    </span>
-                  </div>
+                    >
+                      <span className="block lg:inline">
+                        Message notification
+                      </span>{" "}
+                      <span className="block lg:inline">
+                        is {authUser.messageNotificationEnabled ? "ON" : "OFF"}{" "}
+                        now
+                      </span>
+                    </div>
+                  )}
                 </div>
               )}
 
