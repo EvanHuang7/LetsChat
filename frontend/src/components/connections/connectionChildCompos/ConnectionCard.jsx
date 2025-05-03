@@ -49,15 +49,25 @@ const ConnectionCard = ({ connection }) => {
               </p>
 
               {/* connection type with icon */}
-              <p className="text-sm text-zinc-400 flex items-center gap-1 mb-2">
+              <p className="text-sm text-zinc-400 flex items-start gap-1 mb-2">
                 {connection.type === "friend" ? (
                   <>
-                    <UserPlus size={15} /> Friend Connection
+                    <span className="flex-shrink-0">
+                      <UserPlus size={15} />
+                    </span>
+                    <span className="break-words">Friend Connection</span>
                   </>
                 ) : (
                   <>
-                    <Users size={15} /> Group Invite from:{" "}
-                    {connection?.groupConversationId?.groupName}
+                    <span className="flex-shrink-0">
+                      <Users size={15} />
+                    </span>
+                    <span className="break-words min-w-0">
+                      Group Invite from:{" "}
+                      <span className="font-medium break-words">
+                        {connection?.groupConversationId?.groupName}
+                      </span>
+                    </span>
                   </>
                 )}
               </p>
