@@ -13,8 +13,10 @@ const MessagesHistory = () => {
   const { selectedConversation } = useConversationStore();
   const { messages } = useMessageStore();
 
+  // Watch for conversation change
+  const [prevConversationId, setPrevConversationId] = useState(null);
   const [imagesLoaded, setImagesLoaded] = useState(0);
-
+  const containerRef = useRef(null);
   const messageEndRef = useRef(null);
   // Count how many images are in the message list
   const totalImages = messages.filter((msg) => msg.image).length;
@@ -22,9 +24,17 @@ const MessagesHistory = () => {
   // Scroll only when all images are loaded
   useEffect(() => {
     if (imagesLoaded >= totalImages) {
-      messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      // Don't show scroll when intailizing or switching conversation
+      if (selectedConversation._id !== prevConversationId) {
+        setPrevConversationId(selectedConversation._id);
+        containerRef.current.scrollTop = containerRef.current.scrollHeight;
+        return;
+        // Show scroll when a new sent or receveid message
+      } else {
+        messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }
     }
-  }, [imagesLoaded, totalImages, messages]);
+  }, [selectedConversation._id, imagesLoaded, totalImages, messages]);
 
   // Function for handling the click event on the "Add to sticker" button
   const saveImageToGif = (imageUrl) => {
@@ -69,7 +79,10 @@ const MessagesHistory = () => {
   };
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+    <div
+      className="flex-1 overflow-y-auto p-4 flex flex-col gap-4"
+      ref={containerRef}
+    >
       {messages.map((message) => (
         <div
           key={message._id}
