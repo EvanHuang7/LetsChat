@@ -317,7 +317,7 @@ const ConversationDetailsPanel = () => {
                       onClick={() => toggleFriendSelection(friend._id)}
                       className={`flex flex-col items-center cursor-pointer p-2 transition min-h-[100px] ${
                         selectedFriends.includes(friend._id)
-                          ? "border-2 border-yellow-400 rounded-xl"
+                          ? "border-2 border-blue-200 rounded-xl"
                           : "rounded-xl"
                       }`}
                     >
@@ -340,7 +340,7 @@ const ConversationDetailsPanel = () => {
               </div>
               <div className="mt-6 flex justify-end">
                 <button
-                  className="btn btn-sm btn-outline btn-success"
+                  className="btn btn-sm btn-outline btn-info"
                   onClick={() => handleInviteFriends()}
                   disabled={selectedFriends.length === 0}
                 >

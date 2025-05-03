@@ -95,7 +95,7 @@ const CreateGroupConvo = () => {
                   createGroupConversation(groupName);
                   setGroupName(""); // reset input after create
                 }}
-                className="btn btn-sm btn-outline btn-success"
+                className="btn btn-sm btn-outline btn-info"
               >
                 Create
               </button>
