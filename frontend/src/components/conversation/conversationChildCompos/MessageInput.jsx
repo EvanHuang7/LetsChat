@@ -112,7 +112,7 @@ const MessageInput = () => {
           type="button"
           ref={gifButtonRef}
           onClick={() => setShowGifPicker(!showGifPicker)}
-          className="btn btn-sm btn-circle text-zinc-500 hover:text-primary"
+          className="btn btn-sm sm:btn-md btn-circle text-zinc-500 hover:text-primary"
         >
           <Smile size={20} />
         </button>
@@ -137,15 +137,15 @@ const MessageInput = () => {
           <button
             type="button"
             onClick={() => handleVideoCall()}
-            className="btn btn-md btn-circle text-zinc-500 hover:text-primary"
+            className="btn btn-sm sm:btn-md btn-circle text-zinc-500 hover:text-primary"
           >
             <Video size={20} />
           </button>
           {/* Upload image Button */}
           <button
             type="button"
-            className={`hidden sm:flex btn btn-circle ${
-              imagePreview ? "text-emerald-500" : "text-zinc-400"
+            className={`hidden sm:flex btn btn-md btn-circle hover:text-primary ${
+              imagePreview ? "text-emerald-500" : "text-zinc-500"
             }`}
             onClick={() => fileInputRef.current?.click()}
           >
@@ -155,7 +155,7 @@ const MessageInput = () => {
         {/* Send message Button */}
         <button
           type="submit"
-          className="btn btn-sm btn-circle"
+          className="btn btn-sm sm:btn-md btn-circle"
           disabled={!text.trim() && !imagePreview}
         >
           <Send size={22} />

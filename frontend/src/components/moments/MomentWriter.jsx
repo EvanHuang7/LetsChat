@@ -121,7 +121,7 @@ const MomentWriter = () => {
           <button
             type="button"
             className={`btn btn-circle
-                        ${imagePreview ? "text-emerald-500" : "text-zinc-400"}`}
+                        ${imagePreview ? "text-emerald-500" : "text-zinc-500"}`}
             onClick={() => fileInputRef.current?.click()}
           >
             <Image size={20} />

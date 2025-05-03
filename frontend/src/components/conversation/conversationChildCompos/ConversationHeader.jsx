@@ -74,7 +74,7 @@ const ConversationHeader = () => {
 
                 {/* Connected button */}
                 <button
-                  className="btn btn-xs btn-outline gap-2 ml-1 border-2 
+                  className="btn btn-xs btn-outline gap-2 ml-1 border-2 min-h-[25px] 
                   border-base-content/20 opacity-100 pointer-events-none"
                   disabled
                 >
@@ -85,7 +85,7 @@ const ConversationHeader = () => {
                 {/* View moments button */}
                 <Link
                   to={`/moments/${selectedConversation.friend._id}`}
-                  className="btn btn-xs btn-outline gap-2"
+                  className="btn btn-xs btn-outline gap-2 min-h-[20px]"
                 >
                   <NotebookText className="size-4" />
                   <span className="hidden lg:inline">Moments</span>
