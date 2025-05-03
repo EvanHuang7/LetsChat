@@ -124,12 +124,12 @@ const Navbar = () => {
           <NewMessageToast />
 
           {/* Left part, logo */}
-          <div
-            className={`relative group ${
-              isCallPage ? "pointer-events-none opacity-50" : ""
-            }`}
-          >
-            <div className="flex items-center gap-8">
+          <div className="relative group">
+            <div
+              className={`flex items-center gap-8 ${
+                isCallPage ? "pointer-events-none opacity-50" : ""
+              }`}
+            >
               <Link
                 to="/"
                 className="flex items-center gap-2.5 hover:opacity-80 transition-all"
@@ -160,9 +160,10 @@ const Navbar = () => {
             </div>
             {isCallPage && (
               <div
-                className="absolute top-full mt-2 left-1/2 -translate-x-1/2 
-                              bg-neutral text-white text-xs px-3 py-1 rounded shadow
-                              z-50 whitespace-nowrap hidden group-hover:block"
+                className="absolute top-full left-1/2 -translate-x-1/2 mt-2
+                         w-max max-w-xs px-4 py-2 rounded-xl bg-neutral text-neutral-content text-sm
+                         opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100
+                         transition-all duration-200 z-20 shadow-lg text-center hidden sm:inline"
               >
                 Leave the call to use the navbar
               </div>
@@ -170,12 +171,12 @@ const Navbar = () => {
           </div>
 
           {/* Right part */}
-          <div
-            className={`relative group ${
-              isCallPage ? "pointer-events-none opacity-50" : ""
-            }`}
-          >
-            <div className="flex items-center gap-2">
+          <div className="relative">
+            <div
+              className={`flex items-center gap-2 ${
+                isCallPage ? "pointer-events-none opacity-50" : ""
+              }`}
+            >
               {/* Moments, connection and profile button links */}
               {authUser && (
                 <div className="flex items-center justify-center gap-2">
@@ -258,9 +259,10 @@ const Navbar = () => {
             </div>
             {isCallPage && (
               <div
-                className="absolute top-full mt-2 left-1/2 -translate-x-1/2 
-                            bg-neutral text-white text-xs px-3 py-1 rounded shadow
-                            z-50 whitespace-nowrap hidden group-hover:block"
+                className="absolute top-full left-1/2 -translate-x-1/2 mt-2
+                         w-max max-w-xs px-4 py-2 rounded-xl bg-neutral text-neutral-content text-sm
+                         opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100
+                         transition-all duration-200 z-20 shadow-lg text-center hidden sm:inline"
               >
                 Leave the call to use the navbar
               </div>
