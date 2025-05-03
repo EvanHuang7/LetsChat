@@ -25,23 +25,37 @@ const MessagesHistory = () => {
 
   // Scroll only when all images are loaded
   useEffect(() => {
-    if (imagesLoaded >= totalImages) {
-      // Don't show scroll when intailizing or switching conversation
-      if (selectedConversation._id !== prevConversationId) {
-        setShowMessages(false);
-        setPrevConversationId(selectedConversation._id);
-
-        if (containerRef.current) {
-          containerRef.current.scrollTop = containerRef.current.scrollHeight;
-        }
-
-        setShowMessages(true);
-        // Show scroll when a new sent or receveid message
-      } else {
-        messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    // Don't show scroll when intailizing or switching conversation
+    if (selectedConversation._id !== prevConversationId) {
+      if (containerRef.current) {
+        containerRef.current.scrollTop = containerRef.current.scrollHeight;
       }
+
+      setShowMessages(true);
+    }
+
+    // Show scroll when a new sent or receveid message
+    if (
+      selectedConversation._id === prevConversationId &&
+      showMessages &&
+      imagesLoaded >= totalImages
+    ) {
+      messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [selectedConversation._id, imagesLoaded, totalImages, messages]);
+
+  // Only update prevConversationId when showMessages is true
+  useEffect(() => {
+    if (showMessages) {
+      setPrevConversationId(selectedConversation._id);
+    }
+  }, [showMessages]);
+
+  // Reset scroll and loading state on conversation switch
+  useEffect(() => {
+    setShowMessages(false);
+    setImagesLoaded(0);
+  }, [selectedConversation._id]);
 
   // Function for handling the click event on the "Add to sticker" button
   const saveImageToGif = (imageUrl) => {
