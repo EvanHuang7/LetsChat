@@ -177,7 +177,7 @@ const Navbar = () => {
                 isCallPage ? "pointer-events-none opacity-50" : ""
               }`}
             >
-              {/* Moments, connection and profile button links */}
+              {/* Moments button */}
               {authUser && (
                 <div className="flex items-center justify-center gap-2">
                   <Link to={"/moments/all"} className={`btn btn-sm gap-2`}>
@@ -202,6 +202,7 @@ const Navbar = () => {
                     )}
                   </div>
 
+                  {/* Profile button */}
                   <Link to={"/profile"} className={`btn btn-sm gap-2`}>
                     <UserPen className="size-5" />
                     <span className="hidden lg:inline">Profile</span>
@@ -209,7 +210,7 @@ const Navbar = () => {
                 </div>
               )}
 
-              {/* Settings and logout*/}
+              {/* Settings button */}
               <Link
                 to={"/settings"}
                 className={`
@@ -220,6 +221,8 @@ const Navbar = () => {
                 <Settings className="w-4 h-4" />
                 <span className="hidden lg:inline">Settings</span>
               </Link>
+
+              {/* Bell button */}
               {authUser && (
                 <div className="relative group">
                   <button
@@ -250,6 +253,8 @@ const Navbar = () => {
                   </div>
                 </div>
               )}
+
+              {/* Logout button */}
               {authUser && (
                 <button className="flex gap-2 items-center" onClick={logout}>
                   <LogOut className="size-5" />
