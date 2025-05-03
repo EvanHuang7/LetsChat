@@ -84,7 +84,7 @@ const GifsContainer = ({ showGifPicker, setShowGifPicker, gifButtonRef }) => {
         <div
           ref={gifPickerRef}
           className="
-                absolute bottom-16 left-0 w-72 sm:w-[500px]
+                absolute bottom-16 left-0 w-60 sm:w-[500px]
                 bg-base-200 p-3 rounded-lg shadow-md z-50
                 grid grid-cols-2 sm:grid-cols-4 gap-2
                 max-h-40 sm:max-h-none overflow-y-auto
@@ -96,7 +96,7 @@ const GifsContainer = ({ showGifPicker, setShowGifPicker, gifButtonRef }) => {
                 src={gif}
                 alt={`GIF ${idx}`}
                 className="
-                      w-full h-20 sm:h-28 object-cover cursor-pointer
+                      w-full h-25 sm:h-28 object-cover cursor-pointer
                       rounded-md border border-zinc-300
                     "
                 onClick={() => handleSendGifImage(gif)}
