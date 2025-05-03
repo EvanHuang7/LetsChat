@@ -3,6 +3,7 @@ import { SmilePlus } from "lucide-react";
 import toast from "react-hot-toast";
 
 import { formatMessageTime } from "../../../lib/utils";
+import MessageSkeleton from "../../skeletons/MessageSkeleton";
 
 import { useAuthStore } from "../../../store/useAuthStore";
 import { useConversationStore } from "../../../store/useConversationStore";
@@ -15,6 +16,7 @@ const MessagesHistory = () => {
 
   // Watch for conversation change
   const [prevConversationId, setPrevConversationId] = useState(null);
+  const [showMessages, setShowMessages] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState(0);
   const containerRef = useRef(null);
   const messageEndRef = useRef(null);
@@ -26,9 +28,14 @@ const MessagesHistory = () => {
     if (imagesLoaded >= totalImages) {
       // Don't show scroll when intailizing or switching conversation
       if (selectedConversation._id !== prevConversationId) {
+        setShowMessages(false);
         setPrevConversationId(selectedConversation._id);
-        containerRef.current.scrollTop = containerRef.current.scrollHeight;
-        return;
+
+        if (containerRef.current) {
+          containerRef.current.scrollTop = containerRef.current.scrollHeight;
+        }
+
+        setShowMessages(true);
         // Show scroll when a new sent or receveid message
       } else {
         messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -80,7 +87,9 @@ const MessagesHistory = () => {
 
   return (
     <div
-      className="flex-1 overflow-y-auto p-4 flex flex-col gap-4"
+      className={`flex-1 overflow-y-auto p-4 space-y-4 transition-opacity duration-200 ${
+        showMessages ? "opacity-100" : "opacity-0 pointer-events-none"
+      }`}
       ref={containerRef}
     >
       {messages.map((message) => (
