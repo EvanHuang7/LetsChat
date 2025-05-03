@@ -182,7 +182,7 @@ const Navbar = () => {
                 <div className="flex items-center justify-center gap-2">
                   <Link to={"/moments/all"} className={`btn btn-sm gap-2`}>
                     <Notebook className="size-5" />
-                    <span className="hidden lg:inline">Moments</span>
+                    <span className="hidden lg:inline">All Moments</span>
                   </Link>
 
                   {/* New Connections Button with 🔴 pending connection number badge */}
@@ -194,7 +194,7 @@ const Navbar = () => {
                     {pendingConnections.length > 0 && (
                       <span
                         className="absolute -top-1 -right-1 min-w-[1rem] h-4 px-1 text-[10px] 
-                      sm:text-xs font-semiboldtext-white bg-red-500 rounded-full 
+                      sm:text-xs font-semibold text-white bg-red-500 rounded-full 
                       flex items-center justify-center shadow-md"
                       >
                         {pendingConnections.length}

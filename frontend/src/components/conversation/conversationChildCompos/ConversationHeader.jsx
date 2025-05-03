@@ -66,14 +66,18 @@ const ConversationHeader = () => {
               {/* friend status and buttons */}
               <div className="flex items-center gap-2 flex-wrap">
                 {/* friend oneline status */}
-                <p className="text-sm text-base-content/70">
+                <p className="text-sm text-base-content/70 min-w-[50px]">
                   {onlineUsers.includes(selectedConversation.friend._id)
                     ? "Online"
                     : "Offline"}
                 </p>
 
-                {/* TODO: update to say connected how many day, Connected button */}
-                <button className="btn btn-xs btn-outline gap-2 ml-1" disabled>
+                {/* Connected button */}
+                <button
+                  className="btn btn-xs btn-outline gap-2 ml-1 border-2 
+                  border-base-content/20 opacity-100 pointer-events-none"
+                  disabled
+                >
                   <UserCheck className="size-4" />
                   <span className="hidden lg:inline">Connected</span>
                 </button>
@@ -84,7 +88,7 @@ const ConversationHeader = () => {
                   className="btn btn-xs btn-outline gap-2"
                 >
                   <NotebookText className="size-4" />
-                  <span className="hidden lg:inline">moments</span>
+                  <span className="hidden lg:inline">Moments</span>
                 </Link>
               </div>
             </div>

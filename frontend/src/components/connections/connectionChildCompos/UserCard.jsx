@@ -7,14 +7,15 @@ import { useConnectionStore } from "../../../store/useConnectionStore";
 
 const UserCard = ({ user }) => {
   const { sendConnection } = useConnectionStore();
-  // TODO: get users info from store and update get all users api to return
-  // intro/job/email and connectionStatus
 
   const renderConnectButton = (user) => {
     const status = user.connectionStatus;
     if (status === "accepted") {
       return (
-        <button className="btn btn-xs btn-outline gap-2" disabled>
+        <button
+          className="btn btn-xs btn-outline gap-2 w-full min-h-[30px] border-2 border-base-content/20 opacity-100 pointer-events-none"
+          disabled
+        >
           <UserCheck className="size-4" />
           <span className="hidden sm:inline">Connected</span>
         </button>
@@ -23,7 +24,10 @@ const UserCard = ({ user }) => {
 
     if (status === "pending") {
       return (
-        <button className="btn btn-xs btn-outline gap-2" disabled>
+        <button
+          className="btn btn-xs btn-outline gap-2 w-full min-h-[30px] border-2 border-base-content/20 opacity-100 pointer-events-none"
+          disabled
+        >
           <UserPlus className="size-4" />
           <span className="hidden sm:inline">Pending</span>
         </button>
@@ -34,7 +38,7 @@ const UserCard = ({ user }) => {
     return (
       <button
         onClick={() => handleSendConnection(user._id)}
-        className="btn btn-xs btn-outline gap-2"
+        className="btn btn-xs btn-outline gap-2 w-full min-h-[30px]"
       >
         <UserPlus className="size-4" />
         <span className="hidden sm:inline">Connect</span>
@@ -70,14 +74,15 @@ const UserCard = ({ user }) => {
       </figure>
       <div className="card-body items-center text-center">
         <h2 className="card-title">{user.fullName}</h2>
-        <p>{user.email}</p>
-        <div className="card-actions justify-center">
+        <div className="card-actions justify-center items-stretch gap-2">
           {/* connection status button */}
-          {renderConnectButton(user)}
+          <div className="w-[40px] sm:w-[120px]">
+            {renderConnectButton(user)}
+          </div>
           {/* View moments button */}
           <Link
             to={`/moments/${user._id}`}
-            className="btn btn-xs btn-outline gap-2"
+            className="btn btn-xs btn-outline gap-2 w-[40px] sm:w-[120px] min-h-[30px] justify-center"
           >
             <NotebookText className="size-4" />
             <span className="hidden sm:inline">moments</span>
