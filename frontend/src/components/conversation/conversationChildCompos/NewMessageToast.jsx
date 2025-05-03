@@ -1,10 +1,10 @@
 import React from "react";
-import toast from "react-hot-toast";
 
 const NewMessageToast = ({ t, newMessageForToast }) => {
   const sender = newMessageForToast?.senderId;
   const conversation = newMessageForToast?.conversationId;
   const text = newMessageForToast?.text || "[An image sent]";
+  const image = newMessageForToast?.image;
 
   return (
     newMessageForToast && (
@@ -13,6 +13,7 @@ const NewMessageToast = ({ t, newMessageForToast }) => {
           t.visible ? "animate-enter" : "animate-leave"
         } max-w-sm w-full bg-base-100 text-base-content shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-base-300`}
       >
+        {/* Main content */}
         <div className="flex-1 w-0 p-3">
           <div className="flex items-start gap-3">
             <img
@@ -31,14 +32,25 @@ const NewMessageToast = ({ t, newMessageForToast }) => {
                 )}
               </p>
               <p className="mt-1 text-sm line-clamp-1 text-base-content/90">
-                <span className="text-base-content/70 font-semibold ">
-                  {"Said: "}
-                </span>
+                <span className="text-base-content/70 font-semibold">
+                  Said:
+                </span>{" "}
                 {text}
               </p>
             </div>
           </div>
         </div>
+
+        {/* Image on right side (if exists) */}
+        {image && (
+          <div className="flex-shrink-0 pr-3 py-3">
+            <img
+              src={image}
+              alt="Preview"
+              className="w-12 h-12 rounded-md object-cover"
+            />
+          </div>
+        )}
       </div>
     )
   );
