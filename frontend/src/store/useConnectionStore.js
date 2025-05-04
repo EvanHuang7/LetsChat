@@ -52,42 +52,6 @@ export const useConnectionStore = create((set, get) => ({
     }
   },
 
-  // USAGE: Accept or reject a connection in new connection page
-  updateConnectionStatus: async (data) => {
-    try {
-      // Call the update-status endpoint
-      const res = await axiosInstance.post(`/connection/update-status`, data);
-      const updateConnection = res.data.updatedConnection;
-
-      // We can handle res.data.convoInfoOfUser here, but it's not needed now
-
-      // Replace the updated connection in connections list
-      set((state) => ({
-        connections: state.connections.map((connection) => {
-          return connection._id === updateConnection._id
-            ? updateConnection
-            : connection;
-        }),
-      }));
-      // Set pendingConnections, and respondedConnections
-      set({ pendingConnections: get().getPendingConnections() });
-      set({ respondedConnections: get().getRespondedConnections() });
-
-      if (data.status === "accepted") {
-        toast("Connection or invite accepted", {
-          icon: "👏",
-        });
-      } else {
-        toast("Connection or invite declined", {
-          icon: "👋",
-        });
-      }
-    } catch (error) {
-      console.log("Error in updateConnectionStatus: ", error);
-      toast.error(error.response.data.message);
-    }
-  },
-
   // USAGE: send a connection from logged in user to selected user
   // in all users section of new connection page
   sendConnection: async (data) => {
@@ -142,6 +106,42 @@ export const useConnectionStore = create((set, get) => ({
       toast.success(`Invited: ${data.selectedUserIds.length} friend(s)`);
     } catch (error) {
       console.log("Error in sendBatchGroupInvitation: ", error);
+      toast.error(error.response.data.message);
+    }
+  },
+
+  // USAGE: Accept or reject a connection in new connection page
+  updateConnectionStatus: async (data) => {
+    try {
+      // Call the update-status endpoint
+      const res = await axiosInstance.post(`/connection/update-status`, data);
+      const updateConnection = res.data.updatedConnection;
+
+      // We can handle res.data.convoInfoOfUser here, but it's not needed now
+
+      // Replace the updated connection in connections list
+      set((state) => ({
+        connections: state.connections.map((connection) => {
+          return connection._id === updateConnection._id
+            ? updateConnection
+            : connection;
+        }),
+      }));
+      // Set pendingConnections, and respondedConnections
+      set({ pendingConnections: get().getPendingConnections() });
+      set({ respondedConnections: get().getRespondedConnections() });
+
+      if (data.status === "accepted") {
+        toast("Connection or invite accepted", {
+          icon: "👏",
+        });
+      } else {
+        toast("Connection or invite declined", {
+          icon: "👋",
+        });
+      }
+    } catch (error) {
+      console.log("Error in updateConnectionStatus: ", error);
       toast.error(error.response.data.message);
     }
   },
