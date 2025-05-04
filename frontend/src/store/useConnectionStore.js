@@ -103,7 +103,15 @@ export const useConnectionStore = create((set, get) => ({
       // Call api to seend batch group invitations
       await axiosInstance.post(`/connection/send-batch-group`, data);
 
-      toast.success(`Invited: ${data.selectedUserIds.length} friend(s)`);
+      if (data.selectedUserIds.length > 1) {
+        toast.success(
+          `${data.selectedUserIds.length} friends are invited successfully`
+        );
+      } else {
+        toast.success(
+          `${data.selectedUserIds.length} friend is invited successfully`
+        );
+      }
     } catch (error) {
       console.log("Error in sendBatchGroupInvitation: ", error);
       toast.error(error.response.data.message);
