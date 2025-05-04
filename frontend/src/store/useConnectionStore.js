@@ -127,14 +127,15 @@ export const useConnectionStore = create((set, get) => ({
 
       // We can handle res.data.convoInfoOfUser here, but it's not needed now
 
-      // Replace the updated connection in connections list
+      // Update the existing connection status in connections list
       set((state) => ({
         connections: state.connections.map((connection) => {
           return connection._id === updateConnection._id
-            ? updateConnection
+            ? { ...connection, status: updateConnection.status }
             : connection;
         }),
       }));
+
       // Set pendingConnections, and respondedConnections
       set({ pendingConnections: get().getPendingConnections() });
       set({ respondedConnections: get().getRespondedConnections() });
