@@ -345,6 +345,14 @@ export const sendBatchGroupInvitation = async (req, res) => {
       allConnectionIds.push(conn._id.toString());
     }
 
+    // If no updatedConnections and createdConnections at all,
+    // skip getting populdated connections for emiting event
+    if (allConnectionIds.length === 0) {
+      return res
+        .status(200)
+        .json({ message: "All Group invitations are pending states" });
+    }
+
     // Get all populdated connections and emit event to connection receiver
     const { hydratedConnections, error } =
       await getConnectionsByIdsAndEmitEvent({
