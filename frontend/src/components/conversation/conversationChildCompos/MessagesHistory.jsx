@@ -23,7 +23,13 @@ const MessagesHistory = () => {
   // Count how many images are in the message list
   const totalImages = messages.filter((msg) => msg.image).length;
 
-  // Scroll only when all images are loaded
+  // Reset scroll and loading state on conversation switch
+  useEffect(() => {
+    setShowMessages(false);
+    setImagesLoaded(0);
+  }, [selectedConversation._id]);
+
+  // Display the first load messages or new message
   useEffect(() => {
     // Don't show scroll when intailizing or switching conversation
     if (selectedConversation._id !== prevConversationId) {
@@ -38,6 +44,7 @@ const MessagesHistory = () => {
     if (
       selectedConversation._id === prevConversationId &&
       showMessages &&
+      // Scroll only when all images are loaded
       imagesLoaded >= totalImages
     ) {
       messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -50,12 +57,6 @@ const MessagesHistory = () => {
       setPrevConversationId(selectedConversation._id);
     }
   }, [showMessages]);
-
-  // Reset scroll and loading state on conversation switch
-  useEffect(() => {
-    setShowMessages(false);
-    setImagesLoaded(0);
-  }, [selectedConversation._id]);
 
   // Function for handling the click event on the "Add to sticker" button
   const saveImageToGif = (imageUrl) => {
