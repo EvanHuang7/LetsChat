@@ -1,6 +1,5 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { MessageSquareShare } from "lucide-react";
 
 import { useAuthStore } from "../../../store/useAuthStore";
 

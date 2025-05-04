@@ -57,12 +57,12 @@ const GifsContainer = ({ showGifPicker, setShowGifPicker, gifButtonRef }) => {
     // Check input
     if (!gifToDelete?.gif) {
       console.log("Function errored because sticker url is required");
-      toast.error("Sorry, an error occurs");
+      toast.error("Sorry, no sticker found");
       return;
     }
     if (gifToDelete?.idx === undefined || gifToDelete?.idx === null) {
       console.log("Function errored because sticker index is required");
-      toast.error("Sorry, an error occurs");
+      toast.error("Sorry, sticker postion not found");
       return;
     }
 

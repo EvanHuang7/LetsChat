@@ -3,7 +3,6 @@ import { SmilePlus } from "lucide-react";
 import toast from "react-hot-toast";
 
 import { formatMessageTime } from "../../../lib/utils";
-import MessageSkeleton from "../../skeletons/MessageSkeleton";
 
 import { useAuthStore } from "../../../store/useAuthStore";
 import { useConversationStore } from "../../../store/useConversationStore";
@@ -18,6 +17,7 @@ const MessagesHistory = () => {
   const [prevConversationId, setPrevConversationId] = useState(null);
   const [showMessages, setShowMessages] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState(0);
+
   const containerRef = useRef(null);
   const messageEndRef = useRef(null);
   // Count how many images are in the message list
@@ -54,7 +54,7 @@ const MessagesHistory = () => {
     // Check input
     if (!imageUrl) {
       console.log("Function errored because sticker url is required");
-      toast.error("Sorry, an error occurs");
+      toast.error("Sorry, no sticker found");
       return;
     }
 

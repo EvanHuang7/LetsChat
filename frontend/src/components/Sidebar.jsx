@@ -24,7 +24,7 @@ const Sidebar = () => {
 
   // Triger the logic insdie when sidebar component starts
   useEffect(() => {
-    // Call getConvosInfo() function to get users list for sidebar
+    // Call getConvosInfo() function to get conversations list for sidebar
     getConvosInfo();
   }, [getConvosInfo]);
 
