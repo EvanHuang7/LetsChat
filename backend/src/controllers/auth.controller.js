@@ -99,7 +99,8 @@ export const checkAuth = (req, res) => {
 };
 
 // Get Stream token for logged in user
-// USAGE: get user stream token for video call
+// FRONT-END USAGE: get user stream token for video call
+// BACK-END USAGE:
 export const getStreamToken = async (req, res) => {
   try {
     const token = generateStreamToken(req.user.id);
@@ -112,7 +113,8 @@ export const getStreamToken = async (req, res) => {
 };
 
 // Update profile for logged in user
-// USAGE: update user profile picture in Profile page.
+// FRONT-END USAGE: update user profile picture in Profile page.
+// BACK-END USAGE:
 export const updateProfile = async (req, res) => {
   try {
     const { profilePic } = req.body;
@@ -139,7 +141,8 @@ export const updateProfile = async (req, res) => {
 };
 
 // Update stickers for logged in user
-// USAGE: add or delete a sticker from stickers list of user.
+// FRONT-END USAGE: add or delete a sticker from stickers list of user.
+// BACK-END USAGE:
 export const updateStickers = async (req, res) => {
   try {
     const { add, stickerUrl, stickerIndex } = req.body;
@@ -170,7 +173,8 @@ export const updateStickers = async (req, res) => {
 };
 
 // Toggle message notification for logged in user
-// USAGE: toggle user's message notification.
+// FRONT-END USAGE: toggle user's message notification.
+// BACK-END USAGE:
 export const toggleMessageNotification = async (req, res) => {
   try {
     const { messageNotificationState } = req.body;

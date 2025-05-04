@@ -7,10 +7,12 @@ import {
 
 const router = express.Router();
 
-// Get comments for passed in momentIds or ALL comments of ALL moments
+// FRONT-END USAGE: Get comments for passed in momentIds or ALL comments of ALL moments
+// BACK-END USAGE:
 router.post("/get-comments", protectRoute, getCommentsWithMomentIds);
 
-// Post a comment under a moment for logged in user
+// FRONT-END USAGE: Post a comment under a moment for logged in user
+// BACK-END USAGE:
 router.post("/post", protectRoute, postComment);
 
 export default router;

@@ -29,10 +29,6 @@ export const protectRoute = async (req, res, next) => {
       });
     }
 
-    // TODO: check if the userId stored in JWT token is same
-    // as the userId in the api request or not here Or put this
-    // logic to every api functions where api request has userId
-
     // In this step, user is authenticated, and we can add user
     // to the request
     req.user = user;

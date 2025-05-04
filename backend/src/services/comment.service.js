@@ -60,7 +60,7 @@ export const postCommentService = async ({ momentId, posterId, text }) => {
       text,
     });
 
-    // Save this new message to database
+    // Save this new comment to database
     await newComment.save();
 
     // Hydrate newComment with user information beofre return it

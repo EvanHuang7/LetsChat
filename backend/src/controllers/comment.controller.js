@@ -3,7 +3,8 @@ import {
   postCommentService,
 } from "../services/comment.service.js";
 
-// Get comments for passed in momentIds or ALL comments of ALL moments
+// FRONT-END USAGE: Get comments for passed in momentIds or ALL comments of ALL moments
+// BACK-END USAGE:
 export const getCommentsWithMomentIds = async (req, res) => {
   try {
     // Get momentIds from reqest body
@@ -28,7 +29,8 @@ export const getCommentsWithMomentIds = async (req, res) => {
   }
 };
 
-// Post a comment under a moment for logged in user
+// FRONT-END USAGE: Post a comment under a moment for logged in user
+// BACK-END USAGE:
 export const postComment = async (req, res) => {
   try {
     // Get text and momentId from reqest body
