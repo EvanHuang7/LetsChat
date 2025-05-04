@@ -30,7 +30,30 @@ const CommentsHistory = ({ comments }) => {
               </div>
               {/* Comment text */}
               <div className="text-sm text-base-content leading-relaxed break-words">
-                {comment.text}
+                {comment.text.split("\n").map((line, i) => (
+                  <React.Fragment key={i}>
+                    {line.split(" ").map((word, j) => {
+                      const isURL = /^https?:\/\/\S+$/i.test(word);
+                      return (
+                        <React.Fragment key={j}>
+                          {isURL ? (
+                            <a
+                              href={word}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-500 underline break-all"
+                            >
+                              {word}
+                            </a>
+                          ) : (
+                            `${word} `
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
+                    <br />
+                  </React.Fragment>
+                ))}
               </div>
             </div>
           </div>

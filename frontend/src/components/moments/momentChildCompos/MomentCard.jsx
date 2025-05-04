@@ -62,12 +62,31 @@ const MomentCard = ({ moment }) => {
             <div className="text-sm leading-relaxed break-words mb-2">
               {moment.text.split("\n").map((line, i) => (
                 <React.Fragment key={i}>
-                  {line}
+                  {line.split(" ").map((word, j) => {
+                    const isURL = /^https?:\/\/\S+$/i.test(word);
+                    return (
+                      <React.Fragment key={j}>
+                        {isURL ? (
+                          <a
+                            href={word}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-500 underline break-all"
+                          >
+                            {word}
+                          </a>
+                        ) : (
+                          `${word} `
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
                   <br />
                 </React.Fragment>
               ))}
             </div>
           )}
+
           {moment.image && (
             <img
               src={moment.image}
