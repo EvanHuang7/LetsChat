@@ -8,10 +8,10 @@ import { useAuthStore } from "./useAuthStore.js";
 export const useConversationStore = create((set, get) => ({
   // This is an array of "convoInfoOfUser" object
   convosInfo: [],
+  convoIdtoUnreadMap: null,
   isConvosInfoLoading: false,
 
   selectedConversation: null,
-  convoIdtoUnreadMap: null,
 
   isGroupImgUploading: false,
   isEditingGroupName: false,
@@ -194,54 +194,6 @@ export const useConversationStore = create((set, get) => ({
     }
   },
 
-  // USAGE: Build convoIdtoUnreadMap when getting all convosInfo in sidebar
-  buildConvoIdtoUnreadMap: (convosInfo) => {
-    if (convosInfo) {
-      const convoIdtoUnreadMap = {};
-      convosInfo.forEach((convoInfo) => {
-        convoIdtoUnreadMap[convoInfo.conversationId._id] =
-          convoInfo.conversationId.latestSentMessageSequence -
-          convoInfo.lastReadMessageSequence;
-      });
-      // Set convoIdtoUnreadMap
-      set({ convoIdtoUnreadMap: convoIdtoUnreadMap });
-    }
-  },
-
-  // USAGE: Build userIdToInfoMap when selecting a conversation
-  buildUserIdToInfoMap: (selectedConversation) => {
-    if (selectedConversation) {
-      const userIdToInfoMap = {};
-      selectedConversation.userIds.forEach((user) => {
-        userIdToInfoMap[user._id] = {
-          _id: user._id,
-          fullName: user.fullName,
-          profilePic: user.profilePic,
-        };
-      });
-
-      selectedConversation.userIdToInfoMap = userIdToInfoMap;
-    }
-  },
-
-  // USAGE: Update front-end unread message numer data (selectedConversation sequence)
-  // when receving new message or send new message
-  updateSelectedConversationWithNewMessage: (newMessage) => {
-    const selectedConversation = get().selectedConversation;
-
-    if (
-      newMessage.conversationId === selectedConversation?._id &&
-      newMessage.sequence > selectedConversation?.latestSentMessageSequence
-    ) {
-      const updatedSelectedConversation = {
-        ...get().selectedConversation,
-        latestSentMessageSequence: newMessage.sequence,
-      };
-
-      set({ selectedConversation: updatedSelectedConversation });
-    }
-  },
-
   // USAGE: Update front-end unread message numer data (convosInfo sequence)
   // when receving new message or send new message
   updateConvosInfoWithNewMessage: (newMessage) =>
@@ -273,6 +225,54 @@ export const useConversationStore = create((set, get) => ({
 
       return { convosInfo: updatedConvos };
     }),
+
+  // USAGE: Update front-end unread message numer data (selectedConversation sequence)
+  // when receving new message or send new message
+  updateSelectedConversationWithNewMessage: (newMessage) => {
+    const selectedConversation = get().selectedConversation;
+
+    if (
+      newMessage.conversationId === selectedConversation?._id &&
+      newMessage.sequence > selectedConversation?.latestSentMessageSequence
+    ) {
+      const updatedSelectedConversation = {
+        ...get().selectedConversation,
+        latestSentMessageSequence: newMessage.sequence,
+      };
+
+      set({ selectedConversation: updatedSelectedConversation });
+    }
+  },
+
+  // USAGE: Build convoIdtoUnreadMap when getting all convosInfo in sidebar
+  buildConvoIdtoUnreadMap: (convosInfo) => {
+    if (convosInfo) {
+      const convoIdtoUnreadMap = {};
+      convosInfo.forEach((convoInfo) => {
+        convoIdtoUnreadMap[convoInfo.conversationId._id] =
+          convoInfo.conversationId.latestSentMessageSequence -
+          convoInfo.lastReadMessageSequence;
+      });
+      // Set convoIdtoUnreadMap
+      set({ convoIdtoUnreadMap: convoIdtoUnreadMap });
+    }
+  },
+
+  // USAGE: Build userIdToInfoMap when selecting a conversation
+  buildUserIdToInfoMap: (selectedConversation) => {
+    if (selectedConversation) {
+      const userIdToInfoMap = {};
+      selectedConversation.userIds.forEach((user) => {
+        userIdToInfoMap[user._id] = {
+          _id: user._id,
+          fullName: user.fullName,
+          profilePic: user.profilePic,
+        };
+      });
+
+      selectedConversation.userIdToInfoMap = userIdToInfoMap;
+    }
+  },
 
   // USAGE: Update front-end unread message numer data (convoIdtoUnreadMap sequence)
   // when receving new message
