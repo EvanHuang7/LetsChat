@@ -5,7 +5,8 @@ import {
 } from "../services/moment.service.js";
 
 // Get 10 moments with comments for one passed in userId or all users
-// USAGE: Display 10 moments in moments page
+// FRONT-END USAGE: Display 10 moments in moments page
+// BACK-END USAGE:
 export const getMoments = async (req, res) => {
   try {
     // Get userId from url param
@@ -34,7 +35,8 @@ export const getMoments = async (req, res) => {
 };
 
 // Post a moment for logged in user
-// USAGE: Post a moment from moment writer
+// FRONT-END USAGE: Post a moment from moment writer
+// BACK-END USAGE:
 export const postMoment = async (req, res) => {
   try {
     // Get text or image from reqest body
@@ -64,7 +66,8 @@ export const postMoment = async (req, res) => {
 };
 
 // Update like field of specific moment for logged in user
-// USAGE: Click like button in each moment
+// FRONT-END USAGE: Click like button in each moment
+// BACK-END USAGE:
 export const updateLikeForMoment = async (req, res) => {
   try {
     const { momentId, like } = req.body;

@@ -9,15 +9,18 @@ import {
 const router = express.Router();
 
 // Get 10 moments with comments for one passed in userId or all users
-// USAGE: Display 10 moments in moments page
+// FRONT-END USAGE: Display 10 moments in moments page
+// BACK-END USAGE:
 router.post("/get/:id", protectRoute, getMoments);
 
 // Post a moment for logged in user
-// USAGE: Post a moment from moment writer
+// FRONT-END USAGE: Post a moment from moment writer
+// BACK-END USAGE:
 router.post("/post", protectRoute, postMoment);
 
 // Update like field of specific moment for logged in user
-// USAGE: Click like button in each moment
+// FRONT-END USAGE: Click like button in each moment
+// BACK-END USAGE:
 router.post("/update-like", protectRoute, updateLikeForMoment);
 
 export default router;
