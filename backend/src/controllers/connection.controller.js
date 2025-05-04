@@ -106,101 +106,6 @@ export const getUsersForConnection = async (req, res) => {
   }
 };
 
-// Get all friend users or filtered friend users for logged in user
-// FRONT-END USAGE: Display friend users to invite them into a group
-// BACK-END USAGE:
-export const getAllFriendUsers = async (req, res) => {
-  try {
-    const { filterUsersFromConvo, groupConversationId } = req.body;
-    const loggedInUserId = req.user._id;
-
-    // Valid input
-    if (filterUsersFromConvo && !groupConversationId) {
-      return res.status(400).json({
-        message:
-          "GroupConversationId is required to get all frined users filtered by conversation group members",
-      });
-    }
-
-    // Fetch accepted friend connections
-    const { connections, error: getUsersError } =
-      await getAllAcceptedFriendConnectionsService({ loggedInUserId });
-    if (getUsersError) {
-      return res.status(400).json({ message: getUsersError });
-    }
-
-    // Extract all friend users (excluding the logged-in user)
-    const allFriendUsers = [];
-    connections.forEach((conn) => {
-      if (conn.senderId._id.toString() !== loggedInUserId.toString()) {
-        allFriendUsers.push(conn.senderId);
-      }
-      if (conn.receiverId._id.toString() !== loggedInUserId.toString()) {
-        allFriendUsers.push(conn.receiverId);
-      }
-    });
-
-    // If not filtering, return the raw result
-    if (!filterUsersFromConvo) {
-      return res.status(200).json(allFriendUsers);
-    }
-
-    // Filter out users already in the conversation
-    const { conversation, error: getConversationError } =
-      await getConversationService({ conversationId: groupConversationId });
-    if (getConversationError) {
-      return res.status(400).json({ message: getConversationError });
-    }
-
-    const userIdsInConversation = new Set(
-      conversation.userIds.map((user) => user._id.toString())
-    );
-
-    const filteredUsers = allFriendUsers.filter(
-      (user) => !userIdsInConversation.has(user._id.toString())
-    );
-
-    return res.status(200).json(filteredUsers);
-  } catch (error) {
-    console.log("Error in getAllFriendUsers controller", error.message);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-};
-
-// Get specified connections between logged in user
-// and selected user.
-// FRONT-END USAGE:
-// BACK-END USAGE:
-export const getSpecifiedConnection = async (req, res) => {
-  try {
-    // Get type, selectedUserId, groupConversationId from reqest body
-    const { type, selectedUserId, groupConversationId } = req.body;
-    // Get current logged in userId as loggedInUserId
-    const loggedInUserId = req.user._id;
-
-    // Call the service function to get sepcified connections
-    const { connections, error } = await getSpecifiedConnectionService({
-      type,
-      loggedInUserId,
-      selectedUserId,
-      groupConversationId,
-    });
-    if (error) {
-      return res.status(400).json({
-        message: error,
-        connections: connections,
-      });
-    }
-
-    return res.status(200).json(connections);
-  } catch (error) {
-    console.log("Error in getSpecifiedConnection controller", error.message);
-    return res.status(500).json({
-      message: "Interal server error",
-    });
-  }
-};
-
 // Send a new friend connection or group invite from logged in user.
 // FRONT-END USAGE: send out a friend connection request in all users section.
 // BACK-END USAGE:
@@ -294,6 +199,67 @@ export const sendConnection = async (req, res) => {
     return res.status(500).json({
       message: "Interal server error",
     });
+  }
+};
+
+// Get all friend users or filtered friend users for logged in user
+// FRONT-END USAGE: Display friend users to invite them into a group
+// BACK-END USAGE:
+export const getAllFriendUsers = async (req, res) => {
+  try {
+    const { filterUsersFromConvo, groupConversationId } = req.body;
+    const loggedInUserId = req.user._id;
+
+    // Valid input
+    if (filterUsersFromConvo && !groupConversationId) {
+      return res.status(400).json({
+        message:
+          "GroupConversationId is required to get all frined users filtered by conversation group members",
+      });
+    }
+
+    // Fetch accepted friend connections
+    const { connections, error: getUsersError } =
+      await getAllAcceptedFriendConnectionsService({ loggedInUserId });
+    if (getUsersError) {
+      return res.status(400).json({ message: getUsersError });
+    }
+
+    // Extract all friend users (excluding the logged-in user)
+    const allFriendUsers = [];
+    connections.forEach((conn) => {
+      if (conn.senderId._id.toString() !== loggedInUserId.toString()) {
+        allFriendUsers.push(conn.senderId);
+      }
+      if (conn.receiverId._id.toString() !== loggedInUserId.toString()) {
+        allFriendUsers.push(conn.receiverId);
+      }
+    });
+
+    // If not filtering, return the raw result
+    if (!filterUsersFromConvo) {
+      return res.status(200).json(allFriendUsers);
+    }
+
+    // Filter out users already in the conversation
+    const { conversation, error: getConversationError } =
+      await getConversationService({ conversationId: groupConversationId });
+    if (getConversationError) {
+      return res.status(400).json({ message: getConversationError });
+    }
+
+    const userIdsInConversation = new Set(
+      conversation.userIds.map((user) => user._id.toString())
+    );
+
+    const filteredUsers = allFriendUsers.filter(
+      (user) => !userIdsInConversation.has(user._id.toString())
+    );
+
+    return res.status(200).json(filteredUsers);
+  } catch (error) {
+    console.log("Error in getAllFriendUsers controller", error.message);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -450,6 +416,40 @@ export const updateConnectionStatus = async (req, res) => {
     return res.status(200).json({ updatedConnection, convoInfoOfUser });
   } catch (error) {
     console.log("Error in updateConnectionStatus controller", error.message);
+    return res.status(500).json({
+      message: "Interal server error",
+    });
+  }
+};
+
+// Get specified connections between logged in user
+// and selected user.
+// FRONT-END USAGE:
+// BACK-END USAGE:
+export const getSpecifiedConnection = async (req, res) => {
+  try {
+    // Get type, selectedUserId, groupConversationId from reqest body
+    const { type, selectedUserId, groupConversationId } = req.body;
+    // Get current logged in userId as loggedInUserId
+    const loggedInUserId = req.user._id;
+
+    // Call the service function to get sepcified connections
+    const { connections, error } = await getSpecifiedConnectionService({
+      type,
+      loggedInUserId,
+      selectedUserId,
+      groupConversationId,
+    });
+    if (error) {
+      return res.status(400).json({
+        message: error,
+        connections: connections,
+      });
+    }
+
+    return res.status(200).json(connections);
+  } catch (error) {
+    console.log("Error in getSpecifiedConnection controller", error.message);
     return res.status(500).json({
       message: "Interal server error",
     });

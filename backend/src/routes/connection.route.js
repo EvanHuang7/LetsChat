@@ -24,6 +24,11 @@ router.get("/get", protectRoute, getConnections);
 // BACK-END USAGE:
 router.get("/users", protectRoute, getUsersForConnection);
 
+// Send a new friend connection or group invite from logged in user.
+// FRONT-END USAGE: send out a friend connection request in all users section.
+// BACK-END USAGE:
+router.post("/send", protectRoute, sendConnection);
+
 // Get all friend users or filtered friend users for logged in user
 // FRONT-END USAGE: Display friend users to invite them into a group
 // BACK-END USAGE:
@@ -34,20 +39,15 @@ router.post("/friend-users", protectRoute, getAllFriendUsers);
 // BACK-END USAGE:
 router.post("/send-batch-group", protectRoute, sendBatchGroupInvitation);
 
+// Update (accept or reject) a connection status for logged in user.
+// FRONT-END USAGE: Accept or reject a connection in new connection page.
+// BACK-END USAGE:
+router.post("/update-status", protectRoute, updateConnectionStatus);
+
 // Get specified connections between logged in user
 // and selected user.
 // FRONT-END USAGE:
 // BACK-END USAGE:
 router.post("/get-specified", protectRoute, getSpecifiedConnection);
-
-// Send a new friend connection or group invite from logged in user.
-// FRONT-END USAGE: send out a friend connection request in all users section.
-// BACK-END USAGE:
-router.post("/send", protectRoute, sendConnection);
-
-// Update (accept or reject) a connection status for logged in user.
-// FRONT-END USAGE: Accept or reject a connection in new connection page.
-// BACK-END USAGE:
-router.post("/update-status", protectRoute, updateConnectionStatus);
 
 export default router;
