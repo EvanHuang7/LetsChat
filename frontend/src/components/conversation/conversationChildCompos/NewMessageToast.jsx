@@ -1,17 +1,44 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { MessageSquareShare } from "lucide-react";
+
+import { useAuthStore } from "../../../store/useAuthStore";
 
 const NewMessageToast = ({ t, newMessageForToast }) => {
+  const { currentPath } = useAuthStore();
+
   const sender = newMessageForToast?.senderId;
   const conversation = newMessageForToast?.conversationId;
   const text = newMessageForToast?.text || "[An image sent]";
   const image = newMessageForToast?.image;
 
+  const isOnHomeOrConversationOrCallPage =
+    currentPath === "/" ||
+    currentPath.startsWith("/conversation/") ||
+    currentPath.startsWith("/call/");
+
+  const navigate = useNavigate();
+
+  const handleToastClick = () => {
+    if (!isOnHomeOrConversationOrCallPage && conversation?._id) {
+      navigate(`/conversation/${conversation._id}`);
+    }
+  };
+
   return (
     newMessageForToast && (
       <div
-        className={`${
-          t.visible ? "animate-enter" : "animate-leave"
-        } max-w-sm w-full bg-base-100 text-base-content shadow-lg rounded-lg pointer-events-auto flex ring-1 ring-base-300`}
+        onClick={handleToastClick}
+        className={`
+          ${t.visible ? "animate-enter" : "animate-leave"}
+          max-w-sm w-full bg-base-100 text-base-content shadow-lg rounded-lg
+          ring-1 ring-base-300 flex pointer-events-auto relative
+          ${
+            !isOnHomeOrConversationOrCallPage
+              ? "cursor-pointer hover:bg-base-200 transition-colors"
+              : ""
+          }
+        `}
       >
         {/* Main content */}
         <div className="flex-1 w-0 p-3">

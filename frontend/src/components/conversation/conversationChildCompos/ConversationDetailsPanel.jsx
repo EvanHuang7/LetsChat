@@ -38,7 +38,7 @@ const ConversationDetailsPanel = () => {
   const [selectedFriends, setSelectedFriends] = useState([]);
 
   const users = selectedConversation.userIds || [];
-  const MAX_DISPLAY = 2;
+  const MAX_DISPLAY = 5;
   const displayUsers = users.slice(0, MAX_DISPLAY);
   const hasMoreUsers = users.length > MAX_DISPLAY;
 
@@ -121,7 +121,7 @@ const ConversationDetailsPanel = () => {
         {/* Title */}
         <div className="text-center">
           <h2 className="text-xl font-semibold">Group Info</h2>
-          <p className="text-sm text-zinc-400">Details and actions</p>
+          <p className="text-sm text-zinc-400">Group details and actions</p>
         </div>
 
         {/* Group avatar upload section */}
