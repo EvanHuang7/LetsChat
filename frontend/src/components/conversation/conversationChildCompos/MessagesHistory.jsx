@@ -29,34 +29,25 @@ const MessagesHistory = () => {
     setImagesLoaded(0);
   }, [selectedConversation._id]);
 
-  // Display the first load messages or new message
+  // Scroll only when all images are loaded
   useEffect(() => {
-    // Don't show scroll when intailizing or switching conversation
-    if (selectedConversation._id !== prevConversationId) {
-      if (containerRef.current) {
-        containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    if (imagesLoaded >= totalImages) {
+      // Don't show scroll when intailizing or switching conversation
+      if (selectedConversation._id !== prevConversationId) {
+        setPrevConversationId(selectedConversation._id);
+
+        if (containerRef.current) {
+          containerRef.current.scrollTop = containerRef.current.scrollHeight;
+        }
+
+        setShowMessages(true);
+
+        // Show scroll when a new sent or receveid message
+      } else {
+        messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
       }
-
-      setShowMessages(true);
-    }
-
-    // Show scroll when a new sent or receveid message
-    if (
-      selectedConversation._id === prevConversationId &&
-      showMessages &&
-      // Scroll only when all images are loaded
-      imagesLoaded >= totalImages
-    ) {
-      messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [selectedConversation._id, imagesLoaded, totalImages, messages]);
-
-  // Only update prevConversationId when showMessages is true
-  useEffect(() => {
-    if (showMessages) {
-      setPrevConversationId(selectedConversation._id);
-    }
-  }, [showMessages]);
 
   // Function for handling the click event on the "Add to sticker" button
   const saveImageToGif = (imageUrl) => {
