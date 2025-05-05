@@ -5,6 +5,7 @@ import { io } from "socket.io-client";
 import { axiosInstance } from "../lib/axios.js";
 
 import { useConversationStore } from "./useConversationStore.js";
+import { useMessageStore } from "./useMessageStore.js";
 
 // Backend server base url
 const BACK_END_BASE_URL = "http://localhost:5001";
@@ -93,6 +94,11 @@ export const useAuthStore = create((set, get) => ({
       // Set potential existing selected conversaton to null before loggout
       // for updating unread message number for this user in this convo
       await useConversationStore.getState().setSelectedConversation(null);
+      // Clear any potential message toast of this user, which make
+      // sure this message toast not diplay to new user
+      useMessageStore.getState().setNewMessageForToast(null);
+      // Set the unread num in home icon to 0
+      useMessageStore.getState().setUnreadNumInHomeIcon(0);
 
       // Call the logout endpoint
       await axiosInstance.post("/auth/logout");

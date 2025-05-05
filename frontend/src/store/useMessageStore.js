@@ -12,6 +12,7 @@ export const useMessageStore = create((set, get) => ({
   isMessagesLoading: false,
 
   newMessageForToast: null,
+  setNewMessageForToast: (value) => set({ newMessageForToast: value }),
 
   unreadNumInHomeIcon: 0,
   setUnreadNumInHomeIcon: (value) => set({ unreadNumInHomeIcon: value }),
