@@ -1,12 +1,12 @@
 import React from "react";
-import { X, Users, NotebookText, UserCheck } from "lucide-react";
+import { X, Users, NotebookText, UserCheck, Crown } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { useAuthStore } from "../../../store/useAuthStore";
 import { useConversationStore } from "../../../store/useConversationStore";
 
 const ConversationHeader = () => {
-  const { onlineUsers } = useAuthStore();
+  const { authUser, onlineUsers } = useAuthStore();
   const { selectedConversation, setSelectedConversation } =
     useConversationStore();
 
@@ -39,6 +39,9 @@ const ConversationHeader = () => {
 
               {/* group member count and buttons */}
               <div className="flex items-center gap-2 flex-wrap">
+                {selectedConversation?.groupCreaterId === authUser._id && (
+                  <Crown className="size-3 shrink-0 text-yellow-500" />
+                )}
                 <p className="text-sm text-base-content/70">
                   {selectedConversation.userIds.length} members
                 </p>

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Users, Contact } from "lucide-react";
+import { Users, Contact, Crown } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
@@ -8,7 +8,7 @@ import { useAuthStore } from "../store/useAuthStore";
 import { useConversationStore } from "../store/useConversationStore";
 
 const Sidebar = () => {
-  const { onlineUsers } = useAuthStore();
+  const { authUser, onlineUsers } = useAuthStore();
   const {
     convosInfo,
     getConvosInfo,
@@ -121,7 +121,11 @@ const Sidebar = () => {
                       {convoInfo.conversationId.groupName}
                     </span>
                   </div>
-                  <div className="text-sm text-zinc-400">
+                  <div className="flex items-center gap-2 min-w-0 text-sm text-zinc-400">
+                    {convoInfo.conversationId?.groupCreaterId ===
+                      authUser._id && (
+                      <Crown className="size-3 shrink-0 text-yellow-500" />
+                    )}
                     {convoInfo.conversationId.userIds.length} members
                   </div>
                 </>
