@@ -8,7 +8,8 @@ import { useConversationStore } from "./useConversationStore.js";
 import { useMessageStore } from "./useMessageStore.js";
 
 // Backend server base url
-const BACK_END_BASE_URL = "http://localhost:5001";
+const BACK_END_BASE_URL =
+  import.meta.env.MODE === "development" ? "http://localhost:5001" : "/";
 
 // Zustand is a handy state management tool for
 // managing state in React apps
