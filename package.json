@@ -1,0 +1,21 @@
+{
+  "name": "letschat",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "",
+    "start": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EvanHuang7/LetsChat.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/EvanHuang7/LetsChat/issues"
+  },
+  "homepage": "https://github.com/EvanHuang7/LetsChat#readme",
+  "description": ""
+}
