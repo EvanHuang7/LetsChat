@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import path from "path";
 
 import authRoutes from "./routes/auth.route.js";
 import connectionRoutes from "./routes/connection.route.js";
@@ -20,6 +21,9 @@ dotenv.config();
 // We need to use process.env.varible_name to
 // access the variable in .env file
 const PORT = process.env.PORT;
+
+// Used for app deployment
+const __dirname = path.resolve();
 
 // Allow us to extrat the json data form api request body
 app.use(express.json({ limit: "2mb" }));
@@ -43,6 +47,16 @@ app.use("/api/convoInfoOfUser", convoInfoOfUserRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/moment", momentRoutes);
 app.use("/api/comment", commentRoutes);
+
+// Used for app deployment
+if (process.env.NODE_ENV === "production") {
+  // Serves static files from front-end
+  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+  });
+}
 
 server.listen(PORT, () => {
   console.log("Server is starting on port: " + PORT);
