@@ -34,29 +34,21 @@
 
 ## <a name="introduction">📋 Introduction</a>
 
-💬 **LetsChat** is a full-stack real-time chat application that lets users connect with new friends and chat privately. Users can also create group chats, invite friends, and enjoy group messaging or even group video calls. In addition, users can post moments, as well as like and comment on others’ moments.
+💬 **LetsChat** is a **MERN stack** (full-stack) real-time chat application that lets users connect with new friends and chat privately. Users can also create group chats, invite friends, and enjoy group messaging or even group video calls. In addition, users can post moments, as well as like and comment on others’ moments.
 
 ## <a name="tech-stack">🛠️ Tech Stack</a>
 
 - **📡 Backend**:
-  - Node.js, Express.js, TypeScript,
-  - Prisma ORM, PostgreSQL
+  - **Node.js, Express.js, JavaScript**,
+  - **MongoDB**
 - **🖥️ Frontend**:
-  - Next.js, TypeScript,
-  - Redux Toolkit for state management
-  - Shadcn & Tailwind CSS for UI
-  - Framer Motion for animations
-  - React Hook Form + Zod for forms and validation
-- **☁️ AWS**:
-  - **Authentication**: Cognito
-  - **Hosting & Infrastructure**: EC2 (server), RDS (PostgreSQL DB), VPC (network isolation)
-  - **Routing & Deployment**: API Gateway, Amplify (client hosting), S3 (file storage)
-  - **Notifications & Email**: SNS (notifications), SES (emails)
-- **🤖 AI & Other Tools**:
-  - VAPI AI (voice assistant)
-  - Google Gemini API (AI interaction)
-  - PG (PostgreSQL event subscription)
-  - PM2 (cloud deployment with auto-restart)
+  - **React.js, JavaScript**,
+  - **Zustand** for state and API management
+  - **Axios** for for HTTP requests
+  - **Tailwind CSS** & **Daisy UI** for styling
+- **⚙️ Real-Time & Communication**:
+  - **Socket.io** for real-time chat and notifications
+  - **Stream.io** for video calling features
 
 ## <a name="features">🚀 Features</a>
 
