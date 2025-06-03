@@ -1,4 +1,10 @@
-<h1 align="center">🌟 LetsChat</h3>
+<div align="center">
+  <h3 align="center">🌟 LetsChat</h3>
+  <p align="center">
+    🚀 <a href="https://letschat-qrze.onrender.com/" target="_blank"><b>Live App</b></a> &nbsp;|&nbsp;
+    📂 <a href="https://github.com/EvanHuang7/LetsChat" target="_blank"><b>Source Code</b></a>
+  </p>
+</div>
 
 ## 📚 <a name="table">Table of Contents</a>
 
@@ -29,9 +35,6 @@
 ## <a name="introduction">📋 Introduction</a>
 
 💬 **LetsChat** is a full-stack real-time chat application that lets users connect with new friends and chat privately. Users can also create group chats, invite friends, and enjoy group messaging or even group video calls. In addition, users can post moments, as well as like and comment on others’ moments.
-
-- **🚀 Live App**: [LetsChat](https://letschat-qrze.onrender.com/)
-- **📂 Source Code**: [GitHub Repository](https://github.com/EvanHuang7/LetsChat)
 
 ## <a name="tech-stack">🛠️ Tech Stack</a>
 
