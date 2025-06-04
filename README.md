@@ -29,8 +29,7 @@
    - [⭐ Running the Project](#running-project)
 6. ☁️ [Deploy App in Render](#deploy-app)
    - [🌐 Set up VPC](#set-up-vpc)
-7. 📌 [Note for Schemas Update](#note-schemas-update)
-8. 👨‍💼 [About the Author](#about-the-author)
+7. 👨‍💼 [About the Author](#about-the-author)
 
 ## <a name="introduction">📋 Introduction</a>
 
@@ -53,7 +52,7 @@
 
 ## <a name="features">🚀 Features</a>
 
-**🔐 Authentication**: Secure sign-up and sign-in with email and password.
+**🔐 Authentication**: Secure sign-up and sign-in with email and password, handled by **JWT**.
 
 **🤝 Connect & Chat Privately**: Send and receive real-time friend requests and start private chats — all powered by **Socket.io**.
 
@@ -77,10 +76,10 @@
 
 ## <a name="diagram-screenshots">🧩 Diagram and 📸 Screenshots</a>
 
-- **🧩 Database Tables Diagram**: [drawSQL Diagram Link](https://drawsql.app/teams/evans-projects/diagrams/order-food-app)
-- **📸 Screenshots**: [Miro Link](https://miro.com/app/board/uXjVI0aDhM0=/?share_link_id=91185319434)
+- **🧩 Database Tables Diagram**: [drawSQL Diagram Link](https://drawsql.app/teams/evans-projects/diagrams/letschat-app)
+- **📸 Screenshots**: [Miro Link](https://miro.com/app/board/uXjVIs-x_Hc=/?share_link_id=287651094618)
 
-  ![🖼️ Screenshots Preview](https://res.cloudinary.com/dapo3wc6o/image/upload/v1748763193/Order-Food-App-Screenshots_dtcjbx.jpg)
+  ![🖼️ Screenshots Preview](https://res.cloudinary.com/dapo3wc6o/image/upload/v1749005825/LetsChat-App_yzbuox.jpg)
 
 ## <a name="installation-start-project">📦 Installation and ⚙️ Start Project</a>
 
