@@ -106,7 +106,8 @@ npm install
 ### <a name="create-mongodb-cluster">⭐ Create a Cluster in MongoDB</a>
 
 Create a cluster by selecting a free plan and `Drivers` connection method under a project in MongoDB, and note down your cluster **connection string**—you'll need them later in the **Set Up Environment Variables step**. (Feel free to follow any MongoDB setup tutorial on YouTube to complete this step.)
-- ⚠️ **Note**: Make sure your MongoDB proejct has public access
+
+⚠️ **Note**: Make sure your MongoDB proejct has public access
   - Go to **SECURITY > Network Access** tab
   - Click **ADD IP ADDRESS** button
   - Click **ALLOW ACCESS FROM ANYWHERE** button
@@ -137,7 +138,7 @@ STREAM_API_KEY =
 STREAM_API_SECRET = 
 ```
 
-- Replace the placeholder values with your actual credentials from MongoDB, Cloudinary, Stream.io.
+Replace the placeholder values with your actual credentials from MongoDB, Cloudinary, Stream.io.
   - 📌 Note: For `JWT_SECRET`, you can use `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"` command line to generate a random key for it.
 
 ### <a name="running-project">⭐ Running the Project</a>
