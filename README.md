@@ -53,38 +53,27 @@
 
 ## <a name="features">🚀 Features</a>
 
-**🔐 Authentication**  
-Secure sign-up and sign-in with email and password.
+**🔐 Authentication**: Secure sign-up and sign-in with email and password.
 
-**🤝 Connect & Chat Privately**  
-Send and receive real-time friend requests and start private chats — all powered by **Socket.io**.
+**🤝 Connect & Chat Privately**: Send and receive real-time friend requests and start private chats — all powered by **Socket.io**.
 
-**👥 Create Groups & Invite Friends**  
-Create or join a group. As a group admin, invite friends to join and chat together.
+**👥 Create Groups & Invite Friends**: Create or join a group. As a group admin, invite friends to join and chat together.
 
-**🎥 Start Video Calls**  
-Invite friends from private or group chats to join a video call via a system-generated link — powered by **Stream.io**.
+**🎥 Start Video Calls**: Invite friends from private or group chats to join a video call via a system-generated link — powered by **Stream.io**.
 
-**🖼️ Send Images & Add Stickers**  
-Send images in chat and save favorites to your personal sticker list.
+**🖼️ Send Images & Add Stickers**: Send images in chat and save favorites to your personal sticker list.
 
-**🔔 Real-Time Notifications**  
-Receive live message previews when a new message arrives and you're not viewing that conversation.
+**🔔 Real-Time Notifications**: Receive live message previews when a new message arrives and you're not viewing that conversation.
 
-**📬 Unread Count & Online Status**  
-See unread message counts and live online status for each conversation.
+**📬 Unread Count & Online Status**: See unread message counts and live online status for each conversation.
 
-**📝 Moments Feed**  
-View, comment on, and like moments from all users — or browse moments from a specific user. Users can also post their own.
+**📝 Moments Feed**: View, comment on, and like moments from all users — or browse moments from a specific user. Users can also post their own.
 
-**👤 Profile & Theme Settings**  
-Update your profile image and choose from 32 available themes.
+**👤 Profile & Theme Settings**: Update your profile image and choose from 32 available themes.
 
-**🎨 Modern UI/UX**  
-Clean, intuitive interface designed for clarity and ease of use.
+**🎨 Modern UI/UX**: Clean, intuitive interface designed for clarity and ease of use.
 
-**📱 Responsive Design**  
-Seamlessly adapts to any screen size or device.
+**📱 Responsive Design**: Seamlessly adapts to any screen size or device.
 
 ## <a name="diagram-screenshots">🧩 Diagram and 📸 Screenshots</a>
 
