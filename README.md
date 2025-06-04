@@ -15,17 +15,11 @@
 5. ⚙️ [Installation and Start Project](#installation-start-project)
    - [⭐ Prerequisites](#prerequisites)
    - [⭐ Cloning the Repository](#clone-repo)
-   - [⭐ Installation](#install)
-   - [⭐ Create Database in PgAdmin](#create-local-db)
-   - [⭐ Set Up AWS](#set-up-aws)
-     - [🔐 Set up Cognito](#set-up-cognito)
-     - [🗂️ Set up S3](#set-up-s3)
-     - [🔑 Set up IAM](#set-up-iam)
-     - [✉️ Set up SES](#set-up-ses)
-     - [📣 Set up SNS](#set-up-sns)
+   - [⭐ Packages Installation](#install-packages)
+   - [⭐ Create a Cluster in MongoDB](#create-mongodb-cluster)
+   - [⭐ Set up Cloudinary](#set-up-cloudinary)
+   - [⭐ Set up Stream.io](#set-up-stream)
    - [⭐ Set Up Environment Variables](#set-up-env-variables)
-   - [⭐ Create Tables, Add Event Trigger, and Seed Mock Data](#create-table)
-   - [⭐ Upload Images of Mock Data to AWS S3 Bucket](#upload-images-s3)
    - [⭐ Running the Project](#running-project)
 6. ☁️ [Deploy App in Render](#deploy-app)
    - [🌐 Set up VPC](#set-up-vpc)
@@ -91,186 +85,81 @@ Make sure you have the following installed on your machine:
 
 - Git
 - Node.js and npm(Node Package Manager)
-- PostgresSQL and PgAdmin
 
 ### <a name="clone-repo">⭐ Cloning the Repository</a>
 
 ```bash
-git clone https://github.com/EvanHuang7/order-food.git
+git clone https://github.com/EvanHuang7/LetsChat.git
 ```
 
-### <a name="install">⭐ Installation</a>
+### <a name="install-packages">⭐ Packages Installation</a>
 
 Install the project dependencies using npm:
 
 ```bash
-cd order-food/server
+cd LetsChat/backend
 npm install
 cd ..
-cd client
+cd frontend
 npm install
 ```
 
-### <a name="create-local-db">⭐ Create Database in PgAdmin</a>
+### <a name="create-mongodb-cluster">⭐ Create a Cluster in MongoDB</a>
 
-Create a local PostgreSQL database using pgAdmin, and note down your PostgreSQL **username, password, and database name**—you'll need them later in the **Set Up Environment Variables step**. (Feel free to follow any PostgreSQL setup tutorial on YouTube to complete this step.)
+Create a cluster by selecting a free plan and `Drivers` connection method under a project in MongoDB, and note down your cluster **connection string**—you'll need them later in the **Set Up Environment Variables step**. (Feel free to follow any MongoDB setup tutorial on YouTube to complete this step.)
+- ⚠️ **Note**: Make sure your MongoDB proejct has public access
+  - Go to **SECURITY > Network Access** tab
+  - Click **ADD IP ADDRESS** button
+  - Click **ALLOW ACCESS FROM ANYWHERE** button
+  - Click **Confirm** button
 
----
+### <a name="set-up-cloudinary">⭐ Set up Cloudinary</a>
 
-### <a name="set-up-aws">⭐ Set Up AWS</a>
+Set up your free Cloudinary account and note down your Cloudinary **API key, API Secret and Cloud Name**—you'll need them later in the **Set Up Environment Variables step**. (Feel free to follow any Cloudinary setup tutorial on YouTube to complete this step.)
 
-Create an AWS account and ensure you qualify for the 12-month Free Tier if you're a new user. Otherwise, you may incur charges when using AWS services. Each AWS service has its own Free Tier policy—refer to the [AWS Free Tier page](https://aws.amazon.com/free) for details. (You can follow relevant AWS setup tutorials on YouTube to guide you through the steps below.)
-
-> **⚠️ Note**
->
-> - **✅ Minimum Requirement**
->
->   - **AWS Cognito** must be configured to use the app. User authentication won't work without it.
->
-> - **🧩 Optional Services**
->   - **AWS S3**: Required to display mock data images. Without it, image uploading and seeded image display will be disabled, but all other features remain usable.
->   - **AWS IAM, SNS, and SES**: Required for the notification system to send and receive email alerts. The app will function without these, just without notifications.
-
-#### <a name="set-up-cognito">🔐 Set up AWS Cognito and create a User Pool:</a>
-
-1. Go to AWS Cognito service
-2. Create a User Pool
-   - Click **Create User pool** button
-   - Select `Single-page application` as the application type
-   - Enter your desired **application name** (eg. `appName-cognito-userpool`)
-   - Under **Options for sign-in identifiers**, select both `Email` and `Username`
-   - Under **Required attributes for sign-up**, select `email`
-   - Click **Create user directory** button
-3. Add "role" custom attribute
-   - After creating the user pool, go to the **Authentication > Sign-up** tab and add a custom attribute named "role"
-4. Note down the **User pool ID and User pool app client ID**—you'll need them later in the **Set Up Environment Variables step**
-
-#### <a name="set-up-s3">🗂️ Set up AWS S3:</a>
-
-1. Go to AWS S3 service
-2. Create a S3 bucket
-   - Click **Create bucket** button
-   - Select `General purpose` for **bucket type**
-   - Enter your desired **bucket name** (eg. `appName-s3-images`)
-   - **Disable** "Block all public access" and **check** the check box of **warning alert** to acknowledge the disable action
-   - Keep the rest of things by default in this page
-   - Click **Create bucket** button
-3. Configure created S3 bucket permission
-
-   - Click the S3 bucket we just created to go to bucket info page
-   - Click **Permissions** tab
-   - Scroll to the bottom and click **Edit** button of **Bucket policy**
-   - Copy and paste below script to update the policy allow all users to view the files in this S3 bucket.
-   - ⚠️ Note: remember to change the **Placeholder of Bucket ARN** to your real **Bucket ARN** in this page
-
-     ```
-     {
-         "Version": "2012-10-17",
-         "Statement": [
-             {
-                 "Sid": "Statement1",
-                 "Effect": "Allow",
-                 "Principal": "*",
-                 "Action": "s3:GetObject",
-                 "Resource": "Placeholder of Bucket ARN/*"
-             }
-         ]
-     }
-     ```
-
-   - Click **Save changes** button
-
-4. Note down the **S3 bucket name** for latter usage
-
-#### <a name="set-up-iam">🔑 Set up AWS IAM:</a>
-
-1. Go to AWS IAM service
-2. Create an **AWS IAM user** with **full access to SES and SNS**:
-3. Generate and note down the **IAM user Access Key ID and Secret Access Key**
-
-#### <a name="set-up-ses">✉️ Set up AWS SES:</a>
-
-1. Go to AWS SES service
-2. Verify both your **sender email and recipient email** addresses
-3. ⚠️ Note: In **sandbox mode**, SES requires the recipient email to be verified in the **Identities section**
-4. Note down your **verified sender email**
-
-#### <a name="set-up-sns">📣 Set up AWS SNS:</a>
-
-1. Go to AWS SNS service
-2. Create a topic for managing email or app notifications
-3. Note down the **ARN of Topic**
-
----
+### <a name="set-up-stream">⭐ Set up Stream.io</a>
+Set up your free Stream.io account and note down your Stream.io **API key, API Secret**—you'll need them later in the **Set Up Environment Variables step**. (Feel free to follow any Stream.io setup tutorial on YouTube to complete this step.)
 
 ### <a name="set-up-env-variables">⭐ Set Up Environment Variables</a>
 
-Create a `.env` file under **client** folder of your project and add the following content:
+Create a `.env` file under **backend** folder of your project and add the following content:
 
 ```env
-NEXT_PUBLIC_API_BASE_URL=http://localhost:3001
+PORT = 5001
+MONGODB_URL = 
+JWT_SECRET =
+NODE_ENV = development
 
-NEXT_PUBLIC_AWS_COGNITO_USER_POOL_ID=
-NEXT_PUBLIC_AWS_COGNITO_USER_POOL_CLIENT_ID=
+CLOUDINARY_CLOUD_NAME = 
+CLOUDINARY_API_KEY = 
+CLOUDINARY_API_SECRET = 
 
-NEXT_PUBLIC_VAPI_WEB_TOKEN=
+STREAM_API_KEY = 
+STREAM_API_SECRET = 
 ```
 
-Create another `.env` file under **server** folder of your project and add the following content:
-
-```env
-PORT=3001
-DATABASE_URL="postgresql://myusername:mypassword@localhost:5432/mydatabasename?schema=public"
-
-AWS_REGION=""
-S3_BUCKET_NAME=""
-
-AWS_ACCESS_KEY_ID=""
-AWS_SECRET_ACCESS_KEY=""
-SES_VERIFIED_EMAIL=""
-
-SNS_TOPIC_SUBSCRIBE_APP=""
-
-GOOGLE_GENERATIVE_AI_API_KEY=""
-```
-
-- Replace the placeholder values with your actual credentials from AWS Cognito, Vapi, PostgreSQL, AWS S3, IAM User, SES, SNS, and Google Gemini (via Google AI Studio).
-- Feel free to follow YouTube tutorials on Vapi and Google AI Studio to obtain the required tokens and configuration.
-
-### <a name="create-table">⭐ Create Tables, Add Event Trigger, and Seed Mock Data</a>
-
-Create the necessary tables, add an event trigger for the `create` event on the `Notification` table, and seed mock data into your local PostgreSQL database by running:
-
-```bash
-cd order-food/server
-npx prisma migrate reset
-npm run prisma:generate
-npm run seed
-```
-
-### <a name="upload-images-s3">⭐ Upload Images of Mock Data to AWS S3 Bucket</a>
-
-Upload the entire `mockDataImage` folder located in `order-food/client/public` to your AWS S3 bucket. This ensures that mock data images are properly displayed in the application.
+- Replace the placeholder values with your actual credentials from MongoDB, Cloudinary, Stream.io.
+  - 📌 Note: For `JWT_SECRET`, you can use `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"` command line to generate a random key for it.
 
 ### <a name="running-project">⭐ Running the Project</a>
 
 Open **two separate terminal windows** and run the following commands to start the frontend and backend servers:
 
-**Terminal 1** – Start the Client (Next.js App):
+**Terminal 1** – Start the Client (Vite App):
 
 ```bash
-cd order-food/client
+cd LetsChat/frontend
 npm run dev
 ```
 
 **Terminal 2** – Start the Server (Express API):
 
 ```bash
-cd order-food/server
+cd LetsChat/backend
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to view the project.
+Open [http://localhost:5173/](http://localhost:5173/) in your browser to view the project.
 
 ## <a name="deploy-app">☁️ Deploy App in AWS Cloud</a>
 
