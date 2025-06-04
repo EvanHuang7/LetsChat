@@ -22,7 +22,6 @@
    - [⭐ Set Up Environment Variables](#set-up-env-variables)
    - [⭐ Running the Project](#running-project)
 6. ☁️ [Deploy App in Render](#deploy-app)
-   - [🌐 Set up VPC](#set-up-vpc)
 7. 👨‍💼 [About the Author](#about-the-author)
 
 ## <a name="introduction">📋 Introduction</a>
@@ -161,37 +160,31 @@ npm run dev
 
 Open [http://localhost:5173/](http://localhost:5173/) in your browser to view the project.
 
-## <a name="deploy-app">☁️ Deploy App in AWS Cloud</a>
+## <a name="deploy-app">☁️ Deploy App in Render</a>
 
-To deploy your app to AWS, start by creating an AWS account. If you're a new user, you may be eligible for the 12-month Free Tier. Be aware that not all services are fully free—each AWS service has its own Free Tier limitations. For full details, refer to the [AWS Free Tier page](https://aws.amazon.com/free).
+Follow these steps to deploy app in Render:
 
-You can also find step-by-step AWS setup tutorials on YouTube to guide you visually through the process.
-
-> ⚠️ **Important**: Most AWS services used in this deployment—such as EC2, RDS, and others—are only free for **one active instance** under the Free Tier.
->
-> To avoid unexpected charges, ensure you **delete any existing instances** of these services before deploying your app.
-
-Follow these steps to deploy app in AWS Cloud:
-
----
-
-### <a name="set-up-vpc">🌐 Set up VPC for secure Networking</a>
-
-1. Go to AWS VPC service and make sure you are in the correct **AWS region** closest to you (eg. `us-east-1`) by checking the top right of dashboard
-2. Create a **new VPC**
-   - Go to the **Virtual Private Cloud > Your VPCs** tab and click **Create VPC** button
+1. Go to Render.com
+2. Deploy app
+    - Click **New > Web Service** button on the top right of the page
+    - Select your GitHub Repo for **Git Provider**
+    - Click **Connect** button
+    - Change **Build Command** to `npm run build`
+    - Change **Start Command** to `npm run start`
+    - Select `Free` plan for **Instance Type**
+    - Copy all environment variables except for `NODE_ENV` in your local `.env` file and paste to **Environment Variables** section
+    - Keep the rest of things by default in this page
+    - Click **Deploy Web Service** button
 3. 🎉🎉🎉 Check Your Deployed App 🎉🎉🎉
-   - You should be able to view all restaurants on the homepage and see the menu items of any restaurant on its individual page—**no sign-in required**.
-   - To test full functionality, **sign in** as a **Customer**, **Restaurant**, or **Driver** user.
-   - If everything is working correctly, **congratulations**—you’ve successfully deployed your app to the AWS cloud! 🥳🥳🥳
-
----
+    - Once deployment is complete, the app’s URL will appear at the top left of the page.
+    - After the service status changes to **Live**, you can fully test the app by signing in as a user.
+    - If everything is working correctly, **congratulations**—you’ve successfully deployed your app! 🥳🥳🥳
 
 ## <a name="about-the-author">👨‍💼 About the Author</a>
 
-Hi! I'm Evan Huang — a full-stack software developer with 4+ years of experience in web applications, real-time systems, and cloud integration. I’m passionate about building scalable products with clean architecture, elegant UI/UX, and modern technologies like React, Node.js, PostgreSQL, and AWS.
+Hi! I'm Evan Huang — a full-stack software developer with 4+ years of experience in web applications, real-time systems, and cloud integration. I’m passionate about building scalable products with clean architecture, elegant UI/UX, and modern technologies like React, Node.js, MongoDB.
 
-This food delivery app project was completed on **June 2, 2025**, and reflects my focus on blending AI, cloud infrastructure, and responsive design into real-world solutions.
+This chat app project was completed on **May 4, 2025**, and reflects my focus on full stack development, cloud infrastructure, and responsive design into real-world solutions.
 
 Feel free to connect with me in LinkedIn or GitHub!
 

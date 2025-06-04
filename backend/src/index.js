@@ -59,7 +59,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 server.listen(PORT, () => {
-  console.log("Server is starting on port: " + PORT);
+  console.log("💻 Server is starting on port: " + PORT);
   // connect MongoDB
   connectDB();
 });
