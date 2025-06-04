@@ -41,6 +41,7 @@
 - **📡 Backend**:
   - **Node.js, Express.js, JavaScript**,
   - **MongoDB**
+  - **Cloudinary** for file storage
 - **🖥️ Frontend**:
   - **React.js, JavaScript**,
   - **Zustand** for state and API management
@@ -52,42 +53,38 @@
 
 ## <a name="features">🚀 Features</a>
 
-**👉 Authentication**: Secure Sign Up and Sign In using email and password, handled by **AWS Cognito**.
+**🔐 Authentication**  
+Secure sign-up and sign-in with email and password.
 
-**👉 Favorite & Filter Restaurants**: Customers can favorite restaurants and filter them by category or price range. Restaurant cards display useful info such as address, average price per person, rating, and review history — all powered by **Prisma SQL**.
+**🤝 Connect & Chat Privately**  
+Send and receive real-time friend requests and start private chats — all powered by **Socket.io**.
 
-**👉 Place Order**: Customers can either add menu items to a shopping cart and place an order manually, or use voice to order directly through a call with our **AI assistant**, powered by **Vapi AI and Google Gemini**.
+**👥 Create Groups & Invite Friends**  
+Create or join a group. As a group admin, invite friends to join and chat together.
 
-**👉 Notification**: Customers can enable notifications to receive:
+**🎥 Start Video Calls**  
+Invite friends from private or group chats to join a video call via a system-generated link — powered by **Stream.io**.
 
-- Order delivery status updates via **AWS SES** email
-- New menu alerts from favorited restaurants via **AWS SES** email
-- Promotional emails via **AWS SNS**
+**🖼️ Send Images & Add Stickers**  
+Send images in chat and save favorites to your personal sticker list.
 
-**👉 Customer Dashboard**:
+**🔔 Real-Time Notifications**  
+Receive live message previews when a new message arrives and you're not viewing that conversation.
 
-- **Orders Tab**: View order details, cancel pending orders, filter by status, and rate/comment after delivery
-- **Favorites Tab**: Manage favorite restaurants and get notified about new items by emails
-- **Payments Tab**: Add or update payment methods and view transaction history
-- **Settings Tab**: Edit personal contact and address information
+**📬 Unread Count & Online Status**  
+See unread message counts and live online status for each conversation.
 
-**👉 Restaurant Dashboard**:
+**📝 Moments Feed**  
+View, comment on, and like moments from all users — or browse moments from a specific user. Users can also post their own.
 
-- **Orders Tab**: View, filter, and manage order statuses
-- **Earnings Tab**: View earnings from completed orders
-- **Manage Restaurant Tab**: Add or update menu items
-- **Settings Tab**: Edit restaurant profile, location, contact, categories, and hours etc
+**👤 Profile & Theme Settings**  
+Update your profile image and choose from 32 available themes.
 
-**👉 Driver Dashboard**:
+**🎨 Modern UI/UX**  
+Clean, intuitive interface designed for clarity and ease of use.
 
-- **Available Orders Tab**: View and accept available delivery jobs
-- **My Orders Tab**: Track and update your delivery progress
-- **Earnings Tab**: View total income from completed deliveries
-- **Settings Tab**: Update driver contact and location info
-
-**👉 Modern UI/UX**: Sleek, intuitive design optimized for usability and visual clarity
-
-**👉 Responsiveness**: Fully responsive layout that adapts seamlessly across all screen sizes and devices
+**📱 Responsive Design**  
+Seamlessly adapts to any screen size or device.
 
 ## <a name="diagram-screenshots">🧩 Diagram and 📸 Screenshots</a>
 
